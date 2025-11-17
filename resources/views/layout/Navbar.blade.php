@@ -3,8 +3,9 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        margin-top: 30px;
-        margin-bottom: 20px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        background: white;
     }
 
     .bottom-nav-inner {
