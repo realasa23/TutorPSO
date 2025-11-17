@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    
+
     <style>
         body {
             background-color: #f3f4f6;
@@ -44,27 +44,10 @@
             color: #9ca3af;
             /* optional: soft gray */
         }
-
-        .header-bg {
-            padding-top: 30px;
-            padding-bottom: 1rem;
-            position: relative;
-            top: 0;
-            z-index: 1020;
-        }
-
-        .page-title {
-            font-weight: bold;
-            margin: 0;
-            font-size: 24px;
-        }
-
-        .btn-back-icon {
-            color: #212529 !important;
-        }
-
-
     </style>
+
+    @yield('page-style')
+
 </head>
 
 <body>
