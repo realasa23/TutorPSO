@@ -5,10 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class sesi extends Model
+class Sesi extends Model
 {
     protected $table = 'sesi';
     protected $primaryKey = 'idsesi';
+    
+    // START: BARIS WAJIB UNTUK ID STRING (S01, S02...)
+    public $incrementing = false;
+    protected $keyType = 'string';
+    // END: BARIS WAJIB
 
     protected $fillable = [
         'idmatkul', 'idtutor',
@@ -25,10 +30,9 @@ class sesi extends Model
         return $this->belongsTo(Tutor::class, 'idtutor', 'idtutor');
     }
 
-    public function matkul() {
+    public function matakuliah() {
         return $this->belongsTo(Matakuliah::class, 'idmatkul', 'idmatkul');
     }
-
 
     public function laporanMasalah()
     {

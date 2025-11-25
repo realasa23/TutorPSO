@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class refund extends Model
+class Refund extends Model
 {
     protected $table = 'refund';
     protected $primaryKey = 'idrefund';
