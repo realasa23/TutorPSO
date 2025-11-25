@@ -2,10 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class review extends Model
 {
-    use HasFactory;
+    protected $table = 'review';
+    protected $primaryKey = 'idreview';
+
+    protected $fillable = [
+        'idpesanan', 'rating', 'tagpenilaian', 
+        'komentar', 'tanggalreview'
+    ];
+
+    public function pesanan()
+    {
+        return $this->belongsTo(Pesanan::class, 'idpesanan');
+    }
 }
