@@ -89,3 +89,20 @@ Route::get('/chat', function () {
 Route::get('/profile', function () {
     return view('Profile');   // resources/views/Profile.blade.php
 })->name('profile');
+
+/* =======================
+   LAPORAN & REFUND
+======================= */
+Route::get('/aktivitas/lapor', [laporanmasalahController::class, 'pageLaporan'])->name('laporan.index');
+Route::get('/aktivitas/detail-masalah', [laporanmasalahController::class, 'detailMasalah'])->name('laporan.detail');
+Route::post('/aktivitas/proses-refund', [laporanmasalahController::class, 'prosesRefund'])->name('laporan.store');
+Route::get('/aktivitas/laporan-sukses', [laporanmasalahController::class, 'laporanSukses'])->name('laporan.sukses');
+Route::get('/aktivitas/refund-sukses', [refundController::class, 'refundSukses'])->name('refund.sukses');
+Route::get('/profile/laporan', [userController::class, 'historyLaporan'])->name('profile.laporan');
+
+/* =======================
+   REVIEW TUTOR  
+======================= */
+Route::get('/review-tutor', [reviewController::class, 'reviewTutor'])->name('review.create');
+Route::post('/review-tutor/simpan', [reviewController::class, 'store'])->name('review.store');
+Route::get('/review-tutor/selesai', [reviewController::class, 'reviewSelesai'])->name('review.selesai');
