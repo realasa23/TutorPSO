@@ -10,14 +10,7 @@ use App\Http\Controllers\refundController;
 use App\Http\Controllers\reviewController;
 use App\Http\Controllers\tutorController;
 use App\Http\Controllers\userController;
-
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-| Di sini Anda dapat mendaftarkan route web untuk aplikasi Anda.
-*/
+use App\Http\Controllers\logincontroller;
 
 
 /* =======================
@@ -101,8 +94,18 @@ Route::get('/aktivitas/refund-sukses', [refundController::class, 'refundSukses']
 Route::get('/profile/laporan', [userController::class, 'historyLaporan'])->name('profile.laporan');
 
 /* =======================
-   REVIEW TUTOR  
+   REVIEW TUTOR
 ======================= */
 Route::get('/review-tutor', [reviewController::class, 'reviewTutor'])->name('review.create');
 Route::post('/review-tutor/simpan', [reviewController::class, 'store'])->name('review.store');
 Route::get('/review-tutor/selesai', [reviewController::class, 'reviewSelesai'])->name('review.selesai');
+
+/* =======================
+   LOGIN & REGISTER
+======================= */
+Route::get('/', [logincontroller::class, 'index']);
+Route::get('/login', [logincontroller::class, 'login']);
+Route::get('/register', [logincontroller::class, 'register']);
+
+Route::post('/login', [logincontroller::class, 'handleLogin']);
+Route::post('/register', [logincontroller::class, 'handleRegister']);
