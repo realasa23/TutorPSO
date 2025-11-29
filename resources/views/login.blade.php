@@ -6,50 +6,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Tutor App</title>
     <style>
-        body, html { margin:0; padding:0; height:100%; display:flex; justify-content:center; align-items:center; background: #e0e7ff; font-family: Arial, sans-serif;}
-        .container { width: 100%; max-width: 400px; padding:20px; background:white; border-radius:20px; box-shadow:0 4px 15px rgba(0,0,0,0.2);}
-        h2 { text-align:center; color:#1e3a8a;}
+        h1 { text-align:left; color:#343446; font-size: 48px}
+        h2 { text-align:left; color:#343446; font-size: 16px; margin-bottom: -3px;}
         input { width:100%; padding:10px; margin:8px 0; border-radius:5px; border:1px solid #ccc;}
-        button { width:100%; padding:10px; margin-top:10px; background:#1e3a8a; color:white; border:none; border-radius:5px; cursor:pointer; }
-        button:hover { background:#3749b0; }
-        .link { text-align:center; margin-top:10px; }
-        .link a { color:#1e3a8a; text-decoration:none; font-weight:bold; }
-        .forgot { text-align:right; margin-top:5px; }
         .errors { color:#b91c1c; margin-bottom:10px; }
-        .success { color:#065f46; margin-bottom:10px; }
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container { width: 90%; max-width: 393px; padding:20px; border-radius:20px; margin-top:30%; text-align:center;}
+        .form { width: 90%; max-width: 393px; border-radius:20px; text-align:center;}
+        .input { border-color: #343446; border-width: 2px; }
+        button { width:100%; padding:10px;margin-bottom: 20px; margin-top:10px; background:#343446; color:white; border:none; border-radius:22px; cursor:pointer; box-shadow:0 4px 15px rgba(0,0,0,0.2);}
+        button:hover { background:#575778; }
+        .link { margin-top:20px; text-decoration:none; color: #343446;}
+        .link a { color:#343446; text-decoration:none; font-weight:bold; }
+        .link a:hover { color: #575778; text-decoration:none;}
+        .mobile-container {
+            width: 393px;
+            height: 852px;
+            background:#B8CAFD;
+            background-image: url('{{ asset('Login BG.png') }}');
+            background-size: cover;
+            background-position: top center;
+            border-radius: 22px;
+            box-shadow: 0 0 22px rgba(0, 0, 0, 0.12);
+            overflow-y: hidden;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Login</h2>
+    <div class="mobile-container">
+        <div class="container" style="margin-top: 80%;">
+            <h1>Login</h1>
+            @if(session('success'))
+                <div class="success">{{ session('success') }}</div>
+            @endif
 
-        @if(session('success'))
-            <div class="success">{{ session('success') }}</div>
-        @endif
+            @if($errors->any())
+                <div class="errors">
+                    <ul style="padding-left:18px;">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-        @if($errors->any())
-            <div class="errors">
-                <ul style="margin:0; padding-left:18px;">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <form action="/login" method="POST">
-            @csrf
-            <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <div class="forgot">
-                <a href="#">Forgot password?</a>
-            </div>
-            <button type="submit">Log in</button>
-        </form>
-
-        <div class="link">
-            Don't have an account yet? <a href="/register">Register</a>
+            <form action="/login" method="POST" class="form">
+                @csrf
+                <h2>Email <a style="color: #F94931">*</a></h2>
+                <input class="input" type="email" name="email" placeholder="Email" value="{{ old('email') }}" required>
+                <h2>Password <a style="color: #F94931">*</a></h2>
+                <input class="input" type="password" name="password" placeholder="Password" required>
+                <div class="container" style="margin: auto">
+                    <button type="submit">Log in</button>
+                    Don't have an account yet? <a href="/register" style="text-decoration: none; color: #566CD8;">Register</a>
+                </div>
+            </form>
         </div>
+
+
     </div>
 </body>
 </html>

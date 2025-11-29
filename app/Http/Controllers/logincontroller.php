@@ -30,14 +30,14 @@ class logincontroller extends Controller
     {
         $validated = $request->validate([
             'email' => 'required|email',
-            'password' => 'required|min:6'
+            'password' => 'required'
         ]);
 
         $user = DB::table('user')->where('email', $validated['email'])->first();
 
         if ($user && Hash::check($validated['password'], $user->password)) {
             session(['user_id' => $user->userid, 'user_email' => $user->email]);
-            return redirect(/*PLACEHOLDER, UBAH REDIRECT*/'/')->with('success', 'Login successful');
+            return redirect(/*PLACEHOLDER, UBAH REDIRECT*/'/aktivitas/detail-akan-datang')->with('success', 'Login successful');
         }
 
         return back()->withErrors(['email' => 'Invalid credentials'])->withInput();
