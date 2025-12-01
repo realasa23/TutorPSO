@@ -1,4 +1,8 @@
-//Harya Raditya Handoyo 5026231176
+{{--
+    Nama: Harya Raditya Handoyo
+    NRP: 5026231176
+--}}
+
 
 <!DOCTYPE html>
 <html lang="id">
@@ -13,32 +17,19 @@
 
 <style>
 :root{
-  /* ukuran KATEGORI — disamakan dgn page Pencarian */
-  --cat-w:124px;
-  --cat-h:150px;
-  --cat-r:16px;
-  --notch:28px;
-
-  /* ukuran kartu REKOMENDASI (compact + seragam) */
-  --rec-w:152px;
-  --rec-h:200px;
-  --tile:116px;
-
-  /* warna & ink */
+  --cat-w:124px; --cat-h:150px; --cat-r:16px; --notch:28px;
+  --rec-w:152px; --rec-h:200px; --tile:116px;
   --bg-start:#c9d2ff; --bg-mid:#a9b7ff; --bg-end:#8fc3ff;
   --surface:#ffffff; --ink:#1b2430; --ink-dim:#667085;
-
   --orange-1:#ffd2a6; --orange-2:#ffb778; --orange-ink:#7a3600;
   --indigo-1:#cfd6ff; --indigo-2:#aeb9ff; --indigo-ink:#24338b;
   --pink-1:#ffc7d6;  --pink-2:#ff9fb7;  --pink-ink:#7e2241;
-
-  /* promo (banner atas) */
   --promo-h:180px;
 }
 
 *{box-sizing:border-box}
 body{font-family:'Poppins',system-ui}
-a{text-decoration:none} /* hilangkan underline “Lihat Semua” */
+a{text-decoration:none}
 
 .mobile-view{
   max-width:393px;min-height:100vh;margin:0 auto;
@@ -46,21 +37,16 @@ a{text-decoration:none} /* hilangkan underline “Lihat Semua” */
   padding-top:10px;padding-bottom:86px;
 }
 
-/* header kecil */
 .avatar-48{width:40px;height:40px;border-radius:50%;object-fit:cover}
 .hello-small{color:#e8ecff;font-size:.8rem}
 .hello-name{font-weight:700;color:#10224d}
 .btn-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:50%;
   background:#ffffff40;color:#fff;border:0;backdrop-filter:blur(4px)}
 
-/* promo banner (tetap ada) */
 .hero-body{padding:0 .75rem}
 .carousel .promo-card{
-  height:var(--promo-h);
-  border-radius:20px;
-  padding:16px 18px;
-  overflow:hidden;
-  display:flex;align-items:center;justify-content:space-between;
+  height:var(--promo-h); border-radius:20px; padding:16px 18px;
+  overflow:hidden; display:flex;align-items:center;justify-content:space-between;
 }
 .promo-indigo{background:linear-gradient(135deg,#9bb0ff,#7f92ff);color:#fff}
 .promo-orange{background:linear-gradient(135deg,#ffd6ad,#ffb778);color:#5b2d00}
@@ -72,18 +58,15 @@ a{text-decoration:none} /* hilangkan underline “Lihat Semua” */
 .promo-indicators [data-bs-target]{width:8px;height:8px;border-radius:50%;border:0;background:#ffffffaa;margin:0 4px}
 .promo-indicators .active{background:#fff}
 
-/* section container */
 .surface{background:var(--surface);border-radius:24px;box-shadow:0 10px 35px rgba(20,24,55,.12); overflow:hidden}
 .section-title{color:#6f7cff;font-weight:800;font-size:clamp(1.05rem,4vw,1.22rem)}
 .section-sub{color:var(--ink-dim)}
 .badge-pill{display:inline-block;background:#eef1ff;color:#6f7cff;border-radius:12px;font-weight:700;padding:.35rem .7rem}
 
-/* ===== scroll-snap carousel ===== */
 .snap-x{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:2px}
 .snap-x::-webkit-scrollbar{height:6px}
 .snap-x::-webkit-scrollbar-thumb{background:#d7dcff;border-radius:10px}
 
-/* KATEGORI (match Pencarian) */
 .cat-card{
   position:relative; flex:0 0 var(--cat-w); height:var(--cat-h);
   border-radius:var(--cat-r); padding:10px 18px 10px 12px; color:#1b2430;
@@ -108,7 +91,6 @@ a{text-decoration:none} /* hilangkan underline “Lihat Semua” */
 .cat-indigo{background:linear-gradient(135deg,var(--indigo-1),var(--indigo-2)); color:var(--indigo-ink)}
 .cat-pink{background:linear-gradient(135deg,var(--pink-1),var(--pink-2)); color:var(--pink-ink)}
 
-/* REKOMENDASI (kartu kecil + snap) */
 .rec-card{
   flex:0 0 var(--rec-w); height:var(--rec-h); scroll-snap-align:start;
   background:#fff;border-radius:16px;box-shadow:0 8px 24px rgba(20,24,55,.12);
@@ -134,7 +116,6 @@ a{text-decoration:none} /* hilangkan underline “Lihat Semua” */
 <body>
 <div class="mobile-view">
 
-  <!-- HEADER -->
   <header class="container py-3 px-3">
     <div class="d-flex justify-content-between align-items-center">
       <div class="d-flex align-items-center gap-2">
@@ -144,12 +125,10 @@ a{text-decoration:none} /* hilangkan underline “Lihat Semua” */
           <div class="hello-name">Sasha</div>
         </div>
       </div>
-      <!-- tombol search -> pencarian -->
       <a class="btn-icon" aria-label="Cari" href="{{ route('pencarian') }}"><i class="bi bi-search"></i></a>
     </div>
   </header>
 
-  <!-- PROMO CAROUSEL -->
   <section class="hero">
     <div class="container hero-body">
       <div id="promoCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-touch="true" data-bs-interval="5000">
@@ -200,11 +179,9 @@ a{text-decoration:none} /* hilangkan underline “Lihat Semua” */
     </div>
   </section>
 
-  <!-- CONTENT -->
   <main class="container my-4">
     <div class="surface p-3">
 
-      <!-- KATEGORI (carousel, ukuran = Pencarian) -->
       <div class="d-flex justify-content-between align-items-center mb-1">
         <div class="section-title">Kategori</div>
         <a href="{{ route('kategori') }}" class="badge-pill">Lihat Semua</a>
@@ -220,7 +197,6 @@ a{text-decoration:none} /* hilangkan underline “Lihat Semua” */
             <small class="cat-sub">18 Tutor</small>
           </div>
         </article>
-
         <article class="cat-card cat-indigo">
           <div class="cat-decor"></div><span class="cat-notch"></span>
           <div class="cat-icon"><i class="bi bi-window-sidebar text-primary"></i></div>
@@ -229,7 +205,6 @@ a{text-decoration:none} /* hilangkan underline “Lihat Semua” */
             <small class="cat-sub">18 Tutor</small>
           </div>
         </article>
-
         <article class="cat-card cat-pink">
           <div class="cat-decor"></div><span class="cat-notch"></span>
           <div class="cat-icon"><i class="bi bi-code-slash text-danger"></i></div>
@@ -240,7 +215,6 @@ a{text-decoration:none} /* hilangkan underline “Lihat Semua” */
         </article>
       </div>
 
-      <!-- REKOMENDASI TUTOR (carousel compact) -->
       <div class="d-flex justify-content-between align-items-center mb-1 mt-2">
         <div class="section-title">Rekomendasi Tutor</div>
         <a href="{{ route('listutor') }}" class="badge-pill">Lihat Semua</a>
@@ -249,7 +223,9 @@ a{text-decoration:none} /* hilangkan underline “Lihat Semua” */
 
       <div class="snap-x">
         <div class="rec-card">
-          <div class="rec-top rec-orange"><img class="rec-photo" src="{{ asset('assets/tutors/khalila.png') }}" alt=""></div>
+          <a href="{{ route('profiletutor') }}" class="rec-top rec-orange">
+            <img class="rec-photo" src="{{ asset('assets/tutors/khalila.png') }}" alt="">
+          </a>
           <div class="rec-body">
             <div class="rec-name">Khalila</div>
             <div class="rec-role">DMJK</div>
@@ -258,7 +234,9 @@ a{text-decoration:none} /* hilangkan underline “Lihat Semua” */
         </div>
 
         <div class="rec-card">
-          <div class="rec-top rec-pink"><img class="rec-photo" src="{{ asset('assets/tutors/sasha.png') }}" alt=""></div>
+          <a href="{{ route('profiletutor') }}" class="rec-top rec-pink">
+            <img class="rec-photo" src="{{ asset('assets/tutors/sasha.png') }}" alt="">
+          </a>
           <div class="rec-body">
             <div class="rec-name">Sasha</div>
             <div class="rec-role">PWEB</div>
@@ -267,7 +245,9 @@ a{text-decoration:none} /* hilangkan underline “Lihat Semua” */
         </div>
 
         <div class="rec-card">
-          <div class="rec-top rec-indigo"><img class="rec-photo" src="{{ asset('assets/tutors/haryadi.png') }}" alt=""></div>
+          <a href="{{ route('profiletutor') }}" class="rec-top rec-indigo">
+            <img class="rec-photo" src="{{ asset('assets/tutors/haryadi.png') }}" alt="">
+          </a>
           <div class="rec-body">
             <div class="rec-name">Haryadi</div>
             <div class="rec-role">Pilates</div>
@@ -279,7 +259,6 @@ a{text-decoration:none} /* hilangkan underline “Lihat Semua” */
     </div>
   </main>
 
-  <!-- Bottom Nav -->
   <nav class="nav-pill fixed-bottom">
     <div class="nav-wrap">
       <a class="nav-item active" aria-label="Beranda"><i class="bi bi-house-door-fill"></i></a>
