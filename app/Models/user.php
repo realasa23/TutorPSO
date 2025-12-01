@@ -41,4 +41,17 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $table = 'user';
+    protected $primaryKey = 'userid';
+
+    public function pesanan()
+    {
+        return $this->hasMany(Pesanan::class, 'userid');
+    }
+
+    public function laporanMasalah()
+    {
+        return $this->hasMany(LaporanMasalah::class, 'userid');
+    }
 }

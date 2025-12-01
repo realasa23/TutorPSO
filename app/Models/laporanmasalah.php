@@ -25,4 +25,19 @@ class laporanmasalah extends Model
         'deskripsimasalah', 
         'statuslaporan'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'userid');
+    }
+
+    public function sesi()
+    {
+        return $this->belongsTo(Sesi::class, 'idsesi');
+    }
+
+    public function refund()
+    {
+        return $this->hasOne(Refund::class, 'idlaporan');
+    }
 }

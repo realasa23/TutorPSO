@@ -24,4 +24,9 @@ class Review extends Model
         'komentar', 
         'tanggalreview'
     ];
+
+    public function pesanan()
+    {
+        return $this->belongsTo(Pesanan::class, 'idpesanan');
+    }
 }

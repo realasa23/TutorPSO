@@ -23,4 +23,9 @@ class Refund extends Model
         'statusrefund', 
         'jumlahpengembalian'
     ];
+
+    public function laporan()
+    {
+        return $this->belongsTo(LaporanMasalah::class, 'idlaporan');
+    }
 }
