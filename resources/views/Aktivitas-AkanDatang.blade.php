@@ -28,8 +28,9 @@
             border-top-right-radius: 20px;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
             margin-top: -5px;
-            position: relative;
             z-index: 5;
+            position: relative;
+
         }
 
         .title {
@@ -51,6 +52,7 @@
             margin-bottom: 20px;
         }
 
+        /* === Warna default (outline) === */
         .tab.akan-datang {
             border-color: #ffcfac;
             color: #ffcfac;
@@ -66,6 +68,7 @@
             color: #FF687F;
         }
 
+        /* === Jika aktif / diklik → background + text putih === */
         .tab.active.akan-datang {
             background-color: #ffcfac;
             color: white;
@@ -81,11 +84,22 @@
             color: white;
         }
 
+        /* Hover biar lebih enak */
         .tab:hover {
             opacity: 0.85;
             transform: scale(1.03);
         }
 
+        .card-detail-sesi.programming {
+            background-image: url('{{ asset('detailSesi.png') }}');
+
+        }
+
+        .card-detail-sesi.ux {
+            background-image: url('{{ asset('detailSesi2.png') }}');
+        }
+
+        /* Card */
         .card-detail-sesi {
             background-size: cover;
             background-position: right;
@@ -100,29 +114,26 @@
             margin-bottom: 20px;
         }
 
-        .card-detail-sesi.programming {
-            background-image: url('{{ asset('detailSesi.png') }}');
-        }
-
-        .card-detail-sesi.ux {
-            background-image: url('{{ asset('detailSesi2.png') }}');
-        }
-
+        /* Foto tutor */
         .card-detail-sesi .profile-img {
             width: 100px;
             height: 120px;
             border-radius: 15px;
             object-fit: cover;
+            /* supaya rapi seperti card kanan */
         }
 
+        /* Container text */
         .details {
             display: flex;
             flex-direction: column;
             justify-content: center;
             flex: 1;
             margin-bottom: 40px;
+            /* ruang untuk tombol detail */
         }
 
+        /* Styling text */
         .nama-tutor {
             font-size: 22px;
             font-weight: 600;
@@ -140,6 +151,7 @@
             color: #636363;
         }
 
+        /* Tombol */
         .btn-detail {
             position: absolute;
             bottom: 18px;
@@ -158,13 +170,11 @@
 
 
 @section('content')
-
-    {{-- HEADER --}}
     <div class="header-bg">
         <div class="container-fluid px-3">
             <div class="d-flex align-items-center justify-content-between">
-                <button class="btn p-0" onclick="history.back()">
-                    <i class="bi bi-chevron-left fs-4 text-dark"></i>
+                <button class="btn p-0">
+                    <i class="fs-4 text-dark"></i>
                 </button>
                 <h3 class="page-title">Aktivitas</h3>
                 <div style="width: 24px;"></div>
@@ -172,9 +182,7 @@
         </div>
     </div>
 
-    {{-- CONTENT --}}
     <div class="content-container">
-
         {{-- Tabs --}}
         <div class="tabs">
             <a href="/aktivitas" class="tab akan-datang active">Akan Datang</a>
@@ -185,33 +193,27 @@
         {{-- CARD 1 --}}
         <div class="card-detail-sesi programming">
             <img src="{{ asset('foto-tutor.jpg') }}" class="profile-img" alt="Foto Profil">
-
             <div class="details">
-                <h4 class="nama-tutor m-0">Khalila</h4>
+                <h4 class="nama-tutor fw-semibold m-0">Khalila</h4>
                 <p class="nama-matkul m-0">Dasar Pemrograman</p>
                 <p class="hari-tanggal m-0">4 Agustus 2025, 16.00 WIB</p>
-
                 <a href="/aktivitas/detail-akan-datang">
                     <button class="btn-detail">Detail</button>
                 </a>
             </div>
         </div>
 
-        {{-- CARD 2 --}}
         <div class="card-detail-sesi ux">
             <img src="{{ asset('foto-tutor2.jpg') }}" class="profile-img" alt="Foto Profil">
-
             <div class="details">
-                <h4 class="nama-tutor m-0">Lea</h4>
+                <h4 class="nama-tutor fw-semibold m-0">Lea</h4>
                 <p class="nama-matkul m-0">UX Design</p>
                 <p class="hari-tanggal m-0">7 Agustus 2025, 18.00 WIB</p>
-
                 <a href="/aktivitas/detail-akan-datang">
                     <button class="btn-detail">Detail</button>
                 </a>
             </div>
         </div>
-
     </div>
-
+    @include('layout.Navbar')
 @endsection

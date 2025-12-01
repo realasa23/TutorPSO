@@ -28,8 +28,16 @@
             border-top-right-radius: 20px;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
             margin-top: -5px;
-            position: relative;
             z-index: 5;
+            position: relative;
+
+        }
+
+        .title {
+            text-align: center;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 25px;
         }
 
         .tab {
@@ -44,6 +52,7 @@
             margin-bottom: 20px;
         }
 
+        /* === Warna default (outline) === */
         .tab.akan-datang {
             border-color: #ffcfac;
             color: #ffcfac;
@@ -59,6 +68,7 @@
             color: #FF687F;
         }
 
+        /* === Jika aktif / diklik → background + text putih === */
         .tab.active.akan-datang {
             background-color: #ffcfac;
             color: white;
@@ -74,11 +84,13 @@
             color: white;
         }
 
+        /* Hover biar lebih enak */
         .tab:hover {
             opacity: 0.85;
             transform: scale(1.03);
         }
 
+        /* Card */
         .card-detail-sesi {
             background-image: url('{{ asset('detailSesi.png') }}');
             background-size: cover;
@@ -94,21 +106,26 @@
             margin-bottom: 20px;
         }
 
+        /* Foto tutor */
         .card-detail-sesi .profile-img {
             width: 100px;
             height: 120px;
             border-radius: 15px;
             object-fit: cover;
+            /* supaya rapi seperti card kanan */
         }
 
+        /* Container text */
         .details {
             display: flex;
             flex-direction: column;
             justify-content: center;
             flex: 1;
             margin-bottom: 40px;
+            /* ruang untuk tombol detail */
         }
 
+        /* Styling text */
         .nama-tutor {
             font-size: 22px;
             font-weight: 600;
@@ -126,6 +143,7 @@
             color: #636363;
         }
 
+        /* Tombol */
         .btn-detail {
             position: absolute;
             bottom: 18px;
@@ -144,6 +162,7 @@
             position: absolute;
             bottom: 18px;
             right: 105px;
+            /* geser kiri sedikit supaya sejajar dengan tombol detail */
             padding: 6px 17px;
             background: white;
             border: none;
@@ -153,17 +172,20 @@
             border-radius: 14px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
         }
+
+        .btn-gabung:hover {
+            opacity: 0.9;
+        }
     </style>
 @endsection
 
-@section('content')
 
-    {{-- HEADER --}}
+@section('content')
     <div class="header-bg">
         <div class="container-fluid px-3">
             <div class="d-flex align-items-center justify-content-between">
-                <button class="btn p-0" onclick="history.back()">
-                    <i class="bi bi-chevron-left fs-4 text-dark"></i>
+                <button class="btn p-0">
+                    <i class="fs-4 text-dark"></i>
                 </button>
                 <h3 class="page-title">Aktivitas</h3>
                 <div style="width: 24px;"></div>
@@ -171,9 +193,7 @@
         </div>
     </div>
 
-    {{-- CONTENT --}}
     <div class="content-container">
-
         {{-- Tabs --}}
         <div class="tabs">
             <a href="/aktivitas" class="tab akan-datang">Akan Datang</a>
@@ -181,12 +201,12 @@
             <a href="/aktivitas-lampau" class="tab lampau">Lampau</a>
         </div>
 
-        {{-- CARD --}}
+        {{-- CARD 1 --}}
         <div class="card-detail-sesi">
             <img src="{{ asset('foto-tutor.jpg') }}" class="profile-img" alt="Foto Profil">
 
             <div class="details">
-                <h4 class="nama-tutor m-0">Khalila</h4>
+                <h4 class="nama-tutor fw-semibold m-0">Khalila</h4>
                 <p class="nama-matkul m-0">Dasar Pemrograman</p>
                 <p class="hari-tanggal m-0">4 Agustus 2025, 16.00 WIB</p>
             </div>
@@ -199,7 +219,8 @@
                 <button class="btn-gabung">Gabung Sesi</button>
             </a>
         </div>
-
     </div>
+
+    @include('layout.Navbar')
 
 @endsection
