@@ -5,7 +5,7 @@
         justify-content: center;
         padding-top: 20px;
         padding-bottom: 20px;
-        background: white;
+        background: rgb(255, 255, 255);
     }
 
     .bottom-nav-inner {
