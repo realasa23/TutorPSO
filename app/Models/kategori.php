@@ -18,4 +18,8 @@ class Kategori extends Model
     {
         return $this->hasMany(Matakuliah::class, 'idkategori');
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> Nailah-Adlina

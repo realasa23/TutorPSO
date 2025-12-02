@@ -1,5 +1,7 @@
 <?php
 
+// File: routes/web.php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SesiController;
 use App\Http\Controllers\pesananController;
@@ -52,20 +54,20 @@ Route::get('/berlangsung/end-call', [pesananController::class, 'endCall'])
 /* =======================
    PESANAN
 ======================= */
-Route::get('/pesanan/detail-pesanan', [SesiController::class, 'lihatDetailPesanan'])
-    ->name('pesanan.detail');
+Route::get('/pesan-sesi/{idsesi}', [SesiController::class, 'pesanSesi'])->name('pesanan.tanggal');
+Route::post('/pesan-sesi/{idsesi}', [SesiController::class, 'pilihTanggalStore'])->name('pesanan.tanggal.store');
 
-Route::get('/pesan-sesi', [SesiController::class, 'pesanSesi'])
-    ->name('pesanan.pesan');
+// Step 2 – Pilih Jam
+Route::get('/pesan-sesi/{idsesi}/jam', [SesiController::class, 'pilihJam'])->name('pesanan.jam');
 
-Route::get('/pesan-sesi/jadwal', [SesiController::class, 'pesanJamSesi'])
-    ->name('pesanan.jam');
+// Step 2 Store – Simpan jam ke session
+Route::post('/pesan-sesi/{idsesi}/jam', [SesiController::class, 'pilihJamStore'])->name('pesanan.jam.store');
 
-Route::get('/konfirmasi-pesanan', [pesananController::class, 'berhasilPesan'])
-    ->name('pesanan.berhasil');
+// Step 3 – Detail Pesanan
+Route::get('/pesan-sesi/{idsesi}/detail', [SesiController::class, 'lihatDetailPesanan'])->name('pesanan.detail');
 
-Route::get('/konfirmasi-trial', [pesananController::class, 'berhasilTrial'])
-    ->name('trial.berhasil');
+Route::post('/konfirmasi-pesanan',[pesananController::class, 'storeRegular'])->name('pesanan.store.regular');
+Route::post('/konfirmasi-trial',[pesananController::class, 'storeTrial'])->name('pesanan.store.trial');
 
 
 /* =======================

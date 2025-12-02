@@ -199,8 +199,8 @@
     <div class="header-bg">
         <div class="container-fluid px-3">
             <div class="d-flex align-items-center justify-content-between">
-                <button class="btn p-0">
-                    <i class="fs-4 text-dark"></i>
+                <button class="btn p-0" onclick="history.back()">
+                    <i class="bi bi-chevron-left fs-4 text-dark"></i>
                 </button>
                 <h3 class="page-title">Aktivitas</h3>
                 <div style="width: 24px;"></div>

@@ -5,7 +5,11 @@
         justify-content: center;
         padding-top: 20px;
         padding-bottom: 20px;
+<<<<<<< HEAD
         background: #ffffff;
+=======
+        background: rgb(255, 255, 255);
+>>>>>>> Nailah-Adlina
     }
 
     .bottom-nav-inner {

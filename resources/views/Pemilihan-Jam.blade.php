@@ -1,3 +1,4 @@
+//Nailah Adlina - 5026231068
 @extends('layout.Mobile-View')
 
 @section('page-style')
@@ -11,17 +12,15 @@
 
         .container {
             width: 100%;
-            max-width: 430px;
-            /* height: 100vh; */
+            height: 100vh;
             /* penuh viewport agar container bisa scroll sendiri */
             background-image: url('{{ asset('bg-image.png') }}');
             position: relative;
             padding: 0;
-            overflow-y: auto;
-            overflow-x: hidden;
-            overscroll-behavior: none !important;
-            -webkit-overflow-scrolling: touch;
+            overflow: hidden;
+
         }
+
         .page-title {
             font-weight: bold;
             margin: 0;
@@ -34,6 +33,17 @@
 
         .top-bar {
             margin: 10px 0 0 10px;
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            font-size: 28px;
+            font-weight: 600;
+            position: relative;
+            z-index: 3;
+        }
+
+        .divider {
+            margin-bottom: 60px;
             display: flex;
             align-items: center;
             padding: 20px;
@@ -60,6 +70,9 @@
         }
 
         .card {
+            position: relative;
+            background: white;
+            border-radius: 30px 30px 0 0;
             background: white;
             border-top-left-radius: 25px;
             border-top-right-radius: 25px;
@@ -69,6 +82,7 @@
             position: relative;
             z-index: 10;
             border-color: white;
+            min-height: calc(100vh - 230px);
         }
 
         .title {
@@ -153,6 +167,7 @@
         .time-slot {
             flex: 1 1 calc(25% - 10px);
             min-width: 70px;
+            height: 50px;
             padding: 10px 5px;
             font-size: 11px;
             font-weight: 500;
@@ -180,7 +195,7 @@
         }
 
         .btn-konfirmasi {
-            width: 360px;
+            width: 100%;
             height: 46px;
             background-color: #312E49;
             color: white;
@@ -189,37 +204,29 @@
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.3s;
             opacity: 0;
             visibility: hidden;
-            margin-top: 10px;
+            transform: translateY(10px);
         }
 
         .btn-konfirmasi.show {
             opacity: 1;
             visibility: visible;
+            transform: translateY(0);
         }
 
         .back-btn {
             width: 15px;
             height: 15px;
         }
-
-        /* --------------------
-           HIDE SCROLLBAR (visual only)
-           - WebKit (Chrome, Safari, Android WebView, iOS WebView)
-           - Firefox
-           - IE/Edge legacy
-           -------------------- */
         .container::-webkit-scrollbar {
             width: 0;
             height: 0;
         }
 
-        /* Firefox */
         .container {
             scrollbar-width: none;
-            /* hides scrollbar in Firefox */
         }
 
         /* IE 10+ */
@@ -244,26 +251,22 @@
         </div>
 
         <div class="top-bar">
-            <a href="/adlin2"><img src="{{ asset('assets/img/back.png') }}" class="back-btn"></a>
         </div>
 
         <div class="teacher-photo">
-            <img src="{{ asset('profile.png') }}">
+            <img src="{{ asset($sesi->tutor->fototutor) }}">
         </div>
 
         <div class="card">
             <div style="display:flex; align-items:center;">
-                <div class="title">Dasar Pemrograman</div>
-                <div class="badge-online">ONLINE</div>
+                <div class="title">{{ $sesi->matakuliah->namamatkul }}</div>
+                @if ($sesi->tipe == 'online')
+                    <div class="badge-online">ONLINE</div>
+                @endif
+
             </div>
 
-            <div class="name">Khalila</div>
-
-            <div class="tags">
-                <div class="tag">IT</div>
-                <div class="tag">Business</div>
-                <div class="tag">Computer Science</div>
-            </div>
+            <div class="name">{{ $sesi->tutor->nama }}</div>
 
             <div class="time-section-title">Pilih Jam</div>
 
@@ -274,7 +277,7 @@
 
             <div class="time-grid" id="time-grid-container">
                 @foreach (['10.00-10.50', '11.00-11.50', '12.00-12.50', '13.00-13.50', '14.00-14.50', '15.00-15.50', '16.00-16.50', '17.00-17.50', '18.00-18.50', '19.00-19.50', '20.00-20.50', '21.00-21.50'] as $slot)
-                    @if ($slot == '19.00-19.50')
+                    @if (in_array($slot, $jamTerbooking))
                         <button class="time-slot unavailable" disabled>{{ $slot }}</button>
                     @else
                         <button class="time-slot">{{ $slot }}</button>
@@ -282,7 +285,15 @@
                 @endforeach
             </div>
 
-            <button id="tombol-konfirmasi" class="btn-konfirmasi">KONFIRMASI</button>
+            <div class="divider">
+            </div>
+
+
+            <form id="form-jam" method="POST" action="{{ route('pesanan.jam.store', $sesi->idsesi) }}">
+                @csrf
+                <input type="hidden" id="selected-jam" name="jam">
+                <button id="tombol-konfirmasi" class="btn-konfirmasi">KONFIRMASI</button>
+            </form>
         </div>
     </div>
 
@@ -304,8 +315,17 @@
 
             button.addEventListener('click', () => {
                 const selected = grid.querySelector('.time-slot.selected');
+<<<<<<< HEAD
                 if (selected) window.location.href = '{{ route('pesanan.detail') }}';
             });
+=======
+                if (selected) {
+                    document.getElementById('selected-jam').value = selected.textContent.trim();
+                    document.getElementById('form-jam').submit();
+                }
+            });
+
+>>>>>>> Nailah-Adlina
         });
     </script>
 @endsection

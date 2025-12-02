@@ -1,3 +1,4 @@
+//Nailah Adlina - 5026231068
 @extends('layout.Mobile-View')
 
 @section('page-style')
@@ -12,8 +13,6 @@
         .container {
             width: 100%;
             max-width: 430px;
-            /* height: 100vh; */
-            /* penuh viewport agar container bisa scroll sendiri */
             background-image: url('{{ asset('bg-image.png') }}');
             position: relative;
             padding: 0;
@@ -112,6 +111,17 @@
             font-size: 18px;
             font-weight: 700;
             margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .month-title button {
+            background: none;
+            border: none;
+            font-size: 22px;
+            padding: 5px 10px;
+            cursor: pointer;
         }
 
         .calendar {
@@ -199,25 +209,13 @@
             margin-left: 10px;
         }
 
-        /* --------------------
-           HIDE SCROLLBAR (visual only)
-           - WebKit (Chrome, Safari, Android WebView, iOS WebView)
-           - Firefox
-           - IE/Edge legacy
-           -------------------- */
         .container::-webkit-scrollbar {
             width: 0;
             height: 0;
         }
 
-        /* Firefox */
         .container {
             scrollbar-width: none;
-            /* hides scrollbar in Firefox */
-        }
-
-        /* IE 10+ */
-        .container {
             -ms-overflow-style: -ms-autohiding-scrollbar;
         }
     </style>
@@ -237,30 +235,31 @@
             </div>
         </div>
 
-        <div class="top-bar">
-            <a href="/adlin2"><img src="{{ asset('assets/img/back.png') }}" class="back-btn"></a>
-        </div>
+        <div class="top-bar"> </div>
 
         <div class="teacher-photo">
-            <img src="{{ asset('profile.png') }}">
+            <img src="{{ asset($sesi->tutor->fototutor) }}">
         </div>
 
         <div class="card">
             <div style="display:flex; align-items:center;">
-                <div class="title">Dasar Pemrograman</div>
-                <div class="badge-online">ONLINE</div>
+                <div class="title">{{ $sesi->matakuliah->namamatkul }}</div>
+                @if ($sesi->tipe == 'online')
+                    <div class="badge-online">ONLINE</div>
+                @endif
+
             </div>
 
-            <div class="name">Khalila</div>
+            <div class="name">{{ $sesi->tutor->nama }}</div>
 
-            <div class="tags">
-                <div class="tag">IT</div>
-                <div class="tag">Business</div>
-                <div class="tag">Computer Science</div>
+            {{-- MONTH TITLE --}}
+            <div class="month-title">
+                <button id="prevMonth">‹</button>
+                <span id="monthLabel">August, 2025</span>
+                <button id="nextMonth">›</button>
             </div>
 
-            <div class="month-title">August, 2025</div>
-
+            {{-- KALENDER --}}
             <table class="calendar">
                 <thead>
                     <tr>
@@ -268,109 +267,163 @@
                         <th>Mo</th>
                         <th>Tu</th>
                         <th>We</th>
-                        <th class="highlight">Th</th>
+                        <th>Th</th>
                         <th>Fr</th>
                         <th>Sa</th>
                     </tr>
                 </thead>
 
-                <tbody id="calendar-body">
-                    <tr>
-                        <td class="disabled">27</td>
-                        <td class="disabled">28</td>
-                        <td class="disabled">29</td>
-                        <td class="disabled">30</td>
-                        <td class="disabled">31</td>
-                        <td>1</td>
-                        <td>2</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>4</td>
-                        <td>5</td>
-                        <td>6</td>
-                        <td class="highlight">7</td>
-                        <td>8</td>
-                        <td>9</td>
-                    </tr>
-                    <tr>
-                        <td>10</td>
-                        <td>11</td>
-                        <td>12</td>
-                        <td>13</td>
-                        <td>14</td>
-                        <td>15</td>
-                        <td>16</td>
-                    </tr>
-                    <tr>
-                        <td>17</td>
-                        <td>18</td>
-                        <td>19</td>
-                        <td>20</td>
-                        <td>21</td>
-                        <td>22</td>
-                        <td>23</td>
-                    </tr>
-                    <tr>
-                        <td>24</td>
-                        <td>25</td>
-                        <td>26</td>
-                        <td>27</td>
-                        <td>28</td>
-                        <td>29</td>
-                        <td>30</td>
-                    </tr>
-                    <tr>
-                        <td>31</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tbody>
+                <tbody id="calendar-body"></tbody>
             </table>
 
-            <button id="tombol-konfirmasi" class="btn-konfirmasi">KONFIRMASI</button>
+            <form id="form-tanggal" method="POST"
+                action="{{ route('pesanan.tanggal.store', ['idsesi' => $sesi->idsesi]) }}">
+                @csrf
+                <input type="hidden" id="selected-date" name="tanggal">
+                <button id="tombol-konfirmasi" class="btn-konfirmasi">KONFIRMASI</button>
+            </form>
+
+
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const calendarBody = document.getElementById('calendar-body');
-            const confirmButton = document.getElementById('tombol-konfirmasi');
+        const bookedDates = @json($bookedDates);
 
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const calendarBody = document.getElementById('calendar-body');
+            const monthLabel = document.getElementById('monthLabel');
+            const confirmButton = document.getElementById('tombol-konfirmasi');
+            const prevBtn = document.getElementById('prevMonth');
+            const nextBtn = document.getElementById('nextMonth');
+
+            // -----------------------------
+            //  DEFAULT MULAI HARI INI
+            // -----------------------------
+            const today = new Date();
+            let tahun = today.getFullYear();
+            let bulan = today.getMonth(); // 0-based index
+
+            const namaBulan = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+
+            function updateMonthLabel() {
+                monthLabel.textContent = `${namaBulan[bulan]}, ${tahun}`;
+            }
+
+            function renderCalendar() {
+                const firstDay = new Date(tahun, bulan, 1).getDay();
+                const lastDate = new Date(tahun, bulan + 1, 0).getDate();
+
+                calendarBody.innerHTML = "";
+                let day = 1;
+
+                for (let row = 0; row < 6; row++) {
+                    const tr = document.createElement('tr');
+
+                    for (let col = 0; col < 7; col++) {
+                        const td = document.createElement('td');
+
+                        if (row === 0 && col < firstDay) {
+                            td.classList.add("disabled");
+                        } else if (day > lastDate) {
+                            td.classList.add("disabled");
+                        } else {
+                            td.textContent = day;
+
+                            const fullDate =
+                                `${tahun}-${String(bulan + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                            const currentDate = new Date(fullDate);
+
+                            // -----------------------------
+                            // DISABLE JIKA < HARI INI
+                            // -----------------------------
+                            if (currentDate < new Date(today.toDateString())) {
+                                td.classList.add("disabled");
+                            }
+
+                            // -----------------------------
+                            // DISABLE TANGGAL FULL BOOKED
+                            // -----------------------------
+                            if (bookedDates.includes(fullDate)) {
+                                td.classList.add("highlight");
+                                td.classList.add("disabled");
+                            }
+
+                            day++;
+                        }
+
+                        tr.appendChild(td);
+                    }
+
+                    calendarBody.appendChild(tr);
+                }
+            }
+
+            // ---- NAVIGATE PREV MONTH ----
+            prevBtn.addEventListener('click', function() {
+                bulan--;
+                if (bulan < 0) {
+                    bulan = 11;
+                    tahun--;
+                }
+                updateMonthLabel();
+                renderCalendar();
+                confirmButton.classList.remove('show');
+            });
+
+            // ---- NAVIGATE NEXT MONTH ----
+            nextBtn.addEventListener('click', function() {
+                bulan++;
+                if (bulan > 11) {
+                    bulan = 0;
+                    tahun++;
+                }
+                updateMonthLabel();
+                renderCalendar();
+                confirmButton.classList.remove('show');
+            });
+
+            // ---- SELECT DATE ----
             calendarBody.addEventListener('click', function(event) {
                 const cell = event.target;
 
-                if (cell.tagName === 'TD' && !cell.classList.contains('disabled') && cell.textContent
-                    .trim() !== '') {
-                    const allCells = calendarBody.querySelectorAll('td.selected');
-                    allCells.forEach(c => c.classList.remove('selected'));
+                if (cell.tagName === 'TD' && !cell.classList.contains('disabled') && cell.textContent !==
+                    "") {
+                    calendarBody.querySelectorAll('td.selected').forEach(c => c.classList.remove(
+                        'selected'));
 
                     if (!cell.classList.contains('highlight')) {
                         cell.classList.add('selected');
                     }
 
-                    updateButton();
+                    confirmButton.classList.add('show');
                 }
             });
 
-            function updateButton() {
-                const selected = calendarBody.querySelectorAll('td.selected');
-                if (selected.length > 0) {
-                    confirmButton.classList.add('show');
-                } else {
-                    confirmButton.classList.remove('show');
-                }
-            }
-            confirmButton.addEventListener('click', function() {
+            // ---- KONFIRMASI ----
+            confirmButton.addEventListener('click', function(event) {
+                event.preventDefault();
+
                 const selectedCell = calendarBody.querySelector('td.selected');
                 if (selectedCell) {
-                    window.location.href = '{{ route('pesanan.jam') }}';
+                    const tanggal = selectedCell.textContent.trim();
+                    const fullDate =
+                        `${tahun}-${String(bulan + 1).padStart(2,'0')}-${String(tanggal).padStart(2,'0')}`;
+
+                    // simpan ke hidden input
+                    document.getElementById('selected-date').value = fullDate;
+
+                    // submit form
+                    document.getElementById('form-tanggal').submit();
                 }
             });
+
+            updateMonthLabel();
+            renderCalendar();
         });
     </script>
 @endsection
