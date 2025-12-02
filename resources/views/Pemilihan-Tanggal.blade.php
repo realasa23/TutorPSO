@@ -1,3 +1,4 @@
+//Nailah Adlina - 5026231068
 @extends('layout.Mobile-View')
 
 @section('page-style')
@@ -12,8 +13,6 @@
         .container {
             width: 100%;
             max-width: 430px;
-            /* height: 100vh; */
-            /* penuh viewport agar container bisa scroll sendiri */
             background-image: url('{{ asset('bg-image.png') }}');
             position: relative;
             padding: 0;
@@ -211,25 +210,13 @@
             margin-left: 10px;
         }
 
-        /* --------------------
-                               HIDE SCROLLBAR (visual only)
-                               - WebKit (Chrome, Safari, Android WebView, iOS WebView)
-                               - Firefox
-                               - IE/Edge legacy
-                               -------------------- */
         .container::-webkit-scrollbar {
             width: 0;
             height: 0;
         }
 
-        /* Firefox */
         .container {
             scrollbar-width: none;
-            /* hides scrollbar in Firefox */
-        }
-
-        /* IE 10+ */
-        .container {
             -ms-overflow-style: -ms-autohiding-scrollbar;
         }
     </style>
@@ -266,13 +253,6 @@
 
             <div class="name">{{ $sesi->tutor->nama }}</div>
 
-
-            {{-- <div class="tags">
-                <div class="tag">IT</div>
-                <div class="tag">Business</div>
-                <div class="tag">Computer Science</div>
-            </div> --}}
-
             {{-- MONTH TITLE --}}
             <div class="month-title">
                 <button id="prevMonth">‹</button>
@@ -297,7 +277,8 @@
                 <tbody id="calendar-body"></tbody>
             </table>
 
-            <form id="form-tanggal" method="POST" action="{{ route('pesanan.tanggal.store', $sesi->idsesi) }}">
+            <form id="form-tanggal" method="POST"
+                action="{{ route('pesanan.tanggal.store', ['idsesi' => $sesi->idsesi]) }}">
                 @csrf
                 <input type="hidden" id="selected-date" name="tanggal">
                 <button id="tombol-konfirmasi" class="btn-konfirmasi">KONFIRMASI</button>
@@ -308,13 +289,7 @@
     </div>
 
     <script>
-        const bookedDates = [
-            "2025-11-05",
-            "2025-11-12",
-            "2025-11-18",
-            "2025-11-25"
-        ];
-
+        const bookedDates = @json($bookedDates);
 
         document.addEventListener('DOMContentLoaded', function() {
 
@@ -324,9 +299,12 @@
             const prevBtn = document.getElementById('prevMonth');
             const nextBtn = document.getElementById('nextMonth');
 
-            // ---- DEFAULT (boleh di-hardcode dulu) ----
-            let tahun = 2025;
-            let bulan = 7; // 7 = August (0-based indexing JS)
+            // -----------------------------
+            //  DEFAULT MULAI HARI INI
+            // -----------------------------
+            const today = new Date();
+            let tahun = today.getFullYear();
+            let bulan = today.getMonth(); // 0-based index
 
             const namaBulan = [
                 "January", "February", "March", "April", "May", "June",
@@ -336,7 +314,6 @@
             function updateMonthLabel() {
                 monthLabel.textContent = `${namaBulan[bulan]}, ${tahun}`;
             }
-
 
             function renderCalendar() {
                 const firstDay = new Date(tahun, bulan, 1).getDay();
@@ -358,15 +335,23 @@
                         } else {
                             td.textContent = day;
 
-                            // --- TANGGAL DALAM FORMAT YYYY-MM-DD ---
                             const fullDate =
                                 `${tahun}-${String(bulan + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                            const currentDate = new Date(fullDate);
 
+                            // -----------------------------
+                            // DISABLE JIKA < HARI INI
+                            // -----------------------------
+                            if (currentDate < new Date(today.toDateString())) {
+                                td.classList.add("disabled");
+                            }
 
-                            // --- CEK APAKAH TANGGAL ADA DI DATABASE ---
+                            // -----------------------------
+                            // DISABLE TANGGAL FULL BOOKED
+                            // -----------------------------
                             if (bookedDates.includes(fullDate)) {
-                                td.classList.add("highlight"); // styling “full”
-                                td.classList.add("disabled"); // tidak bisa dipilih
+                                td.classList.add("highlight");
+                                td.classList.add("disabled");
                             }
 
                             day++;
@@ -378,7 +363,6 @@
                     calendarBody.appendChild(tr);
                 }
             }
-
 
             // ---- NAVIGATE PREV MONTH ----
             prevBtn.addEventListener('click', function() {
@@ -423,7 +407,7 @@
 
             // ---- KONFIRMASI ----
             confirmButton.addEventListener('click', function(event) {
-                event.preventDefault(); // <--- INI WAJIB
+                event.preventDefault();
 
                 const selectedCell = calendarBody.querySelector('td.selected');
                 if (selectedCell) {
@@ -431,11 +415,13 @@
                     const fullDate =
                         `${tahun}-${String(bulan + 1).padStart(2,'0')}-${String(tanggal).padStart(2,'0')}`;
 
-                    window.location.href =
-                        '{{ route('pesanan.jam', $sesi->idsesi) }}?date=' + fullDate;
+                    // simpan ke hidden input
+                    document.getElementById('selected-date').value = fullDate;
+
+                    // submit form
+                    document.getElementById('form-tanggal').submit();
                 }
             });
-
 
             updateMonthLabel();
             renderCalendar();

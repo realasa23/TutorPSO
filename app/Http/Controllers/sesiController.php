@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Sesi;
+use App\Models\Pesanan;
 
+//Nailah Adlina - 5026231068
 class SesiController extends Controller
 {
     public function detailAkanDatang()
@@ -69,20 +71,27 @@ class SesiController extends Controller
         // Simpan ID sesi yang dipilih ke SESSION untuk digunakan pada langkah pemesanan berikutnya
         session(['idsesi' => $idsesi]);
 
-        return view('Pemilihan-Tanggal', compact('sesi'));
+        $bookedDates = Pesanan::where('idsesi', $idsesi)
+                      ->pluck('tanggal')
+                      ->toArray();
+
+
+        return view('Pemilihan-Tanggal', compact('sesi', 'bookedDates'));
     }
 
 
     public function pilihTanggalStore(Request $request)
     {
         $request->validate([
-            'tanggal' => 'required']);
+            'tanggal' => 'required'
+        ]);
 
         session(['tanggal_pesanan' => $request->tanggal]);
 
-        return redirect()->route('pesanan.jam');
-    }
+        $idsesi = $request->route('idsesi');
 
+        return redirect()->route('pesanan.jam', ['idsesi' => $idsesi]);
+    }
 
     public function pilihJam($idsesi)
     {
@@ -94,12 +103,17 @@ class SesiController extends Controller
         }
 
         $sesi = Sesi::findOrFail($idsesi);
+        
+        $jamTerbooking = Pesanan::where('idsesi', $idsesi)
+                        ->where('tanggal', $tanggal)
+                        ->pluck('jam')
+                        ->toArray();
 
-        $jamTersedia = Sesi::where('idsesi', $idsesi)
-                            ->where('tanggal', $tanggal)
-                            ->get();
-
-        return view('Pemilihan-Jam', compact('sesi', 'tanggal', 'jamTersedia'));
+        // $jamTersedia = Sesi::where('idsesi', $idsesi)
+        //                     ->where('tanggal', $tanggal)
+        //                     ->get();
+        
+        return view('Pemilihan-Jam', compact('sesi', 'tanggal', 'jamTerbooking'));
     }
 
 
@@ -129,7 +143,6 @@ class SesiController extends Controller
         }
 
         $sesi = Sesi::with(['tutor', 'matakuliah'])->findOrFail($idsesi);
-
         return view('Detail-Pesanan', compact('sesi', 'tanggal', 'jam'));
     }
 

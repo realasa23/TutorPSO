@@ -28,7 +28,7 @@ use App\Http\Controllers\loginController;
 Route::get('/aktivitas/detail-akan-datang', [SesiController::class, 'detailAkanDatang'])->name('sesi.detail.akan');
 Route::get('/aktivitas/detail-berlangsung', [SesiController::class, 'detailBerlangsung'])->name('sesi.detail.berlangsung');
 Route::get('/aktivitas/detail-lampau', [SesiController::class, 'detailLampau'])->name('sesi.detail.lampau');
-Route::get('/aktivitas',[pesananController::class, 'index'])->name('aktivitas');
+Route::get('/aktivitas',[pesananController::class, 'akanDatang'])->name('aktivitas');
 Route::get('/aktivitas-berlangsung',[pesananController::class, 'berlangsung'])->name('aktivitas.berlangsung');
 Route::get('/aktivitas-lampau',[pesananController::class, 'lampau'])->name('aktivitas.lampau');
 Route::get('/berlangsung/gabung-sesi',[pesananController::class, 'gabungSesi'])->name('sesi.berlangsung');
@@ -51,6 +51,7 @@ Route::post('/pesan-sesi/{idsesi}/jam', [SesiController::class, 'pilihJamStore']
 // Step 3 – Detail Pesanan
 Route::get('/pesan-sesi/{idsesi}/detail', [SesiController::class, 'lihatDetailPesanan'])->name('pesanan.detail');
 
-Route::get('/konfirmasi-pesanan',[pesananController::class, 'berhasilPesan'])->name('pesanan.berhasil');
-Route::get('/konfirmasi-trial',[pesananController::class, 'berhasilTrial'])->name('trial.berhasil');
+Route::post('/konfirmasi-pesanan',[pesananController::class, 'storeRegular'])->name('pesanan.store.regular');
+Route::post('/konfirmasi-trial',[pesananController::class, 'storeTrial'])->name('pesanan.store.trial');
+
 Route::get('/', [loginController::class, 'index'])->name('page_awal');

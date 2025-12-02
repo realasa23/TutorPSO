@@ -1,3 +1,4 @@
+//Nailah Adlina - 5026231068
 @extends('layout.Mobile-View')
 
 @section('page-style')
@@ -219,22 +220,13 @@
             width: 15px;
             height: 15px;
         }
-
-        /* --------------------
-                           HIDE SCROLLBAR (visual only)
-                           - WebKit (Chrome, Safari, Android WebView, iOS WebView)
-                           - Firefox
-                           - IE/Edge legacy
-                           -------------------- */
         .container::-webkit-scrollbar {
             width: 0;
             height: 0;
         }
 
-        /* Firefox */
         .container {
             scrollbar-width: none;
-            /* hides scrollbar in Firefox */
         }
 
         /* IE 10+ */
@@ -276,12 +268,6 @@
 
             <div class="name">{{ $sesi->tutor->nama }}</div>
 
-            {{-- <div class="tags">
-                <div class="tag">IT</div>
-                <div class="tag">Business</div>
-                <div class="tag">Computer Science</div>
-            </div> --}}
-
             <div class="time-section-title">Pilih Jam</div>
 
             <div class="legend-container">
@@ -291,7 +277,7 @@
 
             <div class="time-grid" id="time-grid-container">
                 @foreach (['10.00-10.50', '11.00-11.50', '12.00-12.50', '13.00-13.50', '14.00-14.50', '15.00-15.50', '16.00-16.50', '17.00-17.50', '18.00-18.50', '19.00-19.50', '20.00-20.50', '21.00-21.50'] as $slot)
-                    @if ($slot == '19.00-19.50')
+                    @if (in_array($slot, $jamTerbooking))
                         <button class="time-slot unavailable" disabled>{{ $slot }}</button>
                     @else
                         <button class="time-slot">{{ $slot }}</button>

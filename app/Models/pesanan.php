@@ -9,10 +9,24 @@ class Pesanan extends Model
 {
     protected $table = 'pesanan';
     protected $primaryKey = 'idpesanan';
+    public $timestamps = false;
+    public $incrementing = true;
+    protected $keyType = 'int';
+
 
     protected $fillable = [
-        'idsesi', 'userid', 'istrial', 'biaya', 
-        'statuspembayaran', 'status'
+        'idsesi',
+        'userid',
+        'tanggal',
+        'jam',
+        'istrial',
+        'statuspembayaran',
+        'status',
+    ];
+
+    protected $casts = [
+        'istrial' => 'boolean',
+        'tanggal' => 'date',
     ];
 
     public function user()
