@@ -55,7 +55,7 @@
 <div class="notif-wrapper">
     <div class="notif-card">
         <div class="notif-text">Sesi Trial kelas berhasil dipesan</div>
-        <button class="notif-button" onclick="window.location.href='/aktivitas-akan-datang'">
+        <button class="notif-button" onclick="window.location.href='/aktivitas'">
             Selesai
         </button>
 

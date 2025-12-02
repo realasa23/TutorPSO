@@ -31,7 +31,7 @@ Route::get('/aktivitas/detail-lampau', [SesiController::class, 'detailLampau'])
 /* =======================
    AKTIVITAS LIST
 ======================= */
-Route::get('/aktivitas', [pesananController::class, 'index'])
+Route::get('/aktivitas', [pesananController::class, 'akanDatang'])
     ->name('aktivitas');
 
 Route::get('/aktivitas-berlangsung', [pesananController::class, 'berlangsung'])

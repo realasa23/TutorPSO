@@ -13,15 +13,21 @@ class User extends Authenticatable
     protected $primaryKey = 'userid';
 
     protected $fillable = [
-        'username', 'email', 'password', 'nomorhp', 'fotoprofil', 'kuotatrial'
+        'name',
+        'email',
+        'password',
     ];
 
-    public function pesanan()
-    {
-        return $this->hasMany(Pesanan::class, 'userid');
-    }
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
-<<<<<<< HEAD
     /**
      * The attributes that should be cast.
      *
@@ -31,16 +37,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected $table = 'user';
-    protected $primaryKey = 'userid';
-
     public function pesanan()
     {
         return $this->hasMany(Pesanan::class, 'userid');
     }
 
-=======
->>>>>>> Nailah-Adlina
     public function laporanMasalah()
     {
         return $this->hasMany(LaporanMasalah::class, 'userid');

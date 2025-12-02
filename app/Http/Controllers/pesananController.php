@@ -32,7 +32,7 @@ class pesananController extends Controller
         return view ('Sesi-Selesai');
     }
 
-     public function storeRegular(Request $request)
+    public function storeRegular(Request $request)
     {
         // Ambil data dari session (dari step pilih tanggal & jam)
         $idsesi   = session('idsesi');
@@ -56,21 +56,19 @@ class pesananController extends Controller
         // Simpan ke tabel pesanan
         Pesanan::create([
             'idsesi'           => $idsesi,
-            'userid'           => $user->userid,  // atau $user->user_id kalau di db pakai itu
+            'userid'           => $user->userid, 
             'tanggal'          => $tanggal,
             'jam'              => $jam,
+            'harga'            => $sesi->harga,
             'istrial'          => false,
             'statuspembayaran' => 'berhasil',
             'status'           => $status,
         ]);
 
-        return redirect('/aktivitas/detail-akan-datang')
-            ->with('success', 'Pesanan sesi berhasil dibuat.');
+        return view ('Konfirmasi-Pesanan');
     }
 
-    /**
-     * Simpan pesanan trial
-     */
+
     public function storeTrial(Request $request)
     {
         $idsesi   = session('idsesi');
@@ -104,14 +102,14 @@ class pesananController extends Controller
                 'userid'           => $user->id,
                 'tanggal'          => $tanggal,
                 'jam'              => $jam,
+                'harga'            => 0,
                 'istrial'          => true,
                 'statuspembayaran' => 'free',
                 'status'           => $status,
             ]);
         });
 
-         return redirect('/aktivitas/detail-akan-datang')
-            ->with('success', 'Pesanan trial berhasil dibuat. Kuota trial berkurang 1.');
+         return view ('Konfirmasi-Trial');
     }
 
     //Fungsi helper untuk menentukan status berdasarkan tanggal

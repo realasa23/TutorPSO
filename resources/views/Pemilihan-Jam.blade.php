@@ -1,4 +1,4 @@
-//Nailah Adlina - 5026231068
+{{-- Nailah Adlina - 5026231068 --}}
 @extends('layout.Mobile-View')
 
 @section('page-style')
@@ -315,17 +315,12 @@
 
             button.addEventListener('click', () => {
                 const selected = grid.querySelector('.time-slot.selected');
-<<<<<<< HEAD
-                if (selected) window.location.href = '{{ route('pesanan.detail') }}';
-            });
-=======
                 if (selected) {
                     document.getElementById('selected-jam').value = selected.textContent.trim();
                     document.getElementById('form-jam').submit();
                 }
             });
 
->>>>>>> Nailah-Adlina
         });
     </script>
 @endsection

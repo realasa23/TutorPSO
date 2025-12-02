@@ -5,23 +5,19 @@
         justify-content: center;
         padding-top: 20px;
         padding-bottom: 20px;
-<<<<<<< HEAD
-        background: #ffffff;
-=======
         background: rgb(255, 255, 255);
->>>>>>> Nailah-Adlina
     }
 
     .bottom-nav-inner {
         background: #AFC2FF;
         width: 350px;
-        height: 55px;
+        height: 55px; /* sesuai permintaan */
         padding: 10px;
         border-radius: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 50px;
+        gap: 50px; /* spacing antar icon dibuat lebih rata */
     }
 
     .nav-item {
@@ -48,18 +44,15 @@
 <div class="bottom-nav">
     <div class="bottom-nav-inner">
 
-        {{-- HOME --}}
         <a href="/beranda" class="nav-item">
             <img src="{{ asset('icons/home.png') }}" alt="Beranda">
         </a>
 
-        {{-- AKTIVITAS --}}
         <a href="/aktivitas" class="nav-item">
             <img src="{{ asset('icons/activity.png') }}" alt="Aktivitas">
         </a>
 
-        {{-- PROFILE (FIX ROUTE) --}}
-        <a href="{{ route('profile') }}" class="nav-item">
+        <a href="/profil" class="nav-item">
             <img src="{{ asset('icons/profile.png') }}" alt="Profil">
         </a>
 

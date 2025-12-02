@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
-//Nailah Adlina - 5026231068
->>>>>>> Nailah-Adlina
+{{-- Nailah Adlina - 5026231068 --}}
 @extends('layout.Mobile-View')
 
 @section('page-style')
@@ -38,13 +35,7 @@
 
         .detail-label {
             font-size: 20px;
-<<<<<<< HEAD
-            /* Mengatur ukuran font menjadi 20px */
             color: #212529;
-            /* Opsional: Memastikan warna teks tetap gelap */
-=======
-            color: #212529;
->>>>>>> Nailah-Adlina
         }
 
         .title-sesi {
@@ -56,10 +47,6 @@
 
         .text-muted {
             margin-bottom: 0px
-<<<<<<< HEAD
-                /* Warna abu-abu untuk teks muted */
-=======
->>>>>>> Nailah-Adlina
         }
 
         .card-detail-sesi {
@@ -71,25 +58,11 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border: none;
             position: relative;
-<<<<<<< HEAD
-            top: 0 rem;
-            /* lebih halus daripada -2rem */
-        }
-
-        .card-detail-sesi .card-body {
-            padding: 0.75rem 1rem;
-            /* sebelumnya p-3 = 1rem; jadi lebih kecil */
-=======
             padding: 15px;
->>>>>>> Nailah-Adlina
         }
 
         .card-detail-sesi .profile-img {
             width: 80px;
-<<<<<<< HEAD
-            /* lebih kecil dari 100px */
-=======
->>>>>>> Nailah-Adlina
             height: 90px;
             margin-right: 10px;
         }
@@ -97,31 +70,17 @@
         .card-detail-sesi h4,
         .card-detail-sesi p {
             margin-bottom: 4px;
-<<<<<<< HEAD
-            /* rapatin antar teks */
-        }
-
-        /* Tombol Utama Bawah */
-        .full-width-btn {
-            background-color: #495057;
-            /* Warna tombol sesuai contoh (abu tua/hitam) */
-=======
 
         }
 
         .full-width-btn {
             background-color: #495057;
->>>>>>> Nailah-Adlina
             color: white;
             padding: 0.75rem 0;
             border-radius: 10px;
             border: none;
         }
 
-<<<<<<< HEAD
-        /* Styling Gambar Profil */
-=======
->>>>>>> Nailah-Adlina
         .profile-img {
             width: 100px;
             height: 110px;
@@ -130,30 +89,16 @@
             margin-right: 15px;
         }
 
-<<<<<<< HEAD
-        /* Warna Bintang Rating */
-=======
->>>>>>> Nailah-Adlina
         .rating-star {
             color: rgb(255, 255, 254);
             font-size: 18px;
         }
 
-<<<<<<< HEAD
-        /* Warna teks Nama Tutor */
-        .nama-tutor {
-            color: #D65609 !important;
-            /* !important ditambahkan untuk override warna default H4 Bootstrap jika ada */
-        }
-
-        /* Warna teks Nama Mata Kuliah */
-=======
         .nama-tutor {
             color: #D65609 !important;
 
         }
 
->>>>>>> Nailah-Adlina
         .nama-matkul {
             color: #D65609 !important;
         }
@@ -167,16 +112,6 @@
         .order-box {
             background-image: url('{{ asset('order.png') }}');
             background-size: cover;
-<<<<<<< HEAD
-            /* gambar memenuhi box */
-            background-position: center;
-            /* posisi tengah */
-            background-repeat: no-repeat;
-            /* jangan diulang */
-            border-radius: 10px;
-            padding: 1.5rem;
-            color: #495057;
-=======
             background-position: center;
             background-repeat: no-repeat;
             border-radius: 10px;
@@ -233,7 +168,6 @@
 
         .full-width-btn:hover {
             opacity: 0.9;
->>>>>>> Nailah-Adlina
         }
     </style>
 @endsection
@@ -293,27 +227,6 @@
                 <p style="margin: 0;">Rp5.000</p>
             </div>
 
-<<<<<<< HEAD
-            <div style="display: flex; justify-content: space-between; margin-top: 100px;">
-                <h2 style="font-size: 1.5rem; font-weight: bold; margin: 0;">Total</h2>
-                <h2 style="font-size: 1.5rem; font-weight: bold; margin: 0;">Rp50.000</h2>
-            </div>
-        </div>
-    </div>
-
-    <div class="p-2 bg-white">
-        <a href="/konfirmasi-pesanan" class="btn w-100 full-width-btn fw-bold">
-            <h5 class="order-button my-0">Pesan Sesi</h5>
-        </a>
-    </div>
-
-    <div class="p-2 bg-white">
-        <a href="/konfirmasi-trial" class="btn w-100 full-width-btn fw-bold">
-            <h5 class="order-button my-0">Gunakan Trial</h5>
-        </a>
-    </div>
-@endsection
-=======
             <hr class="border border-2 opacity-50">
 
             <div class="total-row">
@@ -343,4 +256,3 @@
             </form>
         </div>
     @endsection
->>>>>>> Nailah-Adlina

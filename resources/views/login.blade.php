@@ -1,10 +1,7 @@
 {{-- Peter Christian Erastus - 5026231138 --}}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Tutor App</title>
+@extends('layout.Mobile-View')
+
+@section('page-style')
     <style>
         h1 { text-align:left; color:#343446; font-size: 48px}
         h2 { text-align:left; color:#343446; font-size: 16px; margin-bottom: -3px;}
@@ -45,8 +42,9 @@
             position: relative;
         }
     </style>
-</head>
-<body>
+@endsection
+
+@section('content')
     <div class="mobile-container">
         <div class="container" style="margin-top: 80%;">
             <h1>Login</h1>
@@ -76,8 +74,5 @@
                 </div>
             </form>
         </div>
-
-
     </div>
-</body>
-</html>
+@endsection

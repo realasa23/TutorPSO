@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Refund extends Model
 {
-<<<<<<< HEAD
     use HasFactory;
 
     protected $table = 'refund';
@@ -23,21 +22,10 @@ class Refund extends Model
         'idlaporan', 
         'statusrefund', 
         'jumlahpengembalian'
-=======
-    protected $table = 'refund';
-    protected $primaryKey = 'idrefund';
-
-    protected $fillable = [
-        'idlaporan', 'statusrefund', 'jumlahpengembalian'
->>>>>>> Nailah-Adlina
     ];
 
     public function laporan()
     {
         return $this->belongsTo(LaporanMasalah::class, 'idlaporan');
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> Nailah-Adlina
