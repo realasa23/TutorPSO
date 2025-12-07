@@ -1,5 +1,5 @@
 <h1>Tutor – Online Tutoring & Scheduling Platform</h1>
-<img src="https://raw.githubusercontent.com/adljna/Tutor/master/public/USER STUDIES TUTOR - KELOMPOK 2.png" width="75%" alt="Tutor Banner"/>
+<img src="https://raw.githubusercontent.com/adljna/Tutor/master/public/USER STUDIES TUTOR - KELOMPOK 2.png" width="100%" alt="Tutor Banner"/>
 
 <h3> A Laravel-based platform designed to simplify booking, managing, and conducting tutoring sessions. </h3>
 <p> The platform connects students with qualified tutors through an integrated scheduling system, tutor profiles, booking management, and digital learning history. In a world where flexible and accessible learning is essential, Tutor provides a modern solution that helps students learn more efficiently while enabling tutors to manage sessions with ease. </p>
