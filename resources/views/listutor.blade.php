@@ -1,17 +1,40 @@
-//Harya Raditya Handoyo 5026231176
+{{--
+    Nama: Harya Raditya Handoyo
+    NRP: 5026231176
+--}}
 
 @extends('layout.Mobile-View')
 
 @section('page-style')
 <style>
 /* CSS KHUSUS LIST TUTOR */
-:root{ --card-h:132px; --radius-xl:18px; }
+:root{
+  --card-h:132px;
+  --radius-xl:18px;
+  --dark-text: #1A2B4B;
+
+  --orange-1:#ffd2a6; --orange-2:#ffb778;
+  --pink-1:#ffc7d6; --pink-2:#ff9fb7;
+  --indigo-1:#cfd6ff; --indigo-2:#aeb9ff;
+}
 
 .appbar{position:relative;padding-top:16px}
-.back-btn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#ffffff70;border:0;color:#1A2B4B;backdrop-filter:blur(6px)}
-.title{font-weight:800;font-size:1.25rem;text-align:center;color:#1A2B4B}
+.back-btn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#ffffff70;border:0;color:var(--dark-text);backdrop-filter:blur(6px)}
+.title{font-weight:800;font-size:1.25rem;text-align:center;color:var(--dark-text)}
 
-.surface-list{background:#fff;border-top-left-radius:22px;border-top-right-radius:22px;box-shadow:0 -4px 18px rgba(20,24,55,.08); padding-top:1rem; min-height:80vh;}
+/* FIX SCROLL & TAMPILAN */
+.surface{
+  background:#fff;
+  border-top-left-radius:24px;
+  border-top-right-radius:24px;
+  box-shadow:0 -4px 18px rgba(20,24,55,.08);
+  padding-top:1rem;
+
+  /* Agar background putih memanjang ke bawah & bisa scroll */
+  min-height: 100vh;
+  margin-bottom: -50px;
+  padding-bottom: 150px; /* Ruang kosong di bawah agar kartu terakhir tidak ketutup navbar */
+}
 
 .tutor-card{border:0;border-radius:var(--radius-xl);overflow:hidden;background:#fff;box-shadow:0 8px 24px rgba(20,24,55,.10)}
 .tc-top{ height:var(--card-h); position:relative; display:flex; align-items:center; gap:.75rem; padding:.75rem .9rem; overflow:hidden; }
@@ -19,65 +42,100 @@
 .tc-pink{background:linear-gradient(135deg,var(--pink-1),var(--pink-2))}
 .tc-indigo{background:linear-gradient(135deg,var(--indigo-1),var(--indigo-2))}
 
-.tc-avatar{ width:90px; height:110px; border-radius:12px; overflow:hidden; background:#fff; display:flex; align-items:flex-end; justify-content:center; flex-shrink: 0; }
-.tc-avatar img{ height:100%; width:auto; object-fit:cover; }
+.tc-avatar{ width:90px; height:110px; border-radius:12px; overflow:hidden; background:#fff; display:flex; align-items:flex-end; justify-content:center; flex-shrink: 0; cursor: pointer; }
+.tc-avatar img{ height:100%; width:auto; object-fit:cover; object-position: center; }
+
 .tc-text{ flex-grow: 1; }
-.tc-text h6{margin:0 0 2px;font-weight:800;color:#1A2B4B}
-.tc-role{font-size:.86rem;margin:0;color:#1A2B4B; opacity: 0.8;}
-.tc-rating{font-size:.8rem;color:#1A2B4B;display:flex;align-items:center;}
+.tc-text h6{margin:0 0 2px;font-weight:800;color:var(--dark-text)}
+.tc-role{font-size:.86rem;margin:0;color:var(--dark-text); opacity: 0.8;}
+.tc-rating{font-size:.8rem;color:var(--dark-text);display:flex;align-items:center;}
 .tc-rating i{color:#ffc107; margin-right: 4px;}
 .tc-bottom-buttons{ display:flex; align-items:center; gap:.5rem; margin-top: 8px; }
-.tc-price-text{ font-weight:700; color:#1A2B4B; font-size: 1rem; flex-grow: 1; }
-
-.btn-chat-sm, .btn-order-sm{ border:0; padding:.2rem .6rem; border-radius:999px; font-weight:600; font-size: .8rem; text-decoration: none; display:inline-block;}
-.btn-chat-sm{background:#fff; color:#1A2B4B; border: 1px solid #e0e0e0;}
-.btn-order-sm{background:#fff; color:#1A2B4B; border: 1px solid #e0e0e0;}
+.tc-price-text{ font-weight:700; color:var(--dark-text); font-size: 1rem; flex-grow: 1; }
+.btn-chat-sm, .btn-order-sm{ border:0; padding:.2rem .6rem; border-radius:999px; font-weight:600; font-size: .8rem; text-decoration: none; }
+.btn-chat-sm{background:#fff; color:var(--dark-text); border: 1px solid #e0e0e0;}
+.btn-order-sm{background:#fff; color:var(--dark-text); border: 1px solid #e0e0e0;}
 </style>
 @endsection
 
 @section('content')
   <header class="appbar container pb-4">
     <div class="row align-items-center">
-      <div class="col-2">
-        <a href="{{ route('home') }}" class="back-btn"><i class="bi bi-chevron-left"></i></a>
-      </div>
+      <div class="col-2"><a href="{{ route('home') }}" class="back-btn"><i class="bi bi-chevron-left"></i></a></div>
       <div class="col-8"><div class="title">Tutor</div></div>
       <div class="col-2"></div>
     </div>
   </header>
 
-  <main class="surface-list pb-4">
+  <main class="surface pt-3">
     <div class="container">
+
       <div class="tutor-card mb-3">
         <div class="tc-top tc-orange">
-          <div class="tc-avatar"><img src="{{ asset('assets/tutors/khalila.png') }}" alt="Khalila"></div>
+          <a href="{{ route('profiletutor') }}" class="tc-avatar"><img src="{{ asset('assets/tutors/khalila.png') }}" alt="Khalila"></a>
           <div class="tc-text">
-            <h6>Khalila</h6>
-            <p class="tc-role">Dasar Pemrograman</p>
+            <h6>Khalila</h6><p class="tc-role">Dasar Pemrograman</p>
             <div class="tc-rating"><i class="bi bi-star-fill"></i>4.9</div>
-            <div class="tc-bottom-buttons">
-              <span class="tc-price-text">Rp50.000</span>
-              <button class="btn btn-chat-sm">Chat</button>
-              <a href="{{ route('profiletutor') }}" class="btn btn-order-sm">Pesan Sesi</a>
-            </div>
+            <div class="tc-bottom-buttons"><span class="tc-price-text">Rp50.000</span><button class="btn btn-chat-sm">Chat</button><a href="{{ route('profiletutor') }}" class="btn btn-order-sm">Pesan Sesi</a></div>
           </div>
         </div>
       </div>
+
       <div class="tutor-card mb-3">
         <div class="tc-top tc-pink">
-          <div class="tc-avatar"><img src="{{ asset('assets/tutors/juno.png') }}" alt="Juno"></div>
+          <a href="{{ route('profiletutor') }}" class="tc-avatar"><img src="{{ asset('assets/tutors/juno.png') }}" alt="Juno"></a>
           <div class="tc-text">
-            <h6>Juno</h6>
-            <p class="tc-role">Pemrograman Web</p>
+            <h6>Juno</h6><p class="tc-role">Pemrograman Web</p>
             <div class="tc-rating"><i class="bi bi-star-fill"></i>4.9</div>
-            <div class="tc-bottom-buttons">
-              <span class="tc-price-text">Rp50.000</span>
-              <button class="btn btn-chat-sm">Chat</button>
-              <a href="{{ route('profiletutor') }}" class="btn btn-order-sm">Pesan Sesi</a>
-            </div>
+            <div class="tc-bottom-buttons"><span class="tc-price-text">Rp50.000</span><button class="btn btn-chat-sm">Chat</button><a href="{{ route('profiletutor') }}" class="btn btn-order-sm">Pesan Sesi</a></div>
           </div>
         </div>
       </div>
+
+      <div class="tutor-card mb-3">
+        <div class="tc-top tc-indigo">
+          <a href="{{ route('profiletutor') }}" class="tc-avatar"><img src="{{ asset('assets/tutors/adlin.png') }}" alt="Adlin"></a>
+          <div class="tc-text">
+            <h6>Adlin</h6><p class="tc-role">Pilates</p>
+            <div class="tc-rating"><i class="bi bi-star-fill"></i>4.9</div>
+            <div class="tc-bottom-buttons"><span class="tc-price-text">Rp50.000</span><button class="btn btn-chat-sm">Chat</button><a href="{{ route('profiletutor') }}" class="btn btn-order-sm">Pesan Sesi</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tutor-card mb-3">
+        <div class="tc-top tc-orange">
+          <a href="{{ route('profiletutor') }}" class="tc-avatar"><img src="{{ asset('assets/tutors/lea.png') }}" alt="Lea"></a>
+          <div class="tc-text">
+            <h6>Lea</h6><p class="tc-role">UX Design</p>
+            <div class="tc-rating"><i class="bi bi-star-fill"></i>4.9</div>
+            <div class="tc-bottom-buttons"><span class="tc-price-text">Rp50.000</span><button class="btn btn-chat-sm">Chat</button><a href="{{ route('profiletutor') }}" class="btn btn-order-sm">Pesan Sesi</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tutor-card mb-3">
+        <div class="tc-top tc-pink">
+          <a href="{{ route('profiletutor') }}" class="tc-avatar"><img src="{{ asset('assets/tutors/haryo.png') }}" alt="Haryo"></a>
+          <div class="tc-text">
+            <h6>Haryo</h6><p class="tc-role">Sistem Enterprise</p>
+            <div class="tc-rating"><i class="bi bi-star-fill"></i>4.9</div>
+            <div class="tc-bottom-buttons"><span class="tc-price-text">Rp50.000</span><button class="btn btn-chat-sm">Chat</button><a href="{{ route('profiletutor') }}" class="btn btn-order-sm">Pesan Sesi</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tutor-card mb-3">
+        <div class="tc-top tc-indigo">
+          <a href="{{ route('profiletutor') }}" class="tc-avatar"><img src="{{ asset('assets/tutors/sasha.png') }}" alt="Sasha"></a>
+          <div class="tc-text">
+            <h6>Sasha</h6><p class="tc-role">Pweb</p>
+            <div class="tc-rating"><i class="bi bi-star-fill"></i>4.9</div>
+            <div class="tc-bottom-buttons"><span class="tc-price-text">Rp50.000</span><button class="btn btn-chat-sm">Chat</button><a href="{{ route('profiletutor') }}" class="btn btn-order-sm">Pesan Sesi</a></div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 @endsection

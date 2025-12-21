@@ -13,10 +13,10 @@ use App\Http\Controllers\reviewController;
 use App\Http\Controllers\tutorController;
 use App\Http\Controllers\userController;
 use App\Http\Controllers\logincontroller;
-
+use App\Http\Controllers\PageController; // Import PageController baru
 
 /* =======================
-   DETAIL SESI
+  DETAIL SESI
 ======================= */
 Route::get('/aktivitas/detail-akan-datang', [SesiController::class, 'detailAkanDatang'])
     ->name('sesi.detail.akan');
@@ -29,7 +29,7 @@ Route::get('/aktivitas/detail-lampau', [SesiController::class, 'detailLampau'])
 
 
 /* =======================
-   AKTIVITAS LIST
+  AKTIVITAS LIST
 ======================= */
 Route::get('/aktivitas', [pesananController::class, 'akanDatang'])
     ->name('aktivitas');
@@ -42,7 +42,7 @@ Route::get('/aktivitas-lampau', [pesananController::class, 'lampau'])
 
 
 /* =======================
-   GABUNG SESI
+  GABUNG SESI
 ======================= */
 Route::get('/berlangsung/gabung-sesi', [pesananController::class, 'gabungSesi'])
     ->name('sesi.berlangsung');
@@ -52,7 +52,7 @@ Route::get('/berlangsung/end-call', [pesananController::class, 'endCall'])
 
 
 /* =======================
-   PESANAN
+  PESANAN
 ======================= */
 Route::get('/pesan-sesi/{idsesi}', [SesiController::class, 'pesanSesi'])->name('pesanan.tanggal');
 Route::post('/pesan-sesi/{idsesi}', [SesiController::class, 'pilihTanggalStore'])->name('pesanan.tanggal.store');
@@ -71,22 +71,20 @@ Route::post('/konfirmasi-trial',[pesananController::class, 'storeTrial'])->name(
 
 
 /* =======================
-   CHAT PAGE
+  CHAT PAGE (Via PageController)
 ======================= */
-Route::get('/chat', function () {
-    return view('Chat');   // resources/views/Chat.blade.php
-})->name('chat');
+Route::get('/chat', [PageController::class, 'chat'])
+    ->name('chat');
 
 
 /* =======================
-   PROFILE PAGE (BARU)
+  PROFILE PAGE (BARU) (Via PageController)
 ======================= */
-Route::get('/profile', function () {
-    return view('Profile');   // resources/views/Profile.blade.php
-})->name('profile');
+Route::get('/profile', [PageController::class, 'profile'])
+    ->name('profile');
 
 /* =======================
-   LAPORAN & REFUND
+  LAPORAN & REFUND
 ======================= */
 Route::get('/aktivitas/lapor', [laporanmasalahController::class, 'pageLaporan'])->name('laporan.index');
 Route::get('/aktivitas/detail-masalah', [laporanmasalahController::class, 'detailMasalah'])->name('laporan.detail');
@@ -96,14 +94,14 @@ Route::get('/aktivitas/refund-sukses', [refundController::class, 'refundSukses']
 Route::get('/profile/laporan', [userController::class, 'historyLaporan'])->name('profile.laporan');
 
 /* =======================
-   REVIEW TUTOR
+  REVIEW TUTOR
 ======================= */
 Route::get('/review-tutor', [reviewController::class, 'reviewTutor'])->name('review.create');
 Route::post('/review-tutor/simpan', [reviewController::class, 'store'])->name('review.store');
 Route::get('/review-tutor/selesai', [reviewController::class, 'reviewSelesai'])->name('review.selesai');
 
 /* =======================
-   LOGIN & REGISTER
+  LOGIN & REGISTER
 ======================= */
 Route::get('/', [logincontroller::class, 'index']);
 Route::get('/login', [logincontroller::class, 'login']);
@@ -111,3 +109,56 @@ Route::get('/register', [logincontroller::class, 'register']);
 
 Route::post('/login', [logincontroller::class, 'handleLogin']);
 Route::post('/register', [logincontroller::class, 'handleRegister']);
+
+/* =======================
+  HALAMAN UTAMA (Via PageController)
+======================= */
+
+/* =======================
+    Nama: Harya Raditya Handoyo
+    NRP: 5026231176
+======================= */
+
+Route::get('/home', [PageController::class, 'index'])
+    ->name('home');
+
+/* =======================
+  FITUR PENCARIAN (Via PageController)
+======================= */
+
+/* =======================
+    Nama: Harya Raditya Handoyo
+    NRP: 5026231176
+======================= */
+
+Route::get('/pencarian', [PageController::class, 'search'])
+    ->name('pencarian');
+
+/* =======================
+  HALAMAN KATEGORI (Via PageController)
+======================= */
+
+/* =======================
+    Nama: Harya Raditya Handoyo
+    NRP: 5026231176
+======================= */
+
+Route::get('/kategori', [PageController::class, 'category'])
+    ->name('kategori');
+
+/* =======================
+  LIST TUTOR (Via PageController)
+======================= */
+
+/* =======================
+    Nama: Harya Raditya Handoyo
+    NRP: 5026231176
+======================= */
+
+Route::get('/list-tutor', [PageController::class, 'listTutor'])
+    ->name('listutor');
+
+// Tambahkan route ini agar link "Pesan Sesi" di list tutor tidak error
+Route::get('/profiletutor', [tutorController::class, 'profile'])->name('profiletutor');
+
+Route::get('/profiletutor', [PageController::class, 'profile'])->name('profiletutor');

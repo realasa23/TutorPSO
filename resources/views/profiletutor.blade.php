@@ -1,4 +1,7 @@
-//Harya Raditya Handoyo 5026231176
+{{--
+    Nama: Harya Raditya Handoyo
+    NRP: 5026231176
+--}}
 
 @extends('layout.Mobile-View')
 
