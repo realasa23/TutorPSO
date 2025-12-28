@@ -7,26 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Review extends Model
 {
-    use HasFactory;
+    protected $table = 'review';
+    protected $primaryKey = 'idreview';
 
-    protected $table = 'review';        
-    protected $primaryKey = 'idreview'; 
-
-    public $incrementing = false;       
-    protected $keyType = 'string';      
-    public $timestamps = false;         
+    public $incrementing = true;
+    protected $keyType = 'int';
+    public $timestamps = false;
 
     protected $fillable = [
-        'idreview',      
-        'idpesanan',     
-        'rating', 
-        'tagpenilaian', 
-        'komentar', 
+        'idpesanan',
+        'rating',
+        'tagpenilaian',
+        'komentar',
         'tanggalreview'
     ];
 
     public function pesanan()
     {
-        return $this->belongsTo(Pesanan::class, 'idpesanan');
+        return $this->belongsTo(Pesanan::class, 'idpesanan', 'idpesanan');
     }
 }

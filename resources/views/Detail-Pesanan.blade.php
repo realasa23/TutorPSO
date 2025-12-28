@@ -28,7 +28,7 @@
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            margin-top: -5px;
+            margin-top: 0px;
             z-index: 5;
             position: relative;
         }
@@ -50,7 +50,7 @@
         }
 
         .card-detail-sesi {
-            background-image: url('{{ asset('detailSesi.png') }}');
+            background-image: url('{{ asset('card-detail-orange.png') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -82,8 +82,9 @@
         }
 
         .profile-img {
+            background: #fff;
             width: 100px;
-            height: 110px;
+            height: 100px;
             object-fit: cover;
             border-radius: 10px;
             margin-right: 15px;
@@ -110,7 +111,7 @@
         }
 
         .order-box {
-            background-image: url('{{ asset('order.png') }}');
+            background-image: url('{{ asset('card-detail-lilac.png') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -122,12 +123,12 @@
         }
 
         .pembayaran {
-            padding: 20px;
+            padding: 16px;
             margin-bottom: 20px;
         }
 
         .border {
-            margin-top: 10px;
+            margin-top: 20px;
             margin-bottom: 10px;
         }
 
@@ -143,27 +144,29 @@
         .total-title,
         .total-price {
             font-size: 22px;
-            font-weight: bold;
+            font-weight: 600;
             margin: 0;
             white-space: nowrap;
 
         }
 
         .full-width-btn {
+            margin-top: 5px;
             display: block;
             width: 100%;
             background-color: #343446 !important;
             color: white !important;
-            padding: 14px 0;
-            border-radius: 14px;
+            padding: 12px 0;
+            border-radius: 16px;
             text-align: center;
             text-decoration: none;
         }
 
         .order-button {
-            font-weight: 500 !important;
+            font-weight: 600 !important;
             color: white !important;
             margin: 0;
+            font-size: 18px;
         }
 
         .full-width-btn:hover {
@@ -186,18 +189,13 @@
     </div>
 
     <div class="content-container">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text fw-bold detail-label">Detail</span>
-        </div>
-
         <div class="card-detail-sesi">
             <div class="d-flex align-items-center card-content-wrapper">
                 <img src="{{ asset($sesi->tutor->fototutor) }}" class="profile-img full-height-img" alt="Foto Profil">
                 <div>
-                    <h4 class="nama-tutor fw-semibold m-0">{{ $sesi->tutor->nama }}</h4>
-                    <p class="nama-matkul m-0">{{ $sesi->matakuliah->namamatkul }}</p>
-                    <span class="rating-star">★ </span> 4.9
-                    <p class="harga m-0">{{ $sesi->harga }}</p>
+                    <h5 class="nama-tutor fw-semibold m-0">{{ $sesi->tutor->nama }}</h5>
+                    <p class="nama-matkul m-0">{{ $sesi->namaSesi }}</p>
+                    <span class="rating-star">★ </span> {{ $sesi->tutor->ratingtutor }}
                 </div>
             </div>
         </div>
@@ -242,7 +240,7 @@
             <form action="{{ route('pesanan.store.regular') }}" method="POST">
                 @csrf
                 <button type="submit" class="btn w-100 full-width-btn">
-                    <h5 class="order-button my-0">Pesan Sesi</h5>
+                    <p class="order-button my-0">Pesan Sesi</p>
                 </button>
             </form>
         </div>
@@ -251,7 +249,7 @@
             <form action="{{ route('pesanan.store.trial') }}" method="POST">
                 @csrf
                 <button type="submit" class="btn w-100 full-width-btn">
-                    <h5 class="order-button my-0">Gunakan Trial</h5>
+                    <p class="order-button my-0">Gunakan Trial</p>
                 </button>
             </form>
         </div>

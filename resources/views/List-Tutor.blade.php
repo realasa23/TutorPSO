@@ -1,7 +1,26 @@
+{{-- 
+    Tutor List Page
+    Nama: Harya Raditya Handoyo
+    NRP: 5026231176
+--}}
+
 @extends('layout.Mobile-View')
 
 @section('page-style')
     <style>
+        :root {
+            --card-h: 132px;
+            --radius-xl: 18px;
+            --dark-text: #1A2B4B;
+
+            --orange-1: #ffd2a6;
+            --orange-2: #ffb778;
+            --pink-1: #ffc7d6;
+            --pink-2: #ff9fb7;
+            --indigo-1: #cfd6ff;
+            --indigo-2: #aeb9ff;
+        }
+
         .header-bg {
             padding-top: 30px;
             padding-bottom: 1rem;
@@ -13,7 +32,7 @@
         .page-title {
             font-weight: bold;
             margin: 0;
-            font-size: 20px;
+            font-size: 24px;
         }
 
         .btn-back-icon {
@@ -22,7 +41,7 @@
 
         .content-container {
             flex: 1;
-            padding: 14px;
+            padding: 20px;
             background: white;
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;
@@ -32,34 +51,39 @@
             position: relative;
         }
 
-        .sesi-card {
+        .tutor-card {
+            position: relative;
             height: 120px;
             border-radius: 16px;
             padding: 14px;
             background-size: cover;
             background-position: center;
+            background-repeat: no-repeat;
+            overflow: hidden;
+
             display: flex;
             align-items: center;
             gap: 14px;
-            overflow: hidden;
         }
 
-        .sc-orange {
+        /* BACKGROUND IMAGE */
+        .tc-orange {
             background-image: url('{{ asset('card-detail-orange.png') }}');
             color: #7a3600;
         }
 
-        .sc-pink {
+        .tc-pink {
             background-image: url('{{ asset('card-detail-pink.png') }}');
             color: #7e2241;
         }
 
-        .sc-indigo {
+        .tc-indigo {
             background-image: url('{{ asset('card-detail-lilac.png') }}');
             color: #24338b;
         }
 
-        .sc-avatar {
+        /* AVATAR */
+        .tc-avatar {
             width: 86px;
             height: 100%;
             border-radius: 12px;
@@ -71,60 +95,60 @@
             flex-shrink: 0;
         }
 
-        .sc-avatar img {
+        .tc-avatar img {
             height: 100%;
             width: auto;
             object-fit: cover;
         }
 
-        .sc-content {
+        /* CONTENT KANAN */
+        .tc-content {
             flex: 1;
+            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
-        .sc-name {
+        .tc-name {
             font-weight: 800;
             font-size: 16px;
+            margin-bottom: 2px;
         }
 
-        .sc-role {
-            font-size: 13px;
+        .tc-role {
+            font-size: 14px;
+            font-weight: 500;
             opacity: .9;
         }
 
-        .sc-bottom {
+        /* BOTTOM ROW */
+        .tc-bottom {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
         }
 
-        .sc-rating {
+        .tc-rating {
             font-size: 13px;
             font-weight: 600;
             display: flex;
             align-items: center;
         }
 
-        .sc-rating i {
-            color: #ffffff;
+        .tc-rating i {
+            color: #ffc107;
             margin-right: 4px;
         }
 
-        .btn-order {
-            display: inline-block;
-            padding: .35rem .85rem;
-            background: #ffffff;
-            border-radius: 12px;
-            font-weight: 500;
-            font-size: 12px;
-            color: #1A2B4B;
-            text-decoration: none;
-            border: 1px solid rgba(0, 0, 0, .08);
-            transition: all .2s ease;
+        .btn-detail {
+            background: #fff;
+            border-radius: 999px;
+            padding: .25rem .7rem;
+            font-size: .75rem;
+            font-weight: 600;
+            border: 0;
         }
-
     </style>
 @endsection
 
@@ -135,8 +159,8 @@
                 <button class="btn p-0" onclick="history.back()">
                     <i class="bi bi-chevron-left fs-4 text-dark"></i>
                 </button>
-                <h3 class="page-title"> {{ $matakuliah->namamatkul }}</h3>
-                <div style="width:24px"></div>
+                <h3 class="page-title">Tutor</h3>
+                <div style="width: 24px;"></div>
             </div>
         </div>
     </div>
@@ -145,45 +169,51 @@
         <div class="container">
 
             @php
-                $styles = ['sc-orange', 'sc-pink', 'sc-indigo'];
+                $bgStyles = ['tc-orange', 'tc-pink', 'tc-indigo'];
             @endphp
 
-            @forelse ($sesi as $index => $s)
-                @php $bg = $styles[$index % count($styles)]; @endphp
+            @php
+                $bgStyles = ['tc-orange', 'tc-pink', 'tc-indigo'];
+            @endphp
 
-                <div class="sesi-card {{ $bg }} mb-3">
+            @forelse ($tutor as $index => $t)
+                @php
+                    $bg = $bgStyles[$index % count($bgStyles)];
+                @endphp
 
-                    <a href="{{ url('/tutor/' . $s->idtutor) }}" class="sc-avatar">
-                        <img src="{{ asset($s->fototutor) }}" alt="{{ $s->nama }}">
+                <div class="tutor-card {{ $bg }} mb-3">
+
+                    {{-- AVATAR --}}
+                    <a href="{{ url('/tutor/' . $t->idtutor) }}" class="tc-avatar">
+                        <img src="{{ asset($t->fototutor) }}" alt="{{ $t->nama }}">
                     </a>
 
-                    <div class="sc-content">
+                    {{-- CONTENT --}}
+                    <div class="tc-content">
                         <div>
-                            <div class="sc-name">{{ $s->nama }}</div>
-                            <div class="sc-role">{{ $s->namaSesi }}</div>
-                        </div>
-                        <div class="sc-rating">
-                            <i class="bi bi-star-fill"></i>
-                            {{ number_format($s->ratingtutor, 1) }}
+                            <div class="tc-name">{{ $t->nama }}</div>
+                            <div class="tc-role">{{ $t->pekerjaan }}</div>
                         </div>
 
-                        <div class="sc-bottom">
-                            <span class="fw-bold">
-                                Rp{{ number_format($s->harga, 0, ',', '.') }}
-                            </span>
-                            <a href="{{ route('pesanan.tanggal', $s->idsesi) }}" class="btn-order">
-                                Pesan Sesi
+                        <div class="tc-bottom">
+                            <div class="tc-rating">
+                                <i class="bi bi-star-fill"></i> {{ number_format($t->ratingtutor, 1) }}
+                                ({{ $t->total_review }} ulasan)
+                            </div>
+
+                            <a href="{{ url('/tutor/' . $t->idtutor) }}" class="btn btn-detail">
+                                Detail
                             </a>
                         </div>
                     </div>
 
                 </div>
+
             @empty
                 <div class="text-center text-muted py-5">
-                    Belum ada sesi tersedia
+                    Belum ada tutor tersedia
                 </div>
             @endforelse
-
         </div>
     </main>
 @endsection

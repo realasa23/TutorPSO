@@ -243,7 +243,7 @@
 
         <div class="card">
             <div style="display:flex; align-items:center;">
-                <div class="title">{{ $sesi->matakuliah->namamatkul }}</div>
+                <div class="title">{{ $sesi->namaSesi}}</div>
                 @if ($sesi->tipe == 'online')
                     <div class="badge-online">ONLINE</div>
                 @endif

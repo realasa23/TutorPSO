@@ -1,112 +1,149 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Models\laporanmasalah;
 use App\Models\Refund;
 use App\Models\user; 
 use Illuminate\Support\Facades\DB;
 
+//Michelle Lea Amanda (5026231214)
+//Nailah Adlina (5026231068)
+
 class laporanmasalahController extends Controller
 {
-    public function pageLaporan()
+    public function create($idpesanan)
     {
-        return view('Aktivitas-Lampau-Laporkan'); 
+        $userId = session('user_id');
+        if (!$userId) {
+            return redirect('/login');
+        }
+
+        $pesanan = DB::table('pesanan')
+            ->join('sesi', 'pesanan.idsesi', '=', 'sesi.idsesi')
+            ->join('tutor', 'sesi.idtutor', '=', 'tutor.idtutor')
+            ->where('pesanan.idpesanan', $idpesanan)
+            ->where('pesanan.userid', $userId)
+            ->select(
+                'pesanan.idpesanan',
+                'pesanan.idsesi',
+                'pesanan.tanggal',
+                'pesanan.jam',
+                'sesi.namasesi',
+                'tutor.nama as nama_tutor',
+                'tutor.fototutor'
+            )
+            ->first();
+
+        if (!$pesanan) {
+            abort(404);
+        }
+
+        $sudahLapor = DB::table('laporanmasalah')
+        ->where('userid', $userId)
+        ->where('idsesi', $pesanan->idsesi)
+        ->exists();
+
+        if ($sudahLapor) {
+            return redirect()
+                ->route('history.laporan')
+                ->with('error', 'Anda sudah mengirim laporan untuk sesi ini.');
+        }
+
+        return view('Laporan-Masalah', compact('pesanan'));
     }
 
-    public function detailMasalah(Request $request)
+    public function detailMasalah(Request $request, $idpesanan)
     {
-        $jenisMasalah = $request->query('jenis', 'Masalah Umum');
 
-        return view('Aktivitas-Lampau-Detail-Masalah', compact('jenisMasalah'));
+        $jenisMasalah = $request->query('jenis');
+        $idpesanan = $request->route('idpesanan');
+
+        if (!$jenisMasalah || !$idpesanan) {
+            abort(404);
+        }
+
+        $userId = session('user_id');
+        if (!$userId) {
+            return redirect('/login');
+        }
+
+        $pesanan = DB::table('pesanan')
+            ->join('sesi', 'pesanan.idsesi', '=', 'sesi.idsesi')
+            ->join('tutor', 'sesi.idtutor', '=', 'tutor.idtutor')
+            ->where('pesanan.idpesanan', $idpesanan)
+            ->where('pesanan.userid', $userId)
+            ->select(
+                'pesanan.idpesanan',
+                'pesanan.tanggal',
+                'pesanan.jam',
+                'sesi.namasesi',
+                'tutor.nama as nama_tutor',
+                'tutor.fototutor'
+            )
+            ->first();
+
+        if (!$pesanan) {
+            abort(404);
+        }
+
+        return view('Laporan-Detail-Masalah', compact('pesanan', 'jenisMasalah'));
     }
 
-    public function konfirmasiMasalah(Request $request)
-    {
-        return view('Aktivitas-Lampau-Konfirmasi'); 
-    }
-
-    public function prosesRefund(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
-            'pesanan_id'    => 'required', 
-            'jenis_masalah' => 'required',
-            'deskripsi'     => 'required',
+            'idpesanan' => 'required|integer',
+            'jenis_masalah' => 'required|string',
+            'deskripsi' => 'required|string',
         ]);
 
-        $lastData = laporanmasalah::orderBy('idlaporan', 'desc')->first();
-        $number = $lastData ? intval(substr($lastData->idlaporan, 1)) + 1 : 1;
-        $newId = 'L' . str_pad($number, 2, '0', STR_PAD_LEFT);
-        
-        $userId = 1;
-        if (!DB::table('user')->where('userid', $userId)->exists()) {
-            DB::table('user')->insert([
-                'userid' => $userId, 'username' => 'User Dummy', 'email' => 'dummy@example.com', 'password' => '123', 'nomorhp' => '08123456789'
-            ]);
+        $userId = session('user_id');
+
+        $pesanan = DB::table('pesanan')
+            ->where('idpesanan', $request->idpesanan)
+            ->where('userid', $userId)
+            ->first();
+
+        if (!$pesanan) {
+            abort(403);
         }
 
-        $sesiId = $request->pesanan_id; // ID dari form (valuenya 1)
-        
-        if (!DB::table('sesi')->where('idsesi', $sesiId)->exists()) {
-            
-            if (!DB::table('kategori')->where('idkategori', 1)->exists()) {
-                DB::table('kategori')->insert(['idkategori' => 1, 'namakategori' => 'IT']);
-            }
+        // 🔥 TENTUKAN DULU INI REFUND ATAU BUKAN
+        $isRefund = in_array(
+            $request->jenis_masalah,
+            ['Tutor Tidak Hadir', 'Kesalahan Jadwal']
+        );
 
-            if (!DB::table('matakuliah')->where('idmatkul', 1)->exists()) {
-                DB::table('matakuliah')->insert([
-                    'idmatkul' => 1, 'idkategori' => 1, 'namamatkul' => 'Pemrograman Dasar'
-                ]);
-            }
-
-            if (!DB::table('tutor')->where('idtutor', 1)->exists()) {
-                DB::table('tutor')->insert([
-                    'idtutor' => 1, 'nama' => 'Tutor Dummy', 'pekerjaan' => 'Dosen', 'deskripsi' => '-', 'ratingtutor' => 5
-                ]);
-            }
-
-            DB::table('sesi')->insert([
-                'idsesi' => $sesiId,
-                'idmatkul' => 1,
-                'idtutor' => 1,
-                'harga' => 50000,
-                'tanggal' => now(),
-                'jam' => now(),
-                'filemateri' => '-',
-                'zoomtutor' => '-',
-                'rekamankelas' => '-'
-            ]);
-        }
-
-        laporanmasalah::create([
-            'idlaporan'        => $newId, 
-            'userid'           => $userId,
-            'idsesi'           => $sesiId,
-            'kategorimasalah'  => $request->jenis_masalah,
-            'deskripsimasalah' => $request->deskripsi,
-            'statuslaporan'    => 'Pending',
+        // INSERT LAPORAN
+        $idlaporan = DB::table('laporanmasalah')->insertGetId([
+            'userid'            => $userId,
+            'idsesi'            => $pesanan->idsesi,
+            'kategorimasalah'   => $request->jenis_masalah,
+            'deskripsimasalah'  => $request->deskripsi,
+            'statuslaporan'     => $isRefund
+                ? 'Refund_Diajukan'
+                : 'Laporan_Diterima',
         ]);
 
-
-        $kategoriRefund = ['Tutor Tidak Hadir', 'Kesalahan Jadwal'];
-
-        if (in_array($request->jenis_masalah, $kategoriRefund)) {
-            
-            $lastRefund = \App\Models\Refund::orderBy('idrefund', 'desc')->first();
-            $numRef = $lastRefund ? intval(substr($lastRefund->idrefund, 1)) + 1 : 1;
-            $newRefundId = 'R' . str_pad($numRef, 2, '0', STR_PAD_LEFT);
-
-            \App\Models\Refund::create([
-                'idrefund'           => $newRefundId, 
-                'idlaporan'          => $newId,
-                'statusrefund'       => 'Diproses',
-                'jumlahpengembalian' => 50000
+        // INSERT REFUND JIKA PERLU
+        if ($isRefund) {
+            DB::table('refund')->insert([
+                'idlaporan'          => $idlaporan,
+                'statusrefund'       => 'Berhasil', // sesuai flow kamu
+                'jumlahpengembalian' => $pesanan->biaya,
             ]);
-            
-            return redirect()->route('refund.sukses');
         }
-        return redirect()->route('laporan.sukses');
+
+        return redirect()
+        ->route('laporan.selesai')
+        ->with('type', $isRefund ? 'refund' : 'laporan');
     }
-    public function laporanSukses() { return view('Aktivitas-Lampau-Pilih masalah-Laporan Berhasil'); }
+
+
+    public function laporanSukses(Request $request)
+    {
+        return view('Laporan-Berhasil', [
+            'type' => session('type') // ⬅️ AMBIL DARI SESSION
+        ]);
+    }
 }

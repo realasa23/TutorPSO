@@ -1,32 +1,37 @@
 <style>
     .bottom-nav {
+        bottom: 0;
+        left: 0;
         width: 100%;
         display: flex;
         justify-content: center;
-        padding-top: 20px;
-        padding-bottom: 20px;
-        background: rgb(255, 255, 255);
+        padding-top: 0px;
+        padding-bottom: 25px;
+        background-color: #fff;
+        z-index: 100;
     }
+
 
     .bottom-nav-inner {
         background: #AFC2FF;
         width: 350px;
-        height: 55px; /* sesuai permintaan */
+        height: 50px;
         padding: 10px;
         border-radius: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 50px; /* spacing antar icon dibuat lebih rata */
+        gap: 50px;
+        box-shadow: 0 -4px 10px rgba(30, 40, 80, 0.1);
     }
+
 
     .nav-item {
         text-decoration: none;
-        color: white;
         text-align: center;
         font-size: 13px;
         font-weight: 500;
-        line-height: 1.2;
+        line-height: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -34,9 +39,8 @@
     }
 
     .nav-item img {
-        width: 28px;
-        height: 28px;
-        filter: brightness(0) invert(1);
+        width: 24px;
+        height: 24px;
         margin-bottom: 4px;
     }
 </style>
@@ -44,7 +48,7 @@
 <div class="bottom-nav">
     <div class="bottom-nav-inner">
 
-        <a href="/beranda" class="nav-item">
+        <a href="/home" class="nav-item">
             <img src="{{ asset('icons/home.png') }}" alt="Beranda">
         </a>
 
@@ -52,7 +56,7 @@
             <img src="{{ asset('icons/activity.png') }}" alt="Aktivitas">
         </a>
 
-        <a href="/profil" class="nav-item">
+        <a href="/profile" class="nav-item">
             <img src="{{ asset('icons/profile.png') }}" alt="Profil">
         </a>
 

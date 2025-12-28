@@ -273,8 +273,8 @@
     </div>
 
     <div class="p-3 bg-white">
-        <button id="joinSessionBtn" class="btn w-100 full-width-btn fw-bold">
-            <h5 class=join-button my-0>Gabung Sesi</h5>
+        <button id="joinSessionBtn" class="btn w-100 full-width-btn fw-semibold">
+            <h6 class=join-button my-0>Gabung Sesi</h6>
         </button>
     </div>
 

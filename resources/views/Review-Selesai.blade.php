@@ -92,9 +92,10 @@
             Terimakasih Atas<br>Tanggapan mu
         </p>
 
-        <a href="{{ route('aktivitas.lampau') }}" class="w-100 text-decoration-none">
-            <button class="btn-selesai">Selesai</button>
-        </a>
+        <a href="{{ route('aktivitas', ['tab' => 'lampau']) }}" class="w-100 text-decoration-none">
+    <button class="btn-selesai">Selesai</button>
+</a>
+
     </div>
 
 @endsection

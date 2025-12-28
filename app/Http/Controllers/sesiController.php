@@ -7,74 +7,65 @@ use App\Models\Sesi;
 use App\Models\Pesanan;
 
 //Nailah Adlina - 5026231068
-class SesiController extends Controller
+
+class sesiController extends Controller
 {
-    public function detailAkanDatang()
+
+    public function listSesi($idmatkul)
     {
-        // 1. Asumsi data sesi diambil dari database
-        //    (Di sini kita menggunakan data dummy/statis)
-        $sesi = [
-            'pengajar' => 'Khalila',
-            'materi' => 'Dasar Pemrograman',
-            'rating' => 4.9,
-            'harga' => 50000,
-            'pertemuan' => 'Pertemuan 1 Object Oriented Programming',
-            'tanggal' => '4 Agustus 2024',
-            'waktu' => '16.00-16.50 WIB',
-            'deskripsi' => 'OOP Java (Object-Oriented Programming in Java) adalah paradigma pemrograman yang menggunakan konsep objek dan kelas untuk merancang dan membangun program.',
-            // 'materi_file' => '/path/to/materi.pdf', // Contoh link unduhan
-        ];
-        return view('DetailSesi-AkanDatang', compact('sesi'));
+        $matakuliah = DB::table('matakuliah')
+            ->where('idmatkul', $idmatkul)
+            ->first();
+
+        $sesi = DB::table('sesi as s')
+            ->join('tutor as t', 't.idtutor', '=', 's.idtutor')
+            ->join('matakuliah as m', 'm.idmatkul', '=', 's.idmatkul')
+            ->leftJoin('pesanan as p', 'p.idsesi', '=', 's.idsesi')
+            ->leftJoin('review as r', 'r.idpesanan', '=', 'p.idpesanan')
+            ->where('s.idmatkul', $idmatkul)
+            ->select(
+                's.idsesi',
+                's.namaSesi',
+                's.tanggal',
+                's.jam',
+                's.harga',
+                'm.namamatkul',
+                't.idtutor',
+                't.nama',
+                't.fototutor',
+                't.pekerjaan',
+                DB::raw('COALESCE(AVG(r.rating),0) as ratingtutor'),
+            )
+            ->groupBy(
+                's.idsesi',
+                's.namaSesi',
+                's.tanggal',
+                's.jam',
+                's.harga',
+                'm.namamatkul',
+                't.idtutor',
+                't.nama',
+                't.fototutor',
+                't.pekerjaan'
+            )
+            ->orderBy('s.tanggal', 'asc')
+            ->get();
+
+        return view('List-SesiTutor', compact('matakuliah', 'sesi'));
     }
 
-    public function detailBerlangsung()
-    {
-        $sesi = [
-            'pengajar' => 'Khalila',
-            'materi' => 'Dasar Pemrograman',
-            'rating' => 4.9,
-            'harga' => 50000,
-            'pertemuan' => 'Pertemuan 1 Object Oriented Programming',
-            'tanggal' => '4 Agustus 2024',
-            'waktu' => '16.00-16.50 WIB',
-            'deskripsi' => 'OOP Java (Object-Oriented Programming in Java) adalah paradigma pemrograman yang menggunakan konsep objek dan kelas untuk merancang dan membangun program.',
-    ];
-
-    return view('DetailSesi-Berlangsung', compact('sesi'));
-    }
-
-    public function detailLampau()
-    {
-        $sesi = [
-            'pengajar' => 'Khalila',
-            'materi' => 'Dasar Pemrograman',
-            'rating' => 4.9,
-            'harga' => 50000,
-            'pertemuan' => 'Pertemuan 1 Object Oriented Programming',
-            'tanggal' => '4 Agustus 2024',
-            'waktu' => '16.00-16.50 WIB',
-            'deskripsi' => 'OOP Java (Object-Oriented Programming in Java) adalah paradigma pemrograman yang menggunakan konsep objek dan kelas untuk merancang dan membangun program.',
-    ];
-
-    return view('DetailSesi-Lampau', compact('sesi'));
-    }
-
-    
 
     public function pesanSesi($idsesi)
     {
-        // Ambil data Sesi yang dipilih, eager load Tutor dan Matakuliah-nya.
         $sesi = Sesi::with(['tutor', 'matakuliah'])
             ->where('idsesi', $idsesi)
             ->firstOrFail();
 
-        // Simpan ID sesi yang dipilih ke SESSION untuk digunakan pada langkah pemesanan berikutnya
         session(['idsesi' => $idsesi]);
 
         $bookedDates = Pesanan::where('idsesi', $idsesi)
                       ->pluck('tanggal')
                       ->toArray();
-
 
         return view('Pemilihan-Tanggal', compact('sesi', 'bookedDates'));
     }
@@ -87,15 +78,13 @@ class SesiController extends Controller
         ]);
 
         session(['tanggal_pesanan' => $request->tanggal]);
-
         $idsesi = $request->route('idsesi');
-
         return redirect()->route('pesanan.jam', ['idsesi' => $idsesi]);
     }
 
     public function pilihJam($idsesi)
     {
-        $tanggal = session('tanggal_pesanan'); // ambil dari session
+        $tanggal = session('tanggal_pesanan');
 
         if (!$tanggal) {
             return redirect()->route('pesanan.tanggal', $idsesi)
@@ -103,7 +92,7 @@ class SesiController extends Controller
         }
 
         $sesi = Sesi::findOrFail($idsesi);
-        
+    
         $jamTerbooking = Pesanan::where('idsesi', $idsesi)
                         ->where('tanggal', $tanggal)
                         ->pluck('jam')
@@ -112,8 +101,6 @@ class SesiController extends Controller
         return view('Pemilihan-Jam', compact('sesi', 'tanggal', 'jamTerbooking'));
     }
 
-
-
     public function pilihJamStore(Request $request)
     {
         $request->validate([
@@ -121,9 +108,7 @@ class SesiController extends Controller
         ]);
 
         session(['jam_pesanan' => $request->jam]);
-
         $idsesi = session('idsesi'); // ← ambil dari session
-
         return redirect()->route('pesanan.detail', ['idsesi' => $idsesi]);
     }
 

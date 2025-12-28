@@ -2,7 +2,6 @@
 
 @section('page-style')
     <style>
-        /* --- Layout Base --- */
         .mobile-container {
             background-image: url('{{ asset('Background Review.png') }}');
             background-size: cover;
@@ -10,7 +9,6 @@
             padding: 0;
         }
 
-        /* --- Header --- */
         .header-nav {
             padding: 40px 20px 7px 25px;
             display: flex;
@@ -24,7 +22,6 @@
             padding: 0;
         }
 
-        /* --- Profile Image Section --- */
         .profile-section {
             display: flex;
             flex-direction: column;
@@ -40,31 +37,29 @@
             position: absolute;
             width: 170px;
             height: 170px;
-            background-image: url('{{ asset('foto tutor - circle.png') }}');
-            background-size: contain;
-            background-repeat: no-repeat;
+            border-radius: 50%;
+            background-size: cover;
             background-position: center;
-            z-index: 1;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            background-repeat: no-repeat;
+            border: 5px solid #FFB7C5;
+            z-index: 2;
         }
 
-        /* --- Text & Rating --- */
         .content-section {
             display: flex;
             flex-direction: column;
             align-items: center;
+            margin-top: 20px;
             padding: 0 25px;
         }
 
         .title-text {
             font-family: 'Poppins', sans-serif;
-            font-weight: 800;
-            font-size: 22px;
+            font-weight: 700;
+            font-size: 20px;
             color: #212529;
-            margin-top: 15px;
-            margin-bottom: 5px;
+            margin-top: 20px;
+            margin-bottom: 10px;
             text-align: center;
         }
 
@@ -74,7 +69,7 @@
             color: #6c757d;
             text-align: center;
             line-height: 1.4;
-            margin-bottom: 2px;
+            margin-bottom: 10px;
         }
 
         .star-container {
@@ -82,7 +77,6 @@
             margin-bottom: 10px;
         }
 
-        /* Styling Gambar Bintang */
         .star-img {
             width: 50px;
             height: 50px;
@@ -101,7 +95,6 @@
             margin-bottom: 10px;
         }
 
-        /* --- Tags --- */
         .tags-wrapper {
             display: flex;
             flex-wrap: wrap;
@@ -119,32 +112,27 @@
             font-weight: 600;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border: 1px solid #B1BCF1;
-            white-space: nowrap;
-            cursor: pointer; 
-            transition: background-color 0.2s ease;
+            cursor: pointer;
+            transition: all .2s ease;
         }
 
         .tag-pill:hover {
-            background-color: #8E9DDB; 
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); 
+            background-color: #8E9DDB;
+            transform: translateY(-2px);
         }
 
-        .tag-pill:active {
+        .tag-pill.active {
+            background-color: #8E9DDB;
             transform: scale(0.95);
-            background-color: #7F92E6;
         }
 
-        /* --- Form & Buttons --- */
+
         .form-area {
             width: 100%;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
             padding-bottom: 30px;
         }
 
-        .custom-textarea {
+        .comment-box {
             border-radius: 20px;
             border: none;
             padding: 15px;
@@ -156,171 +144,158 @@
             width: 100%;
         }
 
-        .custom-textarea:focus {
-            outline: none;
-        }
-
-        /* Tombol KIRIM */
         .btn-kirim {
             background-color: #312E49;
             color: white;
             border: none;
             border-radius: 12px;
             padding: 14px;
-            font-weight: 700;
+            font-weight: 600;
+            font-size: 18px;
             width: 100%;
             margin-bottom: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease; 
         }
 
-        .btn-kirim:hover {
-            background-color: #403D58; 
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 12px rgba(49, 46, 73, 0.3); 
-        }
-
-        .btn-kirim:active {
-            transform: scale(0.98); 
-        }
-
-        /* Tombol LAPORKAN */
         .btn-lapor {
             background-color: #FF8E72;
             color: white;
             border: none;
             border-radius: 12px;
             padding: 14px;
-            font-weight: 700;
+            font-weight: 600;
+            font-size: 18px;
             width: 100%;
-            font-size: 14px;
-            display: block;
             text-align: center;
             text-decoration: none;
-            cursor: pointer;
-            transition: all 0.2s ease; 
+            display: block;
         }
-
-        .btn-lapor:hover {
-            background-color: #E67E65; 
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(255, 142, 114, 0.3);
-            color: white; 
-        }
-
-        .btn-lapor:active {
-            transform: scale(0.98);
-        }
-
-        
     </style>
 @endsection
 
 @section('content')
+    <div class="mobile-container">
 
-    <div class="header-nav">
-        <button class="btn-back" onclick="history.back()">
-            <i class="bi bi-chevron-left fs-3" style="color: #333;"></i>
-        </button>
-    </div>
-
-    <div class="profile-section">
-        <div class="circle-asset"></div>
-    </div>
-
-    <div class="content-section">
-        <h2 class="title-text">Ayo Ulas Tutor-mu</h2>
-        <p class="subtitle-text">Bagaimana sesi-mu? Bagikan pengalamanmu kepada dunia</p>
-
-        <div class="star-container" id="starContainer">
-            <img src="{{ asset('star rating-grey.png') }}" class="star-img" data-value="1">
-            <img src="{{ asset('star rating-grey.png') }}" class="star-img" data-value="2">
-            <img src="{{ asset('star rating-grey.png') }}" class="star-img" data-value="3">
-            <img src="{{ asset('star rating-grey.png') }}" class="star-img" data-value="4">
-            <img src="{{ asset('star rating-grey.png') }}" class="star-img" data-value="5">
+        {{-- HEADER --}}
+        <div class="header-nav">
+            <button class="btn-back" onclick="history.back()">
+                <i class="bi bi-chevron-left fs-3" style="color:#333;"></i>
+            </button>
         </div>
 
-        <p class="label-small">Tentang Tutor-mu...</p>
-
-        <div class="tags-wrapper">
-            <span class="tag-pill">Tepat Waktu</span>
-            <span class="tag-pill">Ramah</span>
-            <span class="tag-pill">Berwawasan Luas</span>
-            <span class="tag-pill">Mudah Dipahami</span>
-            <span class="tag-pill">Sopan</span>
-            <span class="tag-pill">Materi Jelas</span>
+        {{-- FOTO TUTOR --}}
+        <div class="profile-section">
+            <div class="circle-asset" style="background-image: url('{{ asset($pesanan->fototutor) }}');">
+            </div>
         </div>
 
-        <div class="form-area">
-            <form action="{{ route('review.store') }}" method="POST" style="width: 100%;">
-                @csrf <input type="hidden" name="rating" id="ratingValue" value="0">
-                
-                <input type="hidden" name="tagpenilaian" id="tagValue" value="">
+        {{-- CONTENT --}}
+        <div class="content-section">
+            <h2 class="title-text">Ayo Ulas Sesi Tutormu</h2>
+            <p class="subtitle-text">
+                Bagaimana sesimu bersama <strong>{{ $pesanan->nama_tutor }}</strong>?
+                Bagikan pengalamanmu dengan kami!
+            </p>
 
-                <textarea name="ulasan" id="reviewText" class="custom-textarea" placeholder="Beritahu kami lebih..."></textarea>
+            {{-- STAR RATING --}}
+            <div class="star-container">
+                @for ($i = 1; $i <= 5; $i++)
+                    <img src="{{ asset('star rating-grey.png') }}" class="star-img" data-value="{{ $i }}">
+                @endfor
+            </div>
 
-                <button type="submit" class="btn-kirim">KIRIM</button>
+            <p class="label-small">Tentang Tutormu...</p>
 
-                <a href="{{ route('laporan.index') }}" class="btn-lapor">
-                    LAPORKAN TUTOR
-                </a>
-            </form>
+            {{-- TAG --}}
+            <div class="tags-wrapper">
+                @foreach (['Tepat Waktu', 'Ramah', 'Berwawasan Luas', 'Mudah Dipahami', 'Sopan', 'Materi Jelas'] as $tag)
+                    <span class="tag-pill">{{ $tag }}</span>
+                @endforeach
+            </div>
+
+            {{-- FORM --}}
+            <div class="form-area">
+                <form action="{{ route('review.store') }}" method="POST">
+                    @csrf
+
+                    <input type="hidden" name="idpesanan" value="{{ $pesanan->idpesanan }}">
+
+                    <input type="hidden" name="rating" id="ratingValue">
+
+                    <input type="hidden" name="tagpenilaian" id="tagValue">
+
+                    <textarea name="komentar" class="comment-box" placeholder="Beritahu kami lebih..."></textarea>
+
+                    <button type="submit" class="btn-kirim"> KIRIM </button>
+                </form>
+
+                {{-- <a href="{{ route('laporan.create', $idpesanan) }}">
+                    <button type="button" class="btn-report">
+                        LAPORKAN TUTOR
+                    </button>
+                </a> --}}
+            </div>
         </div>
     </div>
 
+    {{-- SCRIPT --}}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            
+        document.addEventListener('DOMContentLoaded', () => {
+
+            /* ================= STAR RATING ================= */
             const stars = document.querySelectorAll('.star-img');
             const ratingInput = document.getElementById('ratingValue');
-            const yellowStarUrl = "{{ asset('star rating-yellow.png') }}";
-            const greyStarUrl = "{{ asset('star rating-grey.png') }}";
+            const yellowStar = "{{ asset('star rating-yellow.png') }}";
+            const greyStar = "{{ asset('star rating-grey.png') }}";
 
             stars.forEach(star => {
-                star.addEventListener('click', function() {
-                    const value = parseInt(this.getAttribute('data-value'));
+                star.addEventListener('click', () => {
+                    const value = parseInt(star.dataset.value);
                     ratingInput.value = value;
-                    updateStars(value);
+
+                    stars.forEach(s => {
+                        s.src = parseInt(s.dataset.value) <= value ?
+                            yellowStar :
+                            greyStar;
+                    });
                 });
             });
 
-            function updateStars(rating) {
-                stars.forEach(star => {
-                    const starVal = parseInt(star.getAttribute('data-value'));
-                    if (starVal <= rating) {
-                        star.src = yellowStarUrl;
-                    } else {
-                        star.src = greyStarUrl;
-                    }
-                });
-            }
+            /* ================= VALIDASI SUBMIT ================= */
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(e) {
+                if (!ratingInput.value || parseInt(ratingInput.value) < 1) {
+                    e.preventDefault();
+                    alert('Silakan pilih rating terlebih dahulu ⭐');
+                }
+            });
 
+            /* ================= TAG PILL ================= */
             const pills = document.querySelectorAll('.tag-pill');
-            const textArea = document.getElementById('reviewText');
             const tagInput = document.getElementById('tagValue');
-            
-            let selectedTags = []; 
+            const textArea = document.querySelector('textarea[name="komentar"]');
+
+            let selectedTags = [];
+
             pills.forEach(pill => {
-                pill.addEventListener('click', function() {
-                    const text = this.innerText; 
-                    let currentVal = textArea.value;
+                pill.addEventListener('click', () => {
+                    const text = pill.innerText;
 
-                    this.style.backgroundColor = '#8E9DDB'; 
-                    setTimeout(() => { this.style.backgroundColor = '#B1BCF1'; }, 200);
+                    pill.classList.toggle('active');
 
-                    if (currentVal.trim() === "") {
-                        textArea.value = text;
-                    } else if (!currentVal.includes(text)) { 
-                        textArea.value = currentVal + ", " + text;
-                    }
-
-                    if (!selectedTags.includes(text)) {
+                    if (selectedTags.includes(text)) {
+                        selectedTags = selectedTags.filter(t => t !== text);
+                    } else {
                         selectedTags.push(text);
-                        tagInput.value = selectedTags.join(',');
                     }
+
+                    // hidden input (buat DB)
+                    tagInput.value = selectedTags.join(',');
+
+                    // textarea (visual feedback)
+                    textArea.value = selectedTags.join(', ');
                 });
             });
+
         });
     </script>
-
 @endsection
