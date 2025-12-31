@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function home()
     {
-        $user = DB::table('users')
+        $user = DB::table('user')
             ->where('userid', session('user_id'))
             ->first();
 
@@ -60,7 +60,7 @@ class UserController extends Controller
             return redirect('/login');
         }
 
-        $user = DB::table('users')->where('userid', $userId)->first();
+        $user = DB::table('user')->where('userid', $userId)->first();
         return view('Profile', compact('user'));
     }
 
@@ -92,7 +92,7 @@ class UserController extends Controller
             $dataUpdate['fotoprofil'] = 'storage/' . $path;
         }
 
-        DB::table('users')
+        DB::table('user')
             ->where('userid', $userId)
             ->update($dataUpdate);
 

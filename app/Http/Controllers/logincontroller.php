@@ -31,7 +31,7 @@ class logincontroller extends Controller
             'password' => 'required'
         ]);
 
-        $users = DB::table('users')->where('email', $validated['email'])->first();
+        $users = DB::table('user')->where('email', $validated['email'])->first();
 
         if ($users && Hash::check($validated['password'], $users->password)) {
             session(['user_id' => $users->userid,'user_email' => $users->email]);
@@ -45,18 +45,18 @@ class logincontroller extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
+            'email' => 'required|email|unique:user',
             'password' => 'required|min:6|confirmed',
             'phone' => 'required|string'
         ]);
 
-        $exists = DB::table('users')->where('email', $validated['email'])->exists();
+        $exists = DB::table('user')->where('email', $validated['email'])->exists();
 
         if ($exists) {
             return back()->withErrors(['email' => 'Email already registered'])->withInput();
         }
 
-        DB::table('users')->insert([
+        DB::table('user')->insert([
             'username' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),

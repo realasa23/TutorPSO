@@ -67,7 +67,7 @@ class tutorController extends Controller
 
         $reviews = DB::table('review as r')
             ->join('pesanan as p', 'p.idpesanan', '=', 'r.idpesanan')
-            ->join('users as u', 'u.userid', '=', 'p.userid')
+            ->join('user as u', 'u.userid', '=', 'p.userid')
             ->join('sesi as s', 's.idsesi', '=', 'p.idsesi')
             ->where('s.idtutor', $id)
             ->select(

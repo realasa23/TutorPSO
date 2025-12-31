@@ -24,7 +24,7 @@ class pesananController extends Controller
             return redirect()->back()->with('error', 'Data pesanan tidak lengkap. Silakan ulangi pemesanan.');
         }
 
-        $user = DB::table('users')->where('userid', $userId)->first();
+        $user = DB::table('user')->where('userid', $userId)->first();
         $sesi = Sesi::findOrFail($idsesi);
 
         Pesanan::create([
@@ -46,7 +46,7 @@ class pesananController extends Controller
         $tanggal  = session('tanggal_pesanan');
         $jam      = session('jam_pesanan');
         $userId = session('user_id');
-        $user = DB::table('users')->where('userid', $userId)->first();
+        $user = DB::table('user')->where('userid', $userId)->first();
 
         if (!$idsesi || !$tanggal || !$jam) {
             return redirect()->back()->with('error', 'Data pesanan tidak lengkap. Silakan ulangi pemesanan.');
@@ -60,7 +60,7 @@ class pesananController extends Controller
 
         DB::transaction(function () use ($user, $idsesi, $tanggal, $jam) {
 
-        DB::table('users')
+        DB::table('user')
             ->where('userid', $user->userid)
             ->update([
                 'kuotatrial' => $user->kuotatrial - 1
