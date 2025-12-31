@@ -520,7 +520,8 @@
                         @php
                             $bgClass = $index % 3 == 0 ? 'rec-orange' : ($index % 3 == 1 ? 'rec-lilac' : 'rec-pink');
                         @endphp
-                        <div class="rec-card {{ $bgClass }}">
+                        <article class="rec-card {{ $bgClass }}"
+                            onclick="location.href='{{ route('profiletutor', $t->idtutor) }}'" style="cursor:pointer">
                             <div class="rec-image">
                                 <img src="{{ asset($t->fototutor) }}" alt="{{ $t->nama }}">
                             </div>
@@ -532,7 +533,7 @@
                                     {{ number_format($t->ratingtutor, 1) }}
                                 </div>
                             </div>
-                        </div>
+                        </article>
                     @endforeach
                 </div>
             </div>

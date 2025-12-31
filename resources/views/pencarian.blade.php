@@ -208,6 +208,9 @@
                                 } elseif ($item->type === 'Tutor') {
                                     $url = route('profiletutor', $item->id);
                                 }
+                                elseif ($item->type === 'Sesi Tutor') {
+                                    $url = route('pesanan.tanggal', $item->id);
+                                }
                             @endphp
 
                             <a href="{{ $url }}" class="text-decoration-none">

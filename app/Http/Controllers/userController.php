@@ -163,7 +163,7 @@ class UserController extends Controller
             )
             ->get()
             ->map(function ($item) {
-                $item->type = 'Sesi';
+                $item->type = 'Sesi Tutor';
                 $item->subtitle = 'Sesi Tutor';
                 $item->icon = 'bi-calendar-event';
                 $item->theme = 'indigo';
