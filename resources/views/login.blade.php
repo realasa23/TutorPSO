@@ -1,6 +1,5 @@
 {{-- Peter Christian Erastus - 5026231138 --}}
 @extends('layout.Mobile-View')
-
 @section('page-style')
     <style>
         h1 {
@@ -62,11 +61,8 @@
 @endsection
 
 @section('content')
-
     <div class="container">
-
         <h1>Login</h1>
-
         @if (session('success'))
             <div class="success">{{ session('success') }}</div>
         @endif
@@ -83,7 +79,6 @@
 
         <form action="/login" method="POST" class="form">
             @csrf
-
             <h2>Email <span style="color:#F94931">*</span></h2>
             <input class="input" type="email" name="email" placeholder="Email" value="{{ old('email') }}" required>
 
@@ -98,5 +93,4 @@
             </div>
         </form>
     </div>
-
 @endsection

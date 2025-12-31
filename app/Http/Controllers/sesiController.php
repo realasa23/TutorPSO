@@ -26,8 +26,6 @@ class sesiController extends Controller
             ->select(
                 's.idsesi',
                 's.namaSesi',
-                's.tanggal',
-                's.jam',
                 's.harga',
                 'm.namamatkul',
                 't.idtutor',
@@ -39,8 +37,6 @@ class sesiController extends Controller
             ->groupBy(
                 's.idsesi',
                 's.namaSesi',
-                's.tanggal',
-                's.jam',
                 's.harga',
                 'm.namamatkul',
                 't.idtutor',
@@ -48,7 +44,7 @@ class sesiController extends Controller
                 't.fototutor',
                 't.pekerjaan'
             )
-            ->orderBy('s.tanggal', 'asc')
+            ->orderBy('ratingtutor', 'asc')
             ->get();
 
         return view('List-SesiTutor', compact('matakuliah', 'sesi'));
@@ -87,19 +83,27 @@ class sesiController extends Controller
         $tanggal = session('tanggal_pesanan');
 
         if (!$tanggal) {
-            return redirect()->route('pesanan.tanggal', $idsesi)
-                            ->with('error', 'Silakan pilih tanggal terlebih dahulu.');
+            return redirect()
+                ->route('pesanan.tanggal', $idsesi)
+                ->with('error', 'Silakan pilih tanggal terlebih dahulu.');
         }
 
         $sesi = Sesi::findOrFail($idsesi);
-    
-        $jamTerbooking = Pesanan::where('idsesi', $idsesi)
-                        ->where('tanggal', $tanggal)
-                        ->pluck('jam')
-                        ->toArray();
+        $idTutor = $sesi->idtutor;
 
-        return view('Pemilihan-Jam', compact('sesi', 'tanggal', 'jamTerbooking'));
+        $jamTerbooking = Pesanan::join('sesi', 'pesanan.idsesi', '=', 'sesi.idsesi')
+            ->where('sesi.idtutor', $idTutor)
+            ->where('pesanan.tanggal', $tanggal)
+            ->pluck('pesanan.jam')
+            ->toArray();
+
+        return view('Pemilihan-Jam', compact(
+            'sesi',
+            'tanggal',
+            'jamTerbooking'
+        ));
     }
+
 
     public function pilihJamStore(Request $request)
     {

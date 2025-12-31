@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 //Nailah Adlina - 5026231068
-//Mirna Irawan (5026221192)
+//Mirna Irawan - 5026221192
 
 class pesananController extends Controller
 {
@@ -27,17 +27,14 @@ class pesananController extends Controller
         $user = DB::table('users')->where('userid', $userId)->first();
         $sesi = Sesi::findOrFail($idsesi);
 
-        $status = $this->tentukanStatusTanggal($tanggal, $jam);
-
         Pesanan::create([
             'idsesi'           => $idsesi,
             'userid'           => $user->userid, 
             'tanggal'          => $tanggal,
             'jam'              => $jam,
-            'harga'            => $sesi->harga,
+            'biaya'            => $sesi->harga,
             'istrial'          => false,
             'statuspembayaran' => 'berhasil',
-            'status'           => $status,
         ]);
 
         return view ('Konfirmasi-Pesanan');
@@ -60,9 +57,8 @@ class pesananController extends Controller
         }
 
         $sesi = Sesi::findOrFail($idsesi);
-        $status = $this->tentukanStatusTanggal($tanggal, $jam);
 
-        DB::transaction(function () use ($user, $idsesi, $tanggal, $jam, $status) {
+        DB::transaction(function () use ($user, $idsesi, $tanggal, $jam) {
 
         DB::table('users')
             ->where('userid', $user->userid)
@@ -75,45 +71,60 @@ class pesananController extends Controller
             'userid'           => $user->userid,
             'tanggal'          => $tanggal,
             'jam'              => $jam,
-            'harga'            => 0,
+            'biaya'            => 0,
             'istrial'          => true,
             'statuspembayaran' => 'free',
-            'status'           => $status,
         ]);
     });
 
          return view ('Konfirmasi-Trial');
     }
 
-    private function tentukanStatusTanggal($tanggal, $jam, $durasi = 50)
+    private function tentukanStatusTanggal($tanggal, $jam, $durasi = 50, $waktuSelesai = null)
     {
+        if ($waktuSelesai) {
+            return 'lampau';
+        }
+
         $jamMulai = explode('-', $jam)[0];
-        $jamMulai = trim($jamMulai);       // jaga-jaga spasi
-        $jamMulai = str_replace('.', ':', $jamMulai); // 12.00 → 12:00
+        $jamMulai = trim(str_replace('.', ':', $jamMulai));
 
         $startAsli = Carbon::createFromFormat('Y-m-d H:i', "$tanggal $jamMulai");
         $start = $startAsli->copy()->subMinutes(5);
         $end = $startAsli->copy()->addMinutes($durasi);
         $now = Carbon::now();
 
-        if ($now->lt($start)) {
-            return 'akan-datang';
-        }
-
-        if ($now->between($start, $end)) {
-            return 'berlangsung';
-        }
-
+        if ($now->lt($start)) return 'akan-datang';
+        if ($now->between($start, $end)) return 'berlangsung';
         return 'lampau';
     }
 
-     public function gabungSesi(){
-        return view ('Sesi-Berlangsung');
+
+    public function gabungSesi($idpesanan)
+    {
+        $userId = session('user_id');
+
+        $pesanan = DB::table('pesanan')
+            ->where('idpesanan', $idpesanan)
+            ->where('userid', $userId)
+            ->first();
+
+        if (!$pesanan) abort(404);
+
+        return view('Sesi-Berlangsung', compact('pesanan'));
     }
 
-    public function endCall(){
-        return view ('Sesi-Selesai');
+    public function endCall($idpesanan)
+    {
+        DB::table('pesanan')
+            ->where('idpesanan', $idpesanan)
+            ->update([
+                'waktu_selesai' => now()
+            ]);
+
+        return redirect()->route('aktivitas', ['tab' => 'lampau']);
     }
+
 
     public function aktivitas(Request $request)
     {
@@ -134,6 +145,7 @@ class pesananController extends Controller
                 'pesanan.tanggal',
                 'pesanan.jam',
                 'pesanan.statuspembayaran',
+                'pesanan.waktu_selesai',
                 'sesi.idsesi',
                 'sesi.namaSesi',
                 'sesi.harga',
@@ -141,21 +153,34 @@ class pesananController extends Controller
                 'sesi.rekamankelas',
                 'tutor.nama as nama_tutor',
                 'tutor.fototutor',
-                'tutor.ratingtutor',
                 'matakuliah.namamatkul'
             )
-            ->orderBy('pesanan.tanggal')
-            ->orderBy('pesanan.jam')
             ->get();
 
         $sesi = $pesanan->filter(function ($p) use ($tab) {
-            $statusRealtime = $this->tentukanStatusTanggal($p->tanggal, $p->jam);
-            $p->status_realtime = $statusRealtime;
-            return $statusRealtime === $tab;
+            $p->status_realtime = $this->tentukanStatusTanggal(
+                $p->tanggal,
+                $p->jam,
+                50,
+                $p->waktu_selesai
+            );
+            return $p->status_realtime === $tab;
+        });
 
-        })->values();
+        if ($tab === 'akan-datang') {
+            $sesi = $sesi->sortBy(function ($p) {
+                return $p->tanggal . ' ' . $p->jam;
+            });
+        } elseif ($tab === 'lampau') {
+            $sesi = $sesi->sortByDesc(function ($p) {
+                return $p->tanggal . ' ' . $p->jam;
+            });
+        }
 
-        return view('Aktivitas', compact('sesi', 'tab'));
+        return view('Aktivitas', [
+            'sesi' => $sesi->values(),
+            'tab'  => $tab
+        ]);
     }
 
     public function detail($idpesanan)
@@ -175,7 +200,7 @@ class pesananController extends Controller
                 'pesanan.idpesanan',
                 'pesanan.tanggal as tanggal_pesanan',
                 'pesanan.jam as jam_pesanan',
-                'pesanan.status',
+                'pesanan.biaya as biaya',
                 'sesi.namaSesi',
                 'sesi.harga',
                 'sesi.filemateri',
@@ -183,7 +208,6 @@ class pesananController extends Controller
                 'sesi.deskripsi',
                 'tutor.nama as nama_tutor',
                 'tutor.fototutor',
-                'tutor.ratingtutor',
                 'matakuliah.namamatkul'
             )
             ->first();

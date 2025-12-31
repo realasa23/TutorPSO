@@ -1,6 +1,5 @@
 {{-- Peter Christian Erastus - 5026231138 --}}
 @extends('layout.Mobile-View')
-
 @section('page-style')
 <style>
     h1 {
@@ -107,7 +106,6 @@
             <a href="/login" style="text-decoration:none; color:#566CD8;">Login</a>
         </div>
     </form>
-
 </div>
 
 @endsection

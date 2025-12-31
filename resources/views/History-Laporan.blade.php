@@ -1,5 +1,5 @@
+{{-- Michelle Lea Amanda - 5026231214  --}}
 @extends('layout.Mobile-View')
-
 @section('page-style')
     <style>
         .header-bg {
@@ -136,8 +136,10 @@
                     </p>
 
                     @php
-                        $start = \Carbon\Carbon::parse($item->jam);
-                        $end = $start->copy()->addMinutes(50);
+                        [$jamMulai, $jamSelesai] = explode('-', $item->jam);
+
+                        $start = \Carbon\Carbon::createFromFormat('H.i', $jamMulai);
+                        $end = \Carbon\Carbon::createFromFormat('H.i', $jamSelesai);
                     @endphp
 
                     <p class="text">

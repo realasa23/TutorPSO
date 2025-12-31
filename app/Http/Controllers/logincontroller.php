@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-//Peter Christian Erastus (5026231138)
+//Peter Christian Erastus - 5026231138
 
 class logincontroller extends Controller
 {

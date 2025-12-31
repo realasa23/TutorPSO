@@ -1,3 +1,4 @@
+{{-- Nailah Adlina - 5026231068 --}}
 @extends ('layout.Mobile-View')
 @section('page-style')
     <style>
@@ -11,7 +12,6 @@
             position: relative;
             width: 100%;
             height: 100vh;
-            /* Full layar */
             overflow: hidden;
         }
 
@@ -19,13 +19,11 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* Foto penuh layar */
         }
 
         .button-row {
             position: absolute;
             bottom: 30px;
-            /* Margin bottom 30 px */
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -62,13 +60,11 @@
             <button class="img-btn">
                 <img src="/icons/sharescreen.png" alt="">
             </button>
-            <a href="/berlangsung/end-call">
+            <a href="{{ route('sesi.end-call', $pesanan->idpesanan) }}">
                 <button class="img-btn">
-                    <img src="/icons/endcall.png" alt="">
+                    <img src="/icons/endcall.png" alt="End Call">
                 </button>
             </a>
         </div>
     </div>
-
-
 @endsection

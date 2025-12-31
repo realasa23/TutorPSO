@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-//Michelle Lea Amanda (5026231214)
-//Nailah Adlina (5026231068)
+//Michelle Lea Amanda - 5026231214
+//Nailah Adlina - 5026231068
 
 class refundController extends Controller
 {
@@ -18,7 +18,8 @@ class refundController extends Controller
         }
 
         $laporan = DB::table('laporanmasalah')
-            ->join('sesi', 'laporanmasalah.idsesi', '=', 'sesi.idsesi')
+            ->join('pesanan', 'laporanmasalah.idpesanan', '=', 'pesanan.idpesanan')
+            ->join('sesi', 'pesanan.idsesi', '=', 'sesi.idsesi')
             ->join('tutor', 'sesi.idtutor', '=', 'tutor.idtutor')
             ->leftJoin('refund', 'laporanmasalah.idlaporan', '=', 'refund.idlaporan')
             ->where('laporanmasalah.userid', $userId)
@@ -26,11 +27,14 @@ class refundController extends Controller
                 'laporanmasalah.idlaporan',
                 'laporanmasalah.kategorimasalah',
                 'laporanmasalah.statuslaporan',
+
                 'tutor.nama as nama_tutor',
                 'tutor.fototutor',
+
                 'sesi.namasesi',
-                'sesi.tanggal',
-                'sesi.jam',
+                'pesanan.tanggal',
+                'pesanan.jam',
+
                 'refund.statusrefund',
                 'refund.jumlahpengembalian'
             )
@@ -40,12 +44,13 @@ class refundController extends Controller
         return view('History-Laporan', compact('laporan'));
     }
 
+
     public function refundSelesai($idlaporan)
     {
         $userId = session('user_id');
 
         $data = DB::table('laporanmasalah')
-            ->join('sesi', 'laporanmasalah.idsesi', '=', 'sesi.idsesi')
+            ->join('pesanan', 'laporanmasalah.idpesanan', '=', 'pesanan.idpesanan')
             ->leftJoin('refund', 'refund.idlaporan', '=', 'laporanmasalah.idlaporan')
             ->where('laporanmasalah.idlaporan', $idlaporan)
             ->where('laporanmasalah.userid', $userId)
@@ -53,7 +58,7 @@ class refundController extends Controller
                 'laporanmasalah.idlaporan',
                 'refund.idrefund',
                 'refund.statusrefund',
-                'sesi.harga as harga_sesi'
+                'pesanan.biaya as harga_sesi'
             )
             ->first();
 

@@ -1,12 +1,7 @@
-{{--
-    Nama: Harya Raditya Handoyo
-    NRP: 5026231176
---}}
+{{-- Harya Raditya Handoyo - 5026231176 --}}
 
 @extends('layout.Mobile-View')
-
 @section('title', 'Tutor App – Home')
-
 @section('page-style')
     <style>
         :root {
@@ -78,7 +73,6 @@
 
         }
 
-        /* CSS Kartu (dari 'pencarian') */
         .cat-card {
             border-radius: 16px;
             position: relative;
@@ -183,38 +177,40 @@
         </div>
 
         <div class="content-container">
-            @php
-                $iconMap = [
-                    'Teknologi Informasi' => ['icon' => 'bi-book', 'color' => 'text-warning'],
-                    'Software Development' => ['icon' => 'bi-code-slash', 'color' => 'text-primary'],
-                    'UI & UX Design' => ['icon' => 'bi-palette', 'color' => 'text-danger'],
-                    'Data & Algoritma' => ['icon' => 'bi-diagram-3', 'color' => 'text-warning'],
-                    'Sistem Informasi' => ['icon' => 'bi-database', 'color' => 'text-primary'],
-                    'Manajemen Proyek' => ['icon' => 'bi-kanban', 'color' => 'text-danger'],
-                ];
-
-                $cardStyles = ['cat-orange', 'cat-indigo', 'cat-pink'];
-            @endphp
-
             <div class="row g-3 row-cols-2">
                 @foreach ($kategori as $index => $kat)
                     @php
-                        $style = $cardStyles[$index % count($cardStyles)];
-                        $iconData = $iconMap[$kat->namakategori] ?? [
-                            'icon' => 'bi-book',
-                            'color' => 'text-secondary',
+                        $styles = [
+                            [
+                                'card' => 'cat-orange',
+                                'icon' => 'bi-database',
+                                'iconColor' => 'text-warning',
+                            ],
+                            [
+                                'card' => 'cat-indigo',
+                                'icon' => 'bi-window-sidebar',
+                                'iconColor' => 'text-primary',
+                            ],
+                            [
+                                'card' => 'cat-pink',
+                                'icon' => 'bi-code-slash',
+                                'iconColor' => 'text-danger',
+                            ],
                         ];
+
+                        $style = $styles[$index % count($styles)];
                     @endphp
 
+
                     <div class="col">
-                        <article class="cat-card {{ $style }}"
-                            onclick="location.href='{{ url('/kategori/' . $kat->idkategori . '/materi') }}'"
-                            style="cursor:pointer">
+                        <article class="cat-card {{ $style['card'] }}"
+                            onclick="location.href='{{ route('materi', $kat->idkategori) }}'" style="cursor:pointer">
+
                             <div class="cat-decor"></div>
                             <span class="cat-notch"></span>
 
                             <div class="cat-icon">
-                                <i class="bi {{ $iconData['icon'] }} {{ $iconData['color'] }}"></i>
+                                <i class="bi {{ $style['icon'] }} {{ $style['iconColor'] }}"></i>
                             </div>
 
                             <div>

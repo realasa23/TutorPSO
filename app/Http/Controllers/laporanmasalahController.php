@@ -6,7 +6,7 @@ use App\Models\Refund;
 use App\Models\user; 
 use Illuminate\Support\Facades\DB;
 
-//Michelle Lea Amanda (5026231214)
+//Michelle Lea Amanda - 5026231214
 //Nailah Adlina (5026231068)
 
 class laporanmasalahController extends Controller
@@ -39,14 +39,14 @@ class laporanmasalahController extends Controller
         }
 
         $sudahLapor = DB::table('laporanmasalah')
-        ->where('userid', $userId)
-        ->where('idsesi', $pesanan->idsesi)
+        ->where('idpesanan', $pesanan->idpesanan)
         ->exists();
+
 
         if ($sudahLapor) {
             return redirect()
                 ->route('history.laporan')
-                ->with('error', 'Anda sudah mengirim laporan untuk sesi ini.');
+                ->with('error', 'Anda sudah mengirim laporan untuk ini.');
         }
 
         return view('Laporan-Masalah', compact('pesanan'));
@@ -108,16 +108,14 @@ class laporanmasalahController extends Controller
             abort(403);
         }
 
-        // 🔥 TENTUKAN DULU INI REFUND ATAU BUKAN
         $isRefund = in_array(
             $request->jenis_masalah,
             ['Tutor Tidak Hadir', 'Kesalahan Jadwal']
         );
 
-        // INSERT LAPORAN
         $idlaporan = DB::table('laporanmasalah')->insertGetId([
             'userid'            => $userId,
-            'idsesi'            => $pesanan->idsesi,
+            'idpesanan'         => $pesanan->idpesanan,
             'kategorimasalah'   => $request->jenis_masalah,
             'deskripsimasalah'  => $request->deskripsi,
             'statuslaporan'     => $isRefund
@@ -125,11 +123,10 @@ class laporanmasalahController extends Controller
                 : 'Laporan_Diterima',
         ]);
 
-        // INSERT REFUND JIKA PERLU
         if ($isRefund) {
             DB::table('refund')->insert([
                 'idlaporan'          => $idlaporan,
-                'statusrefund'       => 'Berhasil', // sesuai flow kamu
+                'statusrefund'       => 'Diproses',
                 'jumlahpengembalian' => $pesanan->biaya,
             ]);
         }
@@ -143,7 +140,7 @@ class laporanmasalahController extends Controller
     public function laporanSukses(Request $request)
     {
         return view('Laporan-Berhasil', [
-            'type' => session('type') // ⬅️ AMBIL DARI SESSION
+            'type' => session('type')
         ]);
     }
 }

@@ -1,6 +1,5 @@
 {{-- Nailah Adlina - 5026231068 --}}
 @extends('layout.Mobile-View')
-
 @section('page-style')
     <style>
         .header-bg {
@@ -8,7 +7,6 @@
             position: relative;
             top: 0;
         }
-
 
         .container {
             width: 100%;
@@ -236,7 +234,6 @@
         </div>
 
         <div class="top-bar"> </div>
-
         <div class="teacher-photo">
             <img src="{{ asset($sesi->tutor->fototutor) }}">
         </div>
@@ -252,14 +249,12 @@
 
             <div class="name">{{ $sesi->tutor->nama }}</div>
 
-            {{-- MONTH TITLE --}}
             <div class="month-title">
                 <button id="prevMonth">‹</button>
                 <span id="monthLabel">August, 2025</span>
                 <button id="nextMonth">›</button>
             </div>
 
-            {{-- KALENDER --}}
             <table class="calendar">
                 <thead>
                     <tr>
@@ -282,28 +277,21 @@
                 <input type="hidden" id="selected-date" name="tanggal">
                 <button id="tombol-konfirmasi" class="btn-konfirmasi">KONFIRMASI</button>
             </form>
-
-
         </div>
     </div>
 
     <script>
         const bookedDates = @json($bookedDates);
-
         document.addEventListener('DOMContentLoaded', function() {
-
             const calendarBody = document.getElementById('calendar-body');
             const monthLabel = document.getElementById('monthLabel');
             const confirmButton = document.getElementById('tombol-konfirmasi');
             const prevBtn = document.getElementById('prevMonth');
             const nextBtn = document.getElementById('nextMonth');
 
-            // -----------------------------
-            //  DEFAULT MULAI HARI INI
-            // -----------------------------
             const today = new Date();
             let tahun = today.getFullYear();
-            let bulan = today.getMonth(); // 0-based index
+            let bulan = today.getMonth();
 
             const namaBulan = [
                 "January", "February", "March", "April", "May", "June",
@@ -338,16 +326,10 @@
                                 `${tahun}-${String(bulan + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
                             const currentDate = new Date(fullDate);
 
-                            // -----------------------------
-                            // DISABLE JIKA < HARI INI
-                            // -----------------------------
                             if (currentDate < new Date(today.toDateString())) {
                                 td.classList.add("disabled");
                             }
 
-                            // -----------------------------
-                            // DISABLE TANGGAL FULL BOOKED
-                            // -----------------------------
                             if (bookedDates.includes(fullDate)) {
                                 td.classList.add("highlight");
                                 td.classList.add("disabled");
@@ -363,7 +345,6 @@
                 }
             }
 
-            // ---- NAVIGATE PREV MONTH ----
             prevBtn.addEventListener('click', function() {
                 bulan--;
                 if (bulan < 0) {
@@ -375,7 +356,6 @@
                 confirmButton.classList.remove('show');
             });
 
-            // ---- NAVIGATE NEXT MONTH ----
             nextBtn.addEventListener('click', function() {
                 bulan++;
                 if (bulan > 11) {
@@ -387,7 +367,6 @@
                 confirmButton.classList.remove('show');
             });
 
-            // ---- SELECT DATE ----
             calendarBody.addEventListener('click', function(event) {
                 const cell = event.target;
 
@@ -404,7 +383,6 @@
                 }
             });
 
-            // ---- KONFIRMASI ----
             confirmButton.addEventListener('click', function(event) {
                 event.preventDefault();
 
@@ -414,10 +392,7 @@
                     const fullDate =
                         `${tahun}-${String(bulan + 1).padStart(2,'0')}-${String(tanggal).padStart(2,'0')}`;
 
-                    // simpan ke hidden input
                     document.getElementById('selected-date').value = fullDate;
-
-                    // submit form
                     document.getElementById('form-tanggal').submit();
                 }
             });

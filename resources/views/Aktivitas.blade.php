@@ -1,5 +1,5 @@
+{{-- Mirna Irawan - 5026221192 --}}
 @extends('layout.Mobile-View')
-
 @section('page-style')
     <style>
         .header-bg {
@@ -15,6 +15,7 @@
             margin: 0;
             font-size: 24px;
         }
+        
         .content-container {
             flex: 1;
             padding: 20px;
@@ -47,7 +48,6 @@
             margin-bottom: 20px;
         }
 
-        /* === Warna default (outline) === */
         .tab.akan-datang {
             border-color: #ffcfac;
             color: #ffcfac;
@@ -169,7 +169,6 @@
             position: absolute;
             bottom: 18px;
             right: 172px;
-            /* geser kiri sedikit supaya sejajar dengan tombol detail */
             padding: 6px 12px;
             background: white;
             border: none;
@@ -184,7 +183,6 @@
             position: absolute;
             bottom: 18px;
             right: 95px;
-            /* geser kiri sedikit supaya sejajar dengan tombol detail */
             padding: 6px 12px;
             background: white;
             border: none;
@@ -210,8 +208,6 @@
     </div>
 
     <div class="content-container">
-
-        {{-- TABS --}}
         <div class="tabs">
             <a href="{{ route('aktivitas', ['tab' => 'akan-datang']) }}"
                 class="tab akan-datang {{ $tab === 'akan-datang' ? 'active' : '' }}">
@@ -229,7 +225,6 @@
             </a>
         </div>
 
-        {{-- CARD LIST --}}
         @forelse ($sesi as $s)
             @php
                 $colorClass = match ($loop->index % 3) {
@@ -255,40 +250,32 @@
                 </div>
 
                 <div class="row">
-                    {{-- AKAN DATANG --}}
                     @if ($s->status_realtime === 'akan-datang')
                         <a href="{{ route('aktivitas.detail', $s->idpesanan) }}">
                             <button class="btn-detail">Detail</button>
                         </a>
 
-                        {{-- BERLANGSUNG --}}
                     @elseif ($s->status_realtime === 'berlangsung')
                         <a href="{{ route('aktivitas.detail', $s->idpesanan) }}">
                             <button class="btn-detail">Detail</button>
                         </a>
-
                         <a href="{{ route('sesi.berlangsung', $s->idpesanan) }}">
                             <button class="btn-gabung">Gabung Sesi</button>
                         </a>
 
-                        {{-- LAMPAU --}}
                     @elseif ($s->status_realtime === 'lampau')
                         <a href="{{ route('aktivitas.detail', $s->idpesanan) }}">
                             <button class="btn-detail">Detail</button>
                         </a>
-
                         <a href="{{ route('review.create', $s->idpesanan) }}">
                             <button class="btn-ulas">Ulas</button>
                         </a>
-
                         <a href="{{ route('laporan.create', $s->idpesanan) }}">
                             <button class="btn-refund">Refund</button>
                         </a>
                     @endif
 
                 </div>
-
-
             </div>
         @empty
             <div class="text-center text-muted mt-5">

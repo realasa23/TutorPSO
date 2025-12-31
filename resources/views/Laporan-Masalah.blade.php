@@ -1,5 +1,5 @@
+{{-- Michelle Lea Amanda - 5026231214 --}}
 @extends('layout.Mobile-View')
-
 @section('page-style')
     <style>
         .header-area {
@@ -126,7 +126,6 @@
             background-size: 100% 100%;
             background-repeat: no-repeat;
             background-position: center;
-
             transition: all 0.2s ease-in-out;
             position: relative;
         }
@@ -137,42 +136,33 @@
 
         .btn-img:hover {
             transform: translateY(-2px);
-            /* Naik sedikit saat hover */
             filter: brightness(1.05);
-            /* Sedikit lebih terang */
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
-
 
         .btn-bg-orange {
             background-image: url('{{ asset('btn masalah-orange.png') }}');
             color: #D65609;
-            /* Teks Coklat */
-
         }
 
         .btn-bg-blue {
             background-image: url('{{ asset('btn masalah-blue.png.png') }}');
             color: #4566A1;
-            /* Teks Biru Tua */
         }
 
         .btn-bg-pink {
             background-image: url('{{ asset('btn masalah-pink.png.png') }}');
             color: #FF687F;
-            /* Teks Merah Muda Tua */
         }
 
         .btn-bg-purple {
             background-image: url('{{ asset('btn masalah-purple.png.png') }}');
             color: #915CAE;
-            /* Teks Ungu Tua */
         }
 
         .btn-bg-grey {
             background-image: url('{{ asset('btn masalah-grey.png') }}');
             color: #9D9D9D;
-            /* Teks Abu Tua */
         }
 
         .btn-bg-lilac {
@@ -195,9 +185,7 @@
                 <button class="btn-back" onclick="history.back()">
                     <i class="bi bi-chevron-left fs-4" style="color: #333;"></i>
                 </button>
-
                 <h3 class="page-title">Laporan</h3>
-
                 <div style="width: 24px;"></div>
             </div>
         </div>
@@ -220,47 +208,15 @@
 
     <div class="content-container">
         <p class="section-label">Pilih Masalahmu</p>
-
-        <a href="{{ route('laporan.detail', [
-            'idpesanan' => $pesanan->idpesanan,
-            'jenis' => 'Tutor Tidak Hadir',
-        ]) }}"
-            class="btn-img btn-bg-orange">
-            Tutor Tidak Hadir
-        </a>
-
-        <a href="{{ route('laporan.detail', [
-            'idpesanan' => $pesanan->idpesanan,
-            'jenis' => 'Kesalahan Jadwal',
-        ]) }}"
-            class="btn-img btn-bg-blue">
-            Kesalahan Jadwal
-        </a>
-
-        <a href="{{ route('laporan.detail', [
-            'idpesanan' => $pesanan->idpesanan,
-            'jenis' => 'Materi Tidak Sesuai',
-        ]) }}"
-            class="btn-img btn-bg-pink">
-            Materi Tidak Sesuai
-        </a>
-
-        <a href="{{ route('laporan.detail', [
-            'idpesanan' => $pesanan->idpesanan,
-            'jenis' => 'Masalah Teknis',
-        ]) }}"
-            class="btn-img btn-bg-purple">
-            Masalah Teknis
-        </a>
-
-        <a href="{{ route('laporan.detail', [
-            'idpesanan' => $pesanan->idpesanan,
-            'jenis' => 'Lainnya',
-        ]) }}"
-            class="btn-img btn-bg-grey">
-            Lainnya
-        </a>
-
-
+        <a href="{{ route('laporan.detail', ['idpesanan' => $pesanan->idpesanan, 'jenis' => 'Tutor Tidak Hadir']) }}"
+            class="btn-img btn-bg-orange">Tutor Tidak Hadir</a>
+        <a href="{{ route('laporan.detail', ['idpesanan' => $pesanan->idpesanan, 'jenis' => 'Kesalahan Jadwal']) }}"
+            class="btn-img btn-bg-blue">Kesalahan Jadwal</a>
+        <a href="{{ route('laporan.detail', ['idpesanan' => $pesanan->idpesanan, 'jenis' => 'Materi Tidak Sesuai']) }}"
+            class="btn-img btn-bg-pink">Materi Tidak Sesuai</a>
+        <a href="{{ route('laporan.detail', ['idpesanan' => $pesanan->idpesanan, 'jenis' => 'Masalah Teknis']) }}"
+            class="btn-img btn-bg-purple">Masalah Teknis</a>
+        <a href="{{ route('laporan.detail', ['idpesanan' => $pesanan->idpesanan, 'jenis' => 'Lainnya']) }}"
+            class="btn-img btn-bg-grey">Lainnya</a>
     </div>
 @endsection

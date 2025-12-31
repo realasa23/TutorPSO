@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-//Nailah Adlina (5026231068)
+//Nailah Adlina - 5026231068
 
 class matakuliahController extends Controller
 {

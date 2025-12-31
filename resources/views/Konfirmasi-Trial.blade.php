@@ -1,3 +1,4 @@
+{{-- Nailah A --}}
 @extends ('layout.Mobile-View')
 @section('page-style')
 <style>
@@ -51,7 +52,6 @@
 @endsection
 
 @section('content')
-
 <div class="notif-wrapper">
     <div class="notif-card">
         <div class="notif-text">Sesi Trial kelas berhasil dipesan</div>
@@ -61,5 +61,4 @@
 
     </div>
 </div>
-
 @endsection

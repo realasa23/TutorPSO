@@ -1,5 +1,5 @@
+{{-- Nailah Adlina - 5026231068 --}}
 @extends('layout.Mobile-View')
-
 @section('page-style')
     <style>
         .header-bg {
@@ -124,7 +124,6 @@
             border: 1px solid rgba(0, 0, 0, .08);
             transition: all .2s ease;
         }
-
     </style>
 @endsection
 
@@ -143,20 +142,16 @@
 
     <main class="content-container">
         <div class="container">
-
             @php
                 $styles = ['sc-orange', 'sc-pink', 'sc-indigo'];
             @endphp
 
             @forelse ($sesi as $index => $s)
                 @php $bg = $styles[$index % count($styles)]; @endphp
-
                 <div class="sesi-card {{ $bg }} mb-3">
-
                     <a href="{{ url('/tutor/' . $s->idtutor) }}" class="sc-avatar">
                         <img src="{{ asset($s->fototutor) }}" alt="{{ $s->nama }}">
                     </a>
-
                     <div class="sc-content">
                         <div>
                             <div class="sc-name">{{ $s->nama }}</div>
@@ -176,7 +171,6 @@
                             </a>
                         </div>
                     </div>
-
                 </div>
             @empty
                 <div class="text-center text-muted py-5">

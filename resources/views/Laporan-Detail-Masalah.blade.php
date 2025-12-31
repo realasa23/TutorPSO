@@ -1,5 +1,5 @@
+{{-- Michelle Lea Amanda - 5026231214 --}}
 @extends('layout.Mobile-View')
-
 @section('page-style')
     <style>
         .header-area {
@@ -92,7 +92,6 @@
             color: #A0400B;
         }
 
-        /* ========== CONTENT AREA ========== */
         .content-area {
             flex: 1;
             padding: 20px;
@@ -123,7 +122,6 @@
             text-decoration: none;
         }
 
-        /* ========== PROBLEM BADGE ========== */
         .selected-problem-display {
             padding: 16px;
             text-align: center;
@@ -132,40 +130,31 @@
             margin-bottom: 20px;
         }
 
-        /* warna */
-
         .style-orange {
             background-image: url('{{ asset('btn masalah-orange.png') }}');
             color: #D65609;
-            /* Teks Coklat */
-
         }
 
         .style-blue {
             background-image: url('{{ asset('btn masalah-blue.png.png') }}');
             color: #4566A1;
-            /* Teks Biru Tua */
         }
 
         .style-pink {
             background-image: url('{{ asset('btn masalah-pink.png.png') }}');
             color: #FF687F;
-            /* Teks Merah Muda Tua */
         }
 
         .style-purple {
             background-image: url('{{ asset('btn masalah-purple.png.png') }}');
             color: #915CAE;
-            /* Teks Ungu Tua */
         }
 
         .style-grey {
             background-image: url('{{ asset('btn masalah-grey.png') }}');
             color: #9D9D9D;
-            /* Teks Abu Tua */
         }
 
-        /* ========== FORM ========== */
         .custom-textarea {
             width: 100%;
             min-height: 160px;
@@ -206,7 +195,6 @@
         $styleClass = $map[$jenisMasalah] ?? 'style-blue';
     @endphp
 
-    {{-- HEADER --}}
     <div class="header-area">
         <div class="container-fluid px-4">
             <div class="d-flex align-items-center">
@@ -233,7 +221,6 @@
         </div>
     </div>
 
-    {{-- FORM --}}
     <div class="content-area">
         <form action="{{ route('laporan.store') }}" method="POST">
             @csrf

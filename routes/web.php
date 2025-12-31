@@ -19,12 +19,14 @@ Route::get('/register', [logincontroller::class, 'register']);
 Route::post('/login', [logincontroller::class, 'handleLogin']);
 Route::post('/register', [logincontroller::class, 'handleRegister']);
 Route::get('/home', [UserController::class, 'home'])->name('home');
+Route::get('/search', [UserController::class, 'search'])->name('search');
 
 Route::get('/kategori', [kategoriController::class, 'kategori'])->name('kategori');
 Route::get('/kategori/{id}/materi', [matakuliahController::class, 'materi'])->name('materi');
 Route::get('/materi/{idmatkul}/sesi', [sesiController::class, 'listSesi'])->name('sesi');
 Route::get('/tutor', [tutorController::class, 'recTutor'])->name('tutor');
 Route::get('/tutor/{id}', [tutorController::class, 'profile'])->name('profiletutor');
+Route::get('/tutor/{idtutor}/sesi',[tutorController::class, 'listSesi'])->name('tutor.sesi');
 
 Route::get('/pesan-sesi/{idsesi}', [sesiController::class, 'pesanSesi'])->name('pesanan.tanggal');
 Route::post('/pesan-sesi/{idsesi}', [sesiController::class, 'pilihTanggalStore'])->name('pesanan.tanggal.store');
@@ -33,8 +35,8 @@ Route::post('/pesan-sesi/{idsesi}/jam', [sesiController::class, 'pilihJamStore']
 Route::get('/pesan-sesi/{idsesi}/detail', [sesiController::class, 'lihatDetailPesanan'])->name('pesanan.detail');
 Route::post('/konfirmasi-pesanan',[pesananController::class, 'storeRegular'])->name('pesanan.store.regular');
 Route::post('/konfirmasi-trial',[pesananController::class, 'storeTrial'])->name('pesanan.store.trial');
-Route::get('/gabung-sesi', [pesananController::class, 'gabungSesi'])->name('sesi.berlangsung');
-Route::get('/gabung-sesi/end-call', [pesananController::class, 'endCall'])->name('sesi.selesai');
+Route::get('/gabung-sesi/{idpesanan}',[pesananController::class, 'gabungSesi'])->name('sesi.berlangsung');
+Route::get('/gabung-sesi/{idpesanan}/end-call',[pesananController::class, 'endCall'])->name('sesi.end-call');
 
 Route::get('/aktivitas', [pesananController::class, 'aktivitas'])->name('aktivitas');
 Route::get('/aktivitas/detail/{idpesanan}', [pesananController::class, 'detail'])->name('aktivitas.detail');
@@ -50,53 +52,3 @@ Route::post('/profile/update', [userController::class, 'updateProfile'])->name('
 Route::get('/profile/laporan', [refundController::class, 'processRefund'])->name('history.laporan');
 Route::get('/profile/laporan/{idlaporan}', [refundController::class, 'refundSelesai'])->name('refund.selesai');
 Route::post('/logout', [userController::class, 'logout'])->name('logout');
-
-
-
-
-
-
-
-
-
-
-
-/* =======================
-  HALAMAN UTAMA (Via PageController)
-======================= */
-
-/* =======================
-    Nama: Harya Raditya Handoyo
-    NRP: 5026231176
-======================= */
-
-Route::get('/home', [UserController::class, 'home'])->name('home');
-
-
-/* =======================
-  FITUR PENCARIAN (Via PageController)
-======================= */
-
-/* =======================
-    Nama: Harya Raditya Handoyo
-    NRP: 5026231176
-======================= */
-
-Route::get('/pencarian', [PageController::class, 'search'])
-    ->name('pencarian');
-
-/* =======================
-  HALAMAN KATEGORI (Via PageController)
-======================= */
-
-/* =======================
-    Nama: Harya Raditya Handoyo
-    NRP: 5026231176
-======================= */
-
-
-
-
-
-
-

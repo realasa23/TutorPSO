@@ -31,9 +31,9 @@ class LaporanMasalah extends Model
         return $this->belongsTo(User::class, 'userid');
     }
 
-    public function sesi()
+    public function pesanan()
     {
-        return $this->belongsTo(Sesi::class, 'idsesi');
+        return $this->belongsTo(Pesanan::class, 'idpesanan', 'idpesanan');
     }
 
     public function refund()

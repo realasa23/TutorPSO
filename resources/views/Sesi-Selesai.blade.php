@@ -1,3 +1,4 @@
+{{-- Nailah Adlina - 5026231068 --}}
 @extends ('layout.Mobile-View')
 @section('page-style')
 <style>
@@ -55,11 +56,10 @@
 <div class="notif-wrapper">
     <div class="notif-card">
         <div class="notif-text">Sesi Tutor Telah Selesai</div>
-        <button class="notif-button" onclick="window.location.href='/aktivitas-lampau'">
+        <button class="notif-button" onclick="window.location.href='/aktivitas'">
             Selesai
         </button>
 
     </div>
 </div>
-
 @endsection

@@ -1,11 +1,5 @@
-{{-- 
-    Tutor Profile Page
-    Nama: Harya Raditya Handoyo
-    NRP: 5026231176
---}}
-
+{{-- Harya Raditya Handoyo - 5026231176 --}}
 @extends('layout.Mobile-View')
-
 @section('page-style')
     <style>
         .header-bg {
@@ -26,7 +20,6 @@
             color: #212529 !important;
         }
 
-        /* HEADER PROFILE */
         .profile-header {
             text-align: center;
             padding: 1rem 0;
@@ -103,8 +96,6 @@
             color: #6c757d;
             line-height: 1.6;
         }
-
-        /* REVIEW */
         .review-card {
             display: flex;
             gap: .75rem;
@@ -137,34 +128,31 @@
             font-size: .95rem;
         }
 
-        /* BOTTOM ACTION */
-        .bottom-action-nav {
+        .btn-lihat-sesi {
             position: fixed;
-            bottom: 0;
+            bottom: 50px;
             left: 50%;
+            text-decoration: none;
             transform: translateX(-50%);
-            width: min(393px, 100%);
-            background: #fff;
-            padding: 1rem;
-            padding-bottom: calc(1rem + env(safe-area-inset-bottom));
-            border-top-left-radius: 22px;
-            border-top-right-radius: 22px;
-            box-shadow: 0 -4px 18px rgba(20, 24, 55, .10);
+            width: min(360px, calc(100% - 32px));
+            height: 52px;
             display: flex;
-            gap: .75rem;
-            z-index: 100;
-        }
-
-        .bottom-action-nav .btn {
-            flex: 1;
-            border-radius: 999px;
-            font-weight: 700;
+            align-items: center;
+            justify-content: center;
+            background: #1F2937;
+            color: #ffffff;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            box-shadow: 0 10px 25px rgba(31, 41, 55, 0.25);
+            z-index: 200;
         }
     </style>
 @endsection
 
 @section('content')
-    {{-- APP BAR --}}
     <div class="header-bg">
         <div class="container-fluid px-3">
             <div class="d-flex align-items-center justify-content-between">
@@ -177,7 +165,6 @@
         </div>
     </div>
 
-    {{-- HEADER PROFILE --}}
     <section class="profile-header container">
         <div class="profile-pic">
             <img src="{{ asset($tutor->fototutor) }}" alt="{{ $tutor->nama }}">
@@ -200,7 +187,6 @@
         </div>
     </section>
 
-    {{-- CONTENT --}}
     <div class="surface-profile">
         <section>
             <h2>Deskripsi</h2>
@@ -236,5 +222,10 @@
                 </p>
             @endforelse
         </section>
+    </div>
+    <div class="button sesi">
+        <a href="{{ route('tutor.sesi', $tutor->idtutor) }}" class="btn-lihat-sesi">
+            Lihat Sesi
+        </a>
     </div>
 @endsection

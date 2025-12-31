@@ -1,5 +1,5 @@
+{{-- Nailah Adlina - 5026231068 --}}
 @extends('layout.Mobile-View')
-
 @section('page-style')
     <style>
         .header-bg {
@@ -76,7 +76,7 @@
 
         .nama-matkul {
             color: #D65609;
-            font-size: 16px;
+            font-size: 14px;
         }
 
         .harga {
@@ -95,15 +95,11 @@
             margin: 0;
         }
 
-        /* Kotak Materi Unduhan */
         .download-box {
             background-image: url('{{ asset('materibox.png') }}');
             background-size: cover;
-            /* gambar memenuhi box */
             background-position: center;
-            /* posisi tengah */
             background-repeat: no-repeat;
-            /* jangan diulang */
             border-radius: 10px;
             padding: 1.5rem;
             color: #495057;
@@ -112,20 +108,15 @@
         .play-box {
             background-image: url('{{ asset('playbox.png') }}');
             background-size: cover;
-            /* gambar memenuhi box */
             background-position: center;
-            /* posisi tengah */
             background-repeat: no-repeat;
-            /* jangan diulang */
             border-radius: 10px;
             padding: 1.5rem;
             color: #495057;
         }
 
-        /* Tombol Utama Bawah */
         .full-width-btn {
             background-color: #495057;
-            /* Warna tombol sesuai contoh (abu tua/hitam) */
             color: white;
             padding: 0.75rem 0;
             border-radius: 10px;
@@ -164,7 +155,6 @@
 @endsection
 
 @section('content')
-    {{-- HEADER --}}
     <div class="header-bg">
         <div class="container-fluid px-3">
             <div class="d-flex align-items-center justify-content-between">
@@ -181,17 +171,9 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <span class="title-sesi">Detail</span>
-
-            @if ($pesanan->status === 'akan datang')
-                <span class="badge rounded-pill text-bg-success">Online</span>
-            @elseif ($pesanan->status === 'berlangsung')
-                <span class="badge rounded-pill text-bg-success">Online</span>
-            @elseif ($pesanan->status === 'lampau')
-                <span class="badge rounded-pill text-bg-success">Online</span>
-            @endif
+            <span class="badge rounded-pill text-bg-success">Online</span>
         </div>
 
-        {{-- CARD TUTOR --}}
         <div class="card-detail-sesi mb-4">
             <div class="card-body">
                 <div class="d-flex align-items-center card-content-wrapper">
@@ -199,17 +181,14 @@
                     <div>
                         <p class="nama-tutor m-0">{{ $pesanan->nama_tutor }}</p>
                         <p class="nama-matkul m-0">{{ $pesanan->namamatkul }}</p>
-                        <span class="rating-star">★</span>
-                        {{ number_format($pesanan->ratingtutor, 1) }}
                         <p class="harga m-0">
-                            Rp{{ number_format($pesanan->harga, 0, ',', '.') }}
+                            Rp{{ number_format($pesanan->biaya, 0, ',', '.') }}
                         </p>
                     </div>
                 </div>
             </div>
         </div>
 
-        {{-- JADWAL --}}
         <div class="mb-4">
             <p class="title-sesi">Sesi Tutor</p>
             <p class="text">Topik: {{ $pesanan->namaSesi }}</p>
@@ -220,16 +199,13 @@
                 Pukul: {{ $pesanan->jam_pesanan }} WIB
             </p>
         </div>
-
         <hr>
 
-        {{-- DESKRIPSI --}}
         <div class="mb-4">
             <p class="title-sesi">Deskripsi</p>
             <p class="text">{{ $pesanan->deskripsi }}</p>
         </div>
 
-        {{-- MATERI --}}
         @if ($pesanan->filemateri)
             <div class="download-box d-flex justify-content-between align-items-center mb-3">
                 <span class="fw-bold">Materi {{ $pesanan->namaSesi }}</span>
@@ -239,27 +215,23 @@
             </div>
         @endif
 
-        {{-- REKAMAN SESI (HANYA JIKA LAMPAU) --}}
         @if ($statusRealtime === 'lampau')
             <div class="d-flex justify-content-between align-items-end play-box mb-3">
                 <span class="fw-bold">Rekaman Sesi Tutor</span>
-                <button class="btn btn-lg p-0">
+                <a href="{{ asset($pesanan->rekamankelas) }}" play>
                     <i class="bi bi-play fs-4"></i>
-                </button>
+                </a>
             </div>
         @endif
     </div>
 
-    {{-- BUTTON BAWAH --}}
     <div class="p-3 bg-white">
-
-        {{-- AKAN DATANG --}}
         @if ($statusRealtime === 'akan-datang')
             <button id="joinSessionBtn" class="btn w-100 full-width-btn fw-bold">
                 Gabung Sesi
             </button>
         @elseif ($statusRealtime === 'berlangsung')
-            <a href="{{ route('sesi.berlangsung', $pesanan->idsesi) }}"
+            <a href="{{ route('sesi.berlangsung', $pesanan->idpesanan) }}"
                 class="btn w-100 full-width-btn fw-bold text-white text-center">
                 Gabung Sesi
             </a>
@@ -269,10 +241,8 @@
                 Ulas Sesi
             </a>
         @endif
-
     </div>
 
-    {{-- OVERLAY BELUM DIMULAI --}}
     <div id="sessionOverlay" class="overlay-dark d-none align-items-center justify-content-center">
         <div class="card-overlay text-center">
             <h5 class="title mb-2">Sesi Anda<br>belum dimulai</h5>

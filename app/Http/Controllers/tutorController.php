@@ -6,7 +6,7 @@ use App\Models\Tutor;
 use App\Models\Matakuliah;
 use Illuminate\Support\Facades\DB;
 
-//
+//Harya Raditya Handoyo - 5026231176
 //Nailah Adlina (5026231068)
 
 class tutorController extends Controller
@@ -33,7 +33,6 @@ class tutorController extends Controller
             )
             ->orderByDesc('ratingtutor')
             ->orderByDesc('total_review')
-            ->limit(10)
             ->get();
 
         return view('List-Tutor', compact('tutor'));
@@ -81,5 +80,28 @@ class tutorController extends Controller
             ->get();
 
         return view('Profile-Tutor', compact('tutor', 'reviews'));
+    }
+
+    public function listSesi($idtutor)
+    {
+        $tutor = DB::table('tutor')
+            ->where('idtutor', $idtutor)
+            ->first();
+
+        if (!$tutor) abort(404);
+
+        // ambil semua sesi milik tutor
+        $sesi = DB::table('sesi')
+            ->join('matakuliah', 'sesi.idmatkul', '=', 'matakuliah.idmatkul')
+            ->where('sesi.idtutor', $idtutor)
+            ->select(
+                'sesi.idsesi',
+                'sesi.namaSesi',
+                'sesi.harga',
+                'matakuliah.namamatkul'
+            )
+            ->get();
+
+        return view('Daftar-Sesi-Tutor', compact('tutor', 'sesi'));
     }
 }

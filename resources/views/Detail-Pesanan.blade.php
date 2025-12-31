@@ -195,7 +195,6 @@
                 <div>
                     <h5 class="nama-tutor fw-semibold m-0">{{ $sesi->tutor->nama }}</h5>
                     <p class="nama-matkul m-0">{{ $sesi->namaSesi }}</p>
-                    <span class="rating-star">★ </span> {{ $sesi->tutor->ratingtutor }}
                 </div>
             </div>
         </div>

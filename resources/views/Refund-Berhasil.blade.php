@@ -1,5 +1,5 @@
+{{-- Miche --}}
 @extends('layout.Mobile-View')
-
 @section('page-style')
     <style>
         .success-wrapper {

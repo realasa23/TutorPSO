@@ -20,11 +20,12 @@ class Pesanan extends Model
         'tanggal',
         'jam',
         'istrial',
+        'biaya',
         'statuspembayaran',
-        'status',
     ];
 
     protected $casts = [
+        'biaya'   => 'integer',
         'istrial' => 'boolean',
         'tanggal' => 'date',
     ];
@@ -42,5 +43,10 @@ class Pesanan extends Model
     public function review()
     {
         return $this->hasOne(Review::class, 'idpesanan');
+    }
+
+    public function laporanMasalah()
+    {
+        return $this->hasOne(LaporanMasalah::class, 'idpesanan', 'idpesanan');
     }
 }

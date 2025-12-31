@@ -1,7 +1,4 @@
-{{--
-    Nama: Harya Raditya Handoyo
-    NRP: 5026231176
---}}
+{{-- Harya Raditya Handoyo - 5026231176 --}}
 @extends('layout.Mobile-View')
 @section('page-style')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -236,8 +233,7 @@
             scroll-snap-type: x mandatory;
             padding-bottom: 2px;
             scrollbar-width: none;
-            -ms-overflow-style: none;
-
+            -ms-overflow-style: none
         }
 
         .snap-x::-webkit-scrollbar {
@@ -255,16 +251,13 @@
             height: var(--cat-h);
             border-radius: var(--cat-r);
             padding: 10px 18px 10px 12px;
-
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-
             color: #1b2430;
             overflow: hidden;
             isolation: isolate;
             scroll-snap-align: start;
-
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -350,7 +343,6 @@
             flex-direction: column;
             justify-content: flex-end;
             box-shadow: 0 0 10px rgba(30, 40, 80, .12);
-
         }
 
 
@@ -411,21 +403,18 @@
 
 @section('content')
     <div class="homepage-container">
-
         <div class="header-bg">
-
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-2">
                     <span class="hello-small">
                         Halo, <strong class="hello-name">{{ $user->username ?? 'User' }}</strong>
                     </span>
                 </div>
-                <a class="btn-icon" aria-label="Cari" href="{{ route('pencarian') }}">
+                <a class="btn-icon" aria-label="Cari" href="{{ route('search') }}">
                     <i class="bi bi-search"></i>
                 </a>
             </div>
         </div>
-
 
         <section class="hero">
             <div class="container hero-body">
@@ -433,45 +422,40 @@
                     data-bs-interval="2000">
 
                     <div class="carousel-inner">
-
-                        {{-- SLIDE 1 --}}
                         <div class="carousel-item active">
                             <div class="promo-card-detail trial">
                                 <div class="promo-content trial">
                                     <h5>Mau Sesi Belajar Gratis?</h5>
                                     <p>Coba Free Trial 3 Kali!</p>
-                                    <a href="/list-tutor" class="btn btn-resp btn-promo-trial">Coba Sekarang</a>
+                                    <a href="/kategori" class="btn btn-resp btn-promo-trial">Coba Sekarang</a>
                                 </div>
                             </div>
                         </div>
 
-                        {{-- SLIDE 2 --}}
                         <div class="carousel-item">
                             <div class="promo-card-detail refund">
                                 <div class="promo-content refund">
                                     <h5>Tidak Puas dengan Sesi Tutormu?</h5>
                                     <p>Lakukan Refund!</p>
-                                    <a href="/aktivitas-lampau" class="btn btn-resp btn-promo-refund">Cek Sekarang</a>
+                                    <a href="{{ route('aktivitas', ['tab' => 'lampau']) }}"
+                                        class="btn btn-resp btn-promo-refund">Cek Sekarang</a>
                                 </div>
                             </div>
                         </div>
 
-                        {{-- SLIDE 3 --}}
                         <div class="carousel-item">
                             <div class="promo-card-detail tutor">
                                 <div class="promo-content tutor">
                                     <h5>Susah Belajar Sendiri?</h5>
                                     <p>Cek Tutor Kita</p>
-                                    <a href="/list-tutor" class="btn btn-resp btn-promo-tutor">Cek Sekarang</a>
+                                    <a href="/tutor" class="btn btn-resp btn-promo-tutor">Cek Sekarang</a>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
         </section>
-
 
         <main class="content-container">
             <div class="surface p-3">
@@ -523,9 +507,7 @@
                             </div>
                         </article>
                     @endforeach
-
                 </div>
-
 
                 <div class="d-flex justify-content-between align-items-center mb-1 mt-2">
                     <div class="section-title">Rekomendasi Tutor</div>
@@ -555,7 +537,6 @@
                 </div>
             </div>
         </main>
-
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     @include('layout.Navbar')

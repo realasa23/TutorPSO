@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Review;
 use Illuminate\Support\Facades\DB;
 
-//Michelle Lea Amanda (5026231214)
-//Nailah Adlina (5026231068)
+//Michelle Lea Amanda - 5026231214
+//Nailah Adlina - 5026231068
 
 class reviewController extends Controller
 {
@@ -25,7 +25,6 @@ class reviewController extends Controller
             ->where('pesanan.userid', $userId)
             ->select(
                 'pesanan.idpesanan',
-                'pesanan.status',
                 'tutor.nama as nama_tutor',
                 'tutor.idtutor',
                 'tutor.fototutor'

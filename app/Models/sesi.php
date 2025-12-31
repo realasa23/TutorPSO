@@ -33,9 +33,4 @@ class Sesi extends Model
     public function matakuliah() {
         return $this->belongsTo(Matakuliah::class, 'idmatkul', 'idmatkul');
     }
-
-    public function laporanMasalah()
-    {
-        return $this->hasMany(LaporanMasalah::class, 'idsesi');
-    }
 }

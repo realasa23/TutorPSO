@@ -1,11 +1,5 @@
-{{-- 
-    Tutor List Page
-    Nama: Harya Raditya Handoyo
-    NRP: 5026231176
---}}
-
+{{-- Harya Raditya Handoyo - 5026231176 --}}
 @extends('layout.Mobile-View')
-
 @section('page-style')
     <style>
         :root {
@@ -66,7 +60,6 @@
             gap: 14px;
         }
 
-        /* BACKGROUND IMAGE */
         .tc-orange {
             background-image: url('{{ asset('card-detail-orange.png') }}');
             color: #7a3600;
@@ -82,7 +75,6 @@
             color: #24338b;
         }
 
-        /* AVATAR */
         .tc-avatar {
             width: 86px;
             height: 100%;
@@ -101,7 +93,6 @@
             object-fit: cover;
         }
 
-        /* CONTENT KANAN */
         .tc-content {
             flex: 1;
             height: 100%;
@@ -122,7 +113,6 @@
             opacity: .9;
         }
 
-        /* BOTTOM ROW */
         .tc-bottom {
             display: flex;
             align-items: center;
@@ -167,11 +157,6 @@
 
     <main class="content-container">
         <div class="container">
-
-            @php
-                $bgStyles = ['tc-orange', 'tc-pink', 'tc-indigo'];
-            @endphp
-
             @php
                 $bgStyles = ['tc-orange', 'tc-pink', 'tc-indigo'];
             @endphp
@@ -182,33 +167,25 @@
                 @endphp
 
                 <div class="tutor-card {{ $bg }} mb-3">
-
-                    {{-- AVATAR --}}
                     <a href="{{ url('/tutor/' . $t->idtutor) }}" class="tc-avatar">
                         <img src="{{ asset($t->fototutor) }}" alt="{{ $t->nama }}">
                     </a>
-
-                    {{-- CONTENT --}}
                     <div class="tc-content">
                         <div>
                             <div class="tc-name">{{ $t->nama }}</div>
                             <div class="tc-role">{{ $t->pekerjaan }}</div>
                         </div>
-
                         <div class="tc-bottom">
                             <div class="tc-rating">
                                 <i class="bi bi-star-fill"></i> {{ number_format($t->ratingtutor, 1) }}
                                 ({{ $t->total_review }} ulasan)
                             </div>
-
                             <a href="{{ url('/tutor/' . $t->idtutor) }}" class="btn btn-detail">
                                 Detail
                             </a>
                         </div>
                     </div>
-
                 </div>
-
             @empty
                 <div class="text-center text-muted py-5">
                     Belum ada tutor tersedia

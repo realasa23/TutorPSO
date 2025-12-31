@@ -4,7 +4,7 @@ use App\Models\user;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-//Harya Raditya Handoyo (5026231176)
+//Harya Raditya Handoyo - 5026231176
 //Nailah Adlina (5026231068)
 //Mirna Irawan (5026221192)
 
@@ -99,9 +99,84 @@ class UserController extends Controller
         return back()->with('success', 'Profil berhasil diperbarui');
     }
 
-    public function search()
+    public function search(Request $request)
     {
-        return view('pencarian');
+        $keyword = $request->query('q');
+        $categories = DB::table('kategori')
+            ->when($keyword, fn ($q) =>
+                $q->where('namakategori', 'LIKE', "%{$keyword}%")
+            )
+            ->select(
+                'idkategori as id',
+                'namakategori as title'
+            )
+            ->get()
+            ->map(function ($item) {
+                $item->type = 'Kategori';
+                $item->subtitle = 'Kategori';
+                $item->icon = 'bi-grid';
+                $item->theme = 'orange';
+                return $item;
+            });
+
+        $matkul = DB::table('matakuliah')
+            ->when($keyword, fn ($q) =>
+                $q->where('namamatkul', 'LIKE', "%{$keyword}%")
+            )
+            ->select(
+                'idmatkul as id',
+                'namamatkul as title'
+            )
+            ->get()
+            ->map(function ($item) {
+                $item->type = 'Mata Kuliah';
+                $item->subtitle = 'Mata Kuliah';
+                $item->icon = 'bi-book';
+                $item->theme = 'indigo';
+                return $item;
+            });
+
+        $tutor = DB::table('tutor')
+            ->when($keyword, fn ($q) =>
+                $q->where('nama', 'LIKE', "%{$keyword}%")
+            )
+            ->select(
+                'idtutor as id',
+                'nama as title'
+            )
+            ->get()
+            ->map(function ($item) {
+                $item->type = 'Tutor';
+                $item->subtitle = 'Tutor';
+                $item->icon = 'bi-person';
+                $item->theme = 'pink';
+                return $item;
+            });
+
+        $sesi = DB::table('sesi')
+            ->when($keyword, fn ($q) =>
+                $q->where('namaSesi', 'LIKE', "%{$keyword}%")
+            )
+            ->select(
+                'idsesi as id',
+                'namaSesi as title'
+            )
+            ->get()
+            ->map(function ($item) {
+                $item->type = 'Sesi';
+                $item->subtitle = 'Sesi Tutor';
+                $item->icon = 'bi-calendar-event';
+                $item->theme = 'indigo';
+                return $item;
+            });
+
+        $results = collect()
+            ->merge($categories)
+            ->merge($matkul)
+            ->merge($tutor)
+            ->merge($sesi);
+
+        return view('Pencarian', compact('results', 'keyword'));
     }
 
 

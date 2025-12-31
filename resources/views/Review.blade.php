@@ -1,5 +1,5 @@
+{{-- Michelle Lea Amanda - 5026231214  --}}
 @extends('layout.Mobile-View')
-
 @section('page-style')
     <style>
         .mobile-container {
@@ -126,7 +126,6 @@
             transform: scale(0.95);
         }
 
-
         .form-area {
             width: 100%;
             padding-bottom: 30px;
@@ -174,21 +173,17 @@
 
 @section('content')
     <div class="mobile-container">
-
-        {{-- HEADER --}}
         <div class="header-nav">
             <button class="btn-back" onclick="history.back()">
                 <i class="bi bi-chevron-left fs-3" style="color:#333;"></i>
             </button>
         </div>
 
-        {{-- FOTO TUTOR --}}
         <div class="profile-section">
             <div class="circle-asset" style="background-image: url('{{ asset($pesanan->fototutor) }}');">
             </div>
         </div>
 
-        {{-- CONTENT --}}
         <div class="content-section">
             <h2 class="title-text">Ayo Ulas Sesi Tutormu</h2>
             <p class="subtitle-text">
@@ -196,7 +191,6 @@
                 Bagikan pengalamanmu dengan kami!
             </p>
 
-            {{-- STAR RATING --}}
             <div class="star-container">
                 @for ($i = 1; $i <= 5; $i++)
                     <img src="{{ asset('star rating-grey.png') }}" class="star-img" data-value="{{ $i }}">
@@ -204,44 +198,27 @@
             </div>
 
             <p class="label-small">Tentang Tutormu...</p>
-
-            {{-- TAG --}}
             <div class="tags-wrapper">
                 @foreach (['Tepat Waktu', 'Ramah', 'Berwawasan Luas', 'Mudah Dipahami', 'Sopan', 'Materi Jelas'] as $tag)
                     <span class="tag-pill">{{ $tag }}</span>
                 @endforeach
             </div>
 
-            {{-- FORM --}}
             <div class="form-area">
                 <form action="{{ route('review.store') }}" method="POST">
                     @csrf
-
                     <input type="hidden" name="idpesanan" value="{{ $pesanan->idpesanan }}">
-
                     <input type="hidden" name="rating" id="ratingValue">
-
                     <input type="hidden" name="tagpenilaian" id="tagValue">
-
                     <textarea name="komentar" class="comment-box" placeholder="Beritahu kami lebih..."></textarea>
-
                     <button type="submit" class="btn-kirim"> KIRIM </button>
                 </form>
-
-                {{-- <a href="{{ route('laporan.create', $idpesanan) }}">
-                    <button type="button" class="btn-report">
-                        LAPORKAN TUTOR
-                    </button>
-                </a> --}}
             </div>
         </div>
     </div>
 
-    {{-- SCRIPT --}}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
-            /* ================= STAR RATING ================= */
             const stars = document.querySelectorAll('.star-img');
             const ratingInput = document.getElementById('ratingValue');
             const yellowStar = "{{ asset('star rating-yellow.png') }}";
@@ -260,7 +237,6 @@
                 });
             });
 
-            /* ================= VALIDASI SUBMIT ================= */
             const form = document.querySelector('form');
             form.addEventListener('submit', function(e) {
                 if (!ratingInput.value || parseInt(ratingInput.value) < 1) {
@@ -269,7 +245,6 @@
                 }
             });
 
-            /* ================= TAG PILL ================= */
             const pills = document.querySelectorAll('.tag-pill');
             const tagInput = document.getElementById('tagValue');
             const textArea = document.querySelector('textarea[name="komentar"]');
@@ -288,14 +263,10 @@
                         selectedTags.push(text);
                     }
 
-                    // hidden input (buat DB)
                     tagInput.value = selectedTags.join(',');
-
-                    // textarea (visual feedback)
                     textArea.value = selectedTags.join(', ');
                 });
             });
-
         });
     </script>
 @endsection
