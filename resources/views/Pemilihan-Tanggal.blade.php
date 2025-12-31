@@ -391,7 +391,6 @@
                     const tanggal = selectedCell.textContent.trim();
                     const fullDate =
                         `${tahun}-${String(bulan + 1).padStart(2,'0')}-${String(tanggal).padStart(2,'0')}`;
-
                     document.getElementById('selected-date').value = fullDate;
                     document.getElementById('form-tanggal').submit();
                 }

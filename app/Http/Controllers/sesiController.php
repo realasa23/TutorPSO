@@ -112,7 +112,7 @@ class sesiController extends Controller
         ]);
 
         session(['jam_pesanan' => $request->jam]);
-        $idsesi = session('idsesi'); // ← ambil dari session
+        $idsesi = session('idsesi'); 
         return redirect()->route('pesanan.detail', ['idsesi' => $idsesi]);
     }
 

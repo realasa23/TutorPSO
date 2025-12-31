@@ -7,7 +7,7 @@ use App\Models\Matakuliah;
 use Illuminate\Support\Facades\DB;
 
 //Harya Raditya Handoyo - 5026231176
-//Nailah Adlina (5026231068)
+//Nailah Adlina - 5026231068
 
 class tutorController extends Controller
 {

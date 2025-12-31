@@ -1,6 +1,5 @@
 {{-- Nailah Adlina - 5026231068 --}}
 @extends('layout.Mobile-View')
-
 @section('page-style')
     <style>
         .header-bg {

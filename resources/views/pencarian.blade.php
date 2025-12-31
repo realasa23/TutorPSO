@@ -235,7 +235,6 @@
                     Ketik kata kunci untuk mulai mencari
                 </div>
             @endif
-
         </div>
     </main>
 @endsection

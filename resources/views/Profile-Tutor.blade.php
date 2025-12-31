@@ -96,6 +96,7 @@
             color: #6c757d;
             line-height: 1.6;
         }
+
         .review-card {
             display: flex;
             gap: .75rem;

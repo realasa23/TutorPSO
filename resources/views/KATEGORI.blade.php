@@ -1,5 +1,4 @@
 {{-- Harya Raditya Handoyo - 5026231176 --}}
-
 @extends('layout.Mobile-View')
 @section('title', 'Tutor App – Home')
 @section('page-style')

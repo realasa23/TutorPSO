@@ -1,4 +1,4 @@
-{{-- Mirna Irawan - 5026221192--}}
+{{-- Mirna Irawan - 5026221192 --}}
 @extends('layout.Mobile-View')
 @section('page-style')
     <style>

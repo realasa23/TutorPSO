@@ -5,8 +5,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 //Harya Raditya Handoyo - 5026231176
-//Nailah Adlina (5026231068)
-//Mirna Irawan (5026221192)
+//Nailah Adlina - 5026231068
+//Mirna Irawan - 5026221192
 
 class UserController extends Controller
 {

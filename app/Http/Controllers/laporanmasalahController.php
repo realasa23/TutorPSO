@@ -7,7 +7,7 @@ use App\Models\user;
 use Illuminate\Support\Facades\DB;
 
 //Michelle Lea Amanda - 5026231214
-//Nailah Adlina (5026231068)
+//Nailah Adlina - 5026231068
 
 class laporanmasalahController extends Controller
 {

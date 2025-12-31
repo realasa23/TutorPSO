@@ -54,7 +54,6 @@
             background-position: center;
             background-repeat: no-repeat;
             overflow: hidden;
-
             display: flex;
             align-items: center;
             gap: 14px;
