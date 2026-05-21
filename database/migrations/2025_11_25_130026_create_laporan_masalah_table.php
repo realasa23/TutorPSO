@@ -17,7 +17,7 @@ return new class extends Migration
             Schema::create('laporanmasalah', function (Blueprint $table) {
                 $table->id('idlaporan');
                 $table->unsignedBigInteger('userid')->nullable();
-                $table->unsignedBigInteger('idsesi')->nullable();
+                $table->unsignedBigInteger('idpesanan')->nullable();
                 $table->string('kategorimasalah');
                 $table->text('deskripsimasalah');
                 $table->string('statuslaporan')->default('Pending');

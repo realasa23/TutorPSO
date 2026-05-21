@@ -4,8 +4,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-//Peter Christian Erastus - 5026231138
-
 class loginController extends Controller
 {
     public function index()
@@ -47,18 +45,18 @@ class loginController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:user',
+            'email' => 'required|email|unique:user', 
             'password' => 'required|min:6|confirmed',
             'phone' => 'required|string'
         ]);
 
-        $exists = DB::table('user')->where('email', $validated['email'])->exists();
+        $exists = DB::table('user')->where('email', $validated['email'])->exists(); 
 
         if ($exists) {
             return back()->withErrors(['email' => 'Email already registered'])->withInput();
         }
 
-        DB::table('user')->insert([
+        DB::table('user')->insert([ 
             'username' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
