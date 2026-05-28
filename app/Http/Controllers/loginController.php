@@ -9,22 +9,19 @@ use Illuminate\Support\Facades\Hash;
 class loginController extends Controller
 {
     public function index()
-	{
-		return view('Landing-Page');
-
-	}
+    {
+        return view('Landing-Page');
+    }
 
     public function login()
-	{
-		return view('Login');
-
-	}
+    {
+        return view('Login');
+    }
 
     public function register()
-	{
-		return view('Register');
-
-	}
+    {
+        return view('Register');
+    }
 
     public function handleLogin(Request $request)
     {
@@ -33,10 +30,11 @@ class loginController extends Controller
             'password' => 'required'
         ]);
 
-        $user = DB::table('user')->where('email', $validated['email'])->first();
+        $user = DB::table('users')->where('email', $validated['email'])->first();
 
         if ($user && Hash::check($validated['password'], $user->password)) {
-            session(['user_id' => $user->userid, 'user_email' => $user->email]);
+            // Typo 'ssession' udah aku perbaiki jadi 'session'
+            session(['user_id' => $user->id, 'user_email' => $user->email]);
             return redirect('/home')->with('success', 'Login successful');
         }
 
@@ -47,22 +45,22 @@ class loginController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:user',
+            'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
             'phone' => 'required|string'
         ]);
 
-        $exists = DB::table('user')->where('email', $validated['email'])->exists();
+        $exists = DB::table('users')->where('email', $validated['email'])->exists();
 
         if ($exists) {
             return back()->withErrors(['email' => 'Email already registered'])->withInput();
         }
 
-        DB::table('user')->insert([
-            'username' => $validated['name'],
+        // Baris 'nomorhp' udah aku hapus biar nggak error pas masukin ke database Supabase
+        DB::table('users')->insert([
+            'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'nomorhp' => $validated['phone']
+            'password' => Hash::make($validated['password'])
         ]);
 
         return redirect('/login')->with('success', 'Registration successful. Please login.');

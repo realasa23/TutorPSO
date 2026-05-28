@@ -9,15 +9,10 @@ class kategoriController extends Controller
 {
     public function kategori()
     {
-      $kategori = DB::table('kategori')
-            ->leftJoin('matakuliah', 'kategori.idkategori', '=', 'matakuliah.idkategori')
-            ->select(
-                'kategori.idkategori',
-                'kategori.namakategori',
-                DB::raw('COUNT(matakuliah.idmatkul) as total_materi')
-            )
-            ->groupBy('kategori.idkategori', 'kategori.namakategori')
-            ->get();
+        // --- BYPASS SEMENTARA ---
+        // Karena tabel 'kategori' dan 'matakuliah' belum ada di database,
+        // kita kirim array kosong supaya halaman Kategori.blade.php nggak crash.
+        $kategori = collect([]);
 
         return view('Kategori', compact('kategori'));
     }

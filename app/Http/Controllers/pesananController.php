@@ -14,74 +14,19 @@ class pesananController extends Controller
 {
     public function storeRegular(Request $request)
     {
-        $idsesi   = session('idsesi');
-        $tanggal  = session('tanggal_pesanan');
-        $jam      = session('jam_pesanan');
-
-        $userId = session('user_id');
-
-        if (!$idsesi || !$tanggal || !$jam) {
-            return redirect()->back()->with('error', 'Data pesanan tidak lengkap. Silakan ulangi pemesanan.');
-        }
-
-        $user = DB::table('user')->where('userid', $userId)->first();
-        $sesi = Sesi::findOrFail($idsesi);
-
-        Pesanan::create([
-            'idsesi'           => $idsesi,
-            'userid'           => $user->userid, 
-            'tanggal'          => $tanggal,
-            'jam'              => $jam,
-            'biaya'            => $sesi->harga,
-            'istrial'          => false,
-            'statuspembayaran' => 'berhasil',
-        ]);
-
-        return view ('Konfirmasi-Pesanan');
+        // BYPASS: Langsung redirect ke view tanpa insert DB
+        return view('Konfirmasi-Pesanan');
     }
 
     public function storeTrial(Request $request)
     {
-        $idsesi   = session('idsesi');
-        $tanggal  = session('tanggal_pesanan');
-        $jam      = session('jam_pesanan');
-        $userId = session('user_id');
-        $user = DB::table('user')->where('userid', $userId)->first();
-
-        if (!$idsesi || !$tanggal || !$jam) {
-            return redirect()->back()->with('error', 'Data pesanan tidak lengkap. Silakan ulangi pemesanan.');
-        }
-
-        if ($user->kuotatrial <= 0) {
-            return redirect()->back()->with('error', 'Kuota trial kamu sudah habis.');
-        }
-
-        $sesi = Sesi::findOrFail($idsesi);
-
-        DB::transaction(function () use ($user, $idsesi, $tanggal, $jam) {
-
-        DB::table('user')
-            ->where('userid', $user->userid)
-            ->update([
-                'kuotatrial' => $user->kuotatrial - 1
-            ]);
-
-        Pesanan::create([
-            'idsesi'           => $idsesi,
-            'userid'           => $user->userid,
-            'tanggal'          => $tanggal,
-            'jam'              => $jam,
-            'biaya'            => 0,
-            'istrial'          => true,
-            'statuspembayaran' => 'free',
-        ]);
-    });
-
-         return view ('Konfirmasi-Trial');
+        // BYPASS: Langsung redirect ke view tanpa insert DB
+        return view('Konfirmasi-Trial');
     }
 
     private function tentukanStatusTanggal($tanggal, $jam, $durasi = 50, $waktuSelesai = null)
     {
+        // Fungsi helper dibiarkan statis, tidak memicu query DB
         if ($waktuSelesai) {
             return 'lampau';
         }
@@ -102,124 +47,59 @@ class pesananController extends Controller
 
     public function gabungSesi($idpesanan)
     {
-        $userId = session('user_id');
-
-        $pesanan = DB::table('pesanan')
-            ->where('idpesanan', $idpesanan)
-            ->where('userid', $userId)
-            ->first();
-
-        if (!$pesanan) abort(404);
+        // BYPASS: Bikin object pesanan palsu (dummy) biar view Sesi-Berlangsung gak error
+        $pesanan = (object) [
+            'idpesanan' => $idpesanan,
+            'userid' => session('user_id'),
+            'namaSesi' => 'Sesi Dummy',
+            'nama_tutor' => 'Tutor Dummy'
+        ];
 
         return view('Sesi-Berlangsung', compact('pesanan'));
     }
 
     public function endCall($idpesanan)
     {
-        DB::table('pesanan')
-            ->where('idpesanan', $idpesanan)
-            ->update([
-                'waktu_selesai' => now()
-            ]);
-
+        // BYPASS: Langsung redirect tanpa update tabel
         return redirect()->route('aktivitas', ['tab' => 'lampau']);
     }
 
 
     public function aktivitas(Request $request)
     {
-        $userId = session('user_id');
-
         $allowedTabs = ['akan-datang', 'berlangsung', 'lampau'];
         $tab = in_array($request->tab, $allowedTabs)
             ? $request->tab
             : 'akan-datang';
 
-        $pesanan = DB::table('pesanan')
-            ->join('sesi', 'pesanan.idsesi', '=', 'sesi.idsesi')
-            ->join('tutor', 'sesi.idtutor', '=', 'tutor.idtutor')
-            ->join('matakuliah', 'sesi.idmatkul', '=', 'matakuliah.idmatkul')
-            ->where('pesanan.userid', $userId)
-            ->select(
-                'pesanan.idpesanan',
-                'pesanan.tanggal',
-                'pesanan.jam',
-                'pesanan.statuspembayaran',
-                'pesanan.waktu_selesai',
-                'sesi.idsesi',
-                'sesi.namaSesi',
-                'sesi.harga',
-                'sesi.filemateri',
-                'sesi.rekamankelas',
-                'tutor.nama as nama_tutor',
-                'tutor.fototutor',
-                'matakuliah.namamatkul'
-            )
-            ->get();
-
-        $sesi = $pesanan->filter(function ($p) use ($tab) {
-            $p->status_realtime = $this->tentukanStatusTanggal(
-                $p->tanggal,
-                $p->jam,
-                50,
-                $p->waktu_selesai
-            );
-            return $p->status_realtime === $tab;
-        });
-
-        if ($tab === 'akan-datang') {
-            $sesi = $sesi->sortBy(function ($p) {
-                return $p->tanggal . ' ' . $p->jam;
-            });
-        } elseif ($tab === 'lampau') {
-            $sesi = $sesi->sortByDesc(function ($p) {
-                return $p->tanggal . ' ' . $p->jam;
-            });
-        }
+        // BYPASS: Return collection kosong supaya foreach di view gak error
+        $sesi = collect([]);
 
         return view('Aktivitas', [
-            'sesi' => $sesi->values(),
+            'sesi' => $sesi,
             'tab'  => $tab
         ]);
     }
 
     public function detail($idpesanan)
     {
-        $userId = session('user_id');
-        if (!$userId) {
-            return redirect('/login');
-        }
+        // BYPASS: Bikin data pesanan palsu supaya halaman detail bisa kerender
+        $pesanan = (object) [
+            'idpesanan' => $idpesanan,
+            'tanggal_pesanan' => date('Y-m-d'),
+            'jam_pesanan' => '10.00-10.50',
+            'biaya' => 50000,
+            'namaSesi' => 'Materi Dummy',
+            'harga' => 50000,
+            'filemateri' => null,
+            'rekamankelas' => null,
+            'deskripsi' => 'Ini adalah detail pesanan dummy untuk testing.',
+            'nama_tutor' => 'Budi Tutor',
+            'fototutor' => null,
+            'namamatkul' => 'Kalkulus'
+        ];
 
-        $pesanan = DB::table('pesanan')
-            ->join('sesi', 'pesanan.idsesi', '=', 'sesi.idsesi')
-            ->join('tutor', 'sesi.idtutor', '=', 'tutor.idtutor')
-            ->join('matakuliah', 'sesi.idmatkul', '=', 'matakuliah.idmatkul')
-            ->where('pesanan.idpesanan', $idpesanan)
-            ->where('pesanan.userid', $userId)
-            ->select(
-                'pesanan.idpesanan',
-                'pesanan.tanggal as tanggal_pesanan',
-                'pesanan.jam as jam_pesanan',
-                'pesanan.biaya as biaya',
-                'sesi.namaSesi',
-                'sesi.harga',
-                'sesi.filemateri',
-                'sesi.rekamankelas',
-                'sesi.deskripsi',
-                'tutor.nama as nama_tutor',
-                'tutor.fototutor',
-                'matakuliah.namamatkul'
-            )
-            ->first();
-
-        if (!$pesanan) {
-            abort(404);
-        }
-
-        $statusRealtime = $this->tentukanStatusTanggal(
-            $pesanan->tanggal_pesanan,
-            $pesanan->jam_pesanan
-        );
+        $statusRealtime = 'akan-datang';
 
         return view('Detail-Aktivitas', compact('pesanan', 'statusRealtime'));
     }

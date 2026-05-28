@@ -12,42 +12,16 @@ class UserController extends Controller
 {
     public function home()
     {
-        $user = DB::table('user')
-            ->where('userid', session('user_id'))
+        // REVISI: 'user' jadi 'users', 'userid' jadi 'id'
+        $user = DB::table('users')
+            ->where('id', session('user_id'))
             ->first();
 
-        $kategori = DB::table('kategori')
-            ->leftJoin('matakuliah', 'kategori.idkategori', '=', 'matakuliah.idkategori')
-            ->select(
-                'kategori.idkategori',
-                'kategori.namakategori',
-                DB::raw('COUNT(matakuliah.idmatkul) as total_materi')
-            )
-            ->groupBy('kategori.idkategori', 'kategori.namakategori')
-            ->get();
-
-        $tutor = DB::table('tutor as t')
-            ->leftJoin('sesi as s', 's.idtutor', '=', 't.idtutor')
-            ->leftJoin('pesanan as p', 'p.idsesi', '=', 's.idsesi')
-            ->leftJoin('review as r', 'r.idpesanan', '=', 'p.idpesanan')
-            ->select(
-                't.idtutor',
-                't.nama',
-                't.pekerjaan',
-                't.fototutor',
-                DB::raw('COALESCE(AVG(r.rating),0) as ratingtutor'),
-                DB::raw('COUNT(DISTINCT r.idreview) as total_review')
-            )
-            ->groupBy(
-                't.idtutor',
-                't.nama',
-                't.pekerjaan',
-                't.fototutor'
-            )
-            ->orderByDesc('ratingtutor')
-            ->orderByDesc('total_review')
-            ->limit(6)
-            ->get();
+        // --- BYPASS SEMENTARA ---
+        // Karena tabel belum ada di database, kita kirim array kosong 
+        // supaya halaman Homepage.blade.php nggak crash pas di-load.
+        $kategori = collect([]);
+        $tutor = collect([]);
 
         return view('Homepage', compact('user', 'kategori', 'tutor'));
     }
@@ -60,7 +34,8 @@ class UserController extends Controller
             return redirect('/login');
         }
 
-        $user = DB::table('user')->where('userid', $userId)->first();
+        // REVISI: 'user' jadi 'users', 'userid' jadi 'id'
+        $user = DB::table('users')->where('id', $userId)->first();
         return view('Profile', compact('user'));
     }
 
@@ -79,9 +54,9 @@ class UserController extends Controller
         ]);
 
         $dataUpdate = [
-            'username' => $request->username,
+            'name' => $request->username, // REVISI: disesuaikan dengan kolom di DB yaitu 'name'
             'email'    => $request->email,
-            'nomorhp'  => $request->nomorhp
+            // 'nomorhp'  => $request->nomorhp // REVISI: di-comment karena kolom belum ada di DB
         ];
 
         if ($request->hasFile('fotoprofil')) {
@@ -92,8 +67,9 @@ class UserController extends Controller
             $dataUpdate['fotoprofil'] = 'storage/' . $path;
         }
 
-        DB::table('user')
-            ->where('userid', $userId)
+        // REVISI: 'user' jadi 'users', 'userid' jadi 'id'
+        DB::table('users')
+            ->where('id', $userId)
             ->update($dataUpdate);
 
         return back()->with('success', 'Profil berhasil diperbarui');
@@ -102,73 +78,13 @@ class UserController extends Controller
     public function search(Request $request)
     {
         $keyword = $request->query('q');
-        $categories = DB::table('kategori')
-            ->when($keyword, fn ($q) =>
-                $q->where('namakategori', 'LIKE', "%{$keyword}%")
-            )
-            ->select(
-                'idkategori as id',
-                'namakategori as title'
-            )
-            ->get()
-            ->map(function ($item) {
-                $item->type = 'Kategori';
-                $item->subtitle = 'Kategori';
-                $item->icon = 'bi-grid';
-                $item->theme = 'orange';
-                return $item;
-            });
-
-        $matkul = DB::table('matakuliah')
-            ->when($keyword, fn ($q) =>
-                $q->where('namamatkul', 'LIKE', "%{$keyword}%")
-            )
-            ->select(
-                'idmatkul as id',
-                'namamatkul as title'
-            )
-            ->get()
-            ->map(function ($item) {
-                $item->type = 'Mata Kuliah';
-                $item->subtitle = 'Mata Kuliah';
-                $item->icon = 'bi-book';
-                $item->theme = 'indigo';
-                return $item;
-            });
-
-        $tutor = DB::table('tutor')
-            ->when($keyword, fn ($q) =>
-                $q->where('nama', 'LIKE', "%{$keyword}%")
-            )
-            ->select(
-                'idtutor as id',
-                'nama as title'
-            )
-            ->get()
-            ->map(function ($item) {
-                $item->type = 'Tutor';
-                $item->subtitle = 'Tutor';
-                $item->icon = 'bi-person';
-                $item->theme = 'pink';
-                return $item;
-            });
-
-        $sesi = DB::table('sesi')
-            ->when($keyword, fn ($q) =>
-                $q->where('namaSesi', 'LIKE', "%{$keyword}%")
-            )
-            ->select(
-                'idsesi as id',
-                'namaSesi as title'
-            )
-            ->get()
-            ->map(function ($item) {
-                $item->type = 'Sesi Tutor';
-                $item->subtitle = 'Sesi Tutor';
-                $item->icon = 'bi-calendar-event';
-                $item->theme = 'indigo';
-                return $item;
-            });
+        
+        // --- BYPASS SEMENTARA JUGA ---
+        // Biar pas fitur search dicoba nggak muncul error tabel missing.
+        $categories = collect([]);
+        $matkul = collect([]);
+        $tutor = collect([]);
+        $sesi = collect([]);
 
         $results = collect()
             ->merge($categories)
@@ -178,7 +94,6 @@ class UserController extends Controller
 
         return view('Pencarian', compact('results', 'keyword'));
     }
-
 
     public function logout()
     {
