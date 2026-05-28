@@ -1,107 +1,56 @@
 <?php
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-use App\Models\Sesi;
-use App\Models\Tutor;
-use App\Models\Matakuliah;
-use Illuminate\Support\Facades\DB;
 
-//Harya Raditya Handoyo - 5026231176
-//Nailah Adlina - 5026231068
+// Harya Raditya Handoyo - 5026231176
+// Nailah Adlina - 5026231068
 
 class tutorController extends Controller
 {
     public function recTutor()
     {
-        $tutor = DB::table('tutor as t')
-            ->leftJoin('sesi as s', 's.idtutor', '=', 't.idtutor')
-            ->leftJoin('pesanan as p', 'p.idsesi', '=', 's.idsesi')
-            ->leftJoin('review as r', 'r.idpesanan', '=', 'p.idpesanan')
-            ->select(
-                't.idtutor',
-                't.nama',
-                't.pekerjaan',
-                't.fototutor',
-                DB::raw('COALESCE(AVG(r.rating),0) as ratingtutor'),
-                DB::raw('COUNT(DISTINCT r.idreview) as total_review')
-            )
-            ->groupBy(
-                't.idtutor',
-                't.nama',
-                't.pekerjaan',
-                't.fototutor'
-            )
-            ->orderByDesc('ratingtutor')
-            ->orderByDesc('total_review')
-            ->get();
+        // --- BYPASS SEMENTARA: DUMMY DATA TUTOR ---
+        $tutor = collect([
+            (object)[
+                'idtutor' => 1,
+                'nama' => 'Sasha',
+                'pekerjaan' => 'PWEB Developer',
+                'fototutor' => 'https://ui-avatars.com/api/?name=Sasha&background=random',
+                'ratingtutor' => 4.9,
+                'total_review' => 88
+            ],
+            (object)[
+                'idtutor' => 2,
+                'nama' => 'Haryadi',
+                'pekerjaan' => 'UX Design',
+                'fototutor' => 'https://ui-avatars.com/api/?name=Haryadi&background=random',
+                'ratingtutor' => 4.9,
+                'total_review' => 75
+            ],
+            (object)[
+                'idtutor' => 3,
+                'nama' => 'Khalila',
+                'pekerjaan' => 'Data Analyst',
+                'fototutor' => 'https://ui-avatars.com/api/?name=Khalila&background=random',
+                'ratingtutor' => 4.8,
+                'total_review' => 60
+            ]
+        ]);
 
         return view('List-Tutor', compact('tutor'));
     }
 
     public function profile($id)
     {
-        $tutor = DB::table('tutor as t')
-            ->leftJoin('sesi as s', 's.idtutor', '=', 't.idtutor')
-            ->leftJoin('pesanan as p', 'p.idsesi', '=', 's.idsesi')
-            ->leftJoin('review as r', 'r.idpesanan', '=', 'p.idpesanan')
-            ->where('t.idtutor', $id)
-            ->select(
-                't.idtutor',
-                't.nama',
-                't.pekerjaan',
-                't.deskripsi',
-                't.fototutor',
-                DB::raw('COALESCE(AVG(r.rating), 0) as ratingtutor'),
-                DB::raw('COUNT(DISTINCT r.idreview) as total_review')
-            )
-            ->groupBy(
-                't.idtutor',
-                't.nama',
-                't.pekerjaan',
-                't.deskripsi',
-                't.fototutor'
-            )
-            ->first();
-
-        if (!$tutor) abort(404);
-
-        $reviews = DB::table('review as r')
-            ->join('pesanan as p', 'p.idpesanan', '=', 'r.idpesanan')
-            ->join('user as u', 'u.userid', '=', 'p.userid')
-            ->join('sesi as s', 's.idsesi', '=', 'p.idsesi')
-            ->where('s.idtutor', $id)
-            ->select(
-                'u.username',
-                'r.rating',
-                'r.komentar',
-                'r.tanggalreview'
-            )
-            ->orderByDesc('r.tanggalreview')
-            ->get();
-
+        $tutor = (object) ['idtutor' => $id, 'nama' => 'Tutor Dummy', 'pekerjaan' => 'Tutor Profesional', 'deskripsi' => 'Deskripsi Tutor Dummy', 'fototutor' => null, 'ratingtutor' => 5, 'total_review' => 0];
+        $reviews = collect([]);
         return view('Profile-Tutor', compact('tutor', 'reviews'));
     }
 
     public function listSesi($idtutor)
     {
-        $tutor = DB::table('tutor')
-            ->where('idtutor', $idtutor)
-            ->first();
-
-        if (!$tutor) abort(404);
-
-        // ambil semua sesi milik tutor
-        $sesi = DB::table('sesi')
-            ->join('matakuliah', 'sesi.idmatkul', '=', 'matakuliah.idmatkul')
-            ->where('sesi.idtutor', $idtutor)
-            ->select(
-                'sesi.idsesi',
-                'sesi.namaSesi',
-                'sesi.harga',
-                'matakuliah.namamatkul'
-            )
-            ->get();
-
+        $tutor = (object) ['idtutor' => $idtutor, 'nama' => 'Tutor Dummy'];
+        $sesi = collect([]);
         return view('Daftar-Sesi-Tutor', compact('tutor', 'sesi'));
     }
 }

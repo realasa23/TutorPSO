@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 //Nailah Adlina (5026231068)
 
@@ -9,10 +8,29 @@ class kategoriController extends Controller
 {
     public function kategori()
     {
-        // --- BYPASS SEMENTARA ---
-        // Karena tabel 'kategori' dan 'matakuliah' belum ada di database,
-        // kita kirim array kosong supaya halaman Kategori.blade.php nggak crash.
-        $kategori = collect([]);
+        // --- BYPASS SEMENTARA: DUMMY DATA KATEGORI ---
+        $kategori = collect([
+            (object)[
+                'idkategori' => 1,
+                'namakategori' => 'Pemrograman Web',
+                'total_materi' => 15
+            ],
+            (object)[
+                'idkategori' => 2,
+                'namakategori' => 'Database & Graph (Neo4j)',
+                'total_materi' => 8
+            ],
+            (object)[
+                'idkategori' => 3,
+                'namakategori' => 'Desain UI/UX',
+                'total_materi' => 12
+            ],
+            (object)[
+                'idkategori' => 4,
+                'namakategori' => 'Keamanan Siber (Ethical Hacking)',
+                'total_materi' => 5
+            ]
+        ]);
 
         return view('Kategori', compact('kategori'));
     }

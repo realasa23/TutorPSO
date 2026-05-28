@@ -12,17 +12,61 @@ class UserController extends Controller
 {
     public function home()
     {
-        // REVISI: 'user' jadi 'users', 'userid' jadi 'id'
+        // Ambil data user yang lagi login
         $user = DB::table('users')
             ->where('id', session('user_id'))
             ->first();
 
-        // --- BYPASS SEMENTARA ---
-        // Karena tabel belum ada di database, kita kirim array kosong 
-        // supaya halaman Homepage.blade.php nggak crash pas di-load.
-        $kategori = collect([]);
-        $tutor = collect([]);
+        // --- BYPASS SEMENTARA: DUMMY DATA UNTUK HOME ---
+        
+        // 1. Dummy Kategori
+        $kategori = collect([
+            (object)[
+                'idkategori' => 1,
+                'namakategori' => 'Matematika & IPA',
+                'total_materi' => 5
+            ],
+            (object)[
+                'idkategori' => 2,
+                'namakategori' => 'Bahasa & Sastra',
+                'total_materi' => 3
+            ],
+            (object)[
+                'idkategori' => 3,
+                'namakategori' => 'Ilmu Sosial',
+                'total_materi' => 2
+            ],
+        ]);
 
+        // 2. Dummy Tutor (Top 6)
+        $tutor = collect([
+            (object)[
+                'idtutor' => 1,
+                'nama' => 'Dr. Budi Santoso',
+                'pekerjaan' => 'Dosen Matematika',
+                'fototutor' => 'https://ui-avatars.com/api/?name=Budi+Santoso',
+                'ratingtutor' => 4.9,
+                'total_review' => 125
+            ],
+            (object)[
+                'idtutor' => 2,
+                'nama' => 'Siti Nuraini, M.Pd.',
+                'pekerjaan' => 'Guru Bahasa Inggris',
+                'fototutor' => 'https://ui-avatars.com/api/?name=Siti+Nuraini',
+                'ratingtutor' => 4.8,
+                'total_review' => 98
+            ],
+            (object)[
+                'idtutor' => 3,
+                'nama' => 'Andi Pratama',
+                'pekerjaan' => 'Ahli Sejarah',
+                'fototutor' => 'https://ui-avatars.com/api/?name=Andi+Pratama',
+                'ratingtutor' => 4.7,
+                'total_review' => 85
+            ],
+        ]);
+
+        // Kirim data dummy ke view Homepage
         return view('Homepage', compact('user', 'kategori', 'tutor'));
     }
 
@@ -34,7 +78,7 @@ class UserController extends Controller
             return redirect('/login');
         }
 
-        // REVISI: 'user' jadi 'users', 'userid' jadi 'id'
+        // 'user' jadi 'users', 'userid' jadi 'id'
         $user = DB::table('users')->where('id', $userId)->first();
         return view('Profile', compact('user'));
     }
@@ -54,9 +98,9 @@ class UserController extends Controller
         ]);
 
         $dataUpdate = [
-            'name' => $request->username, // REVISI: disesuaikan dengan kolom di DB yaitu 'name'
+            'name' => $request->username, // disesuaikan dengan kolom di DB yaitu 'name'
             'email'    => $request->email,
-            // 'nomorhp'  => $request->nomorhp // REVISI: di-comment karena kolom belum ada di DB
+            // 'nomorhp'  => $request->nomorhp // di-comment karena kolom belum ada di DB
         ];
 
         if ($request->hasFile('fotoprofil')) {
@@ -67,7 +111,7 @@ class UserController extends Controller
             $dataUpdate['fotoprofil'] = 'storage/' . $path;
         }
 
-        // REVISI: 'user' jadi 'users', 'userid' jadi 'id'
+        // 'user' jadi 'users', 'userid' jadi 'id'
         DB::table('users')
             ->where('id', $userId)
             ->update($dataUpdate);

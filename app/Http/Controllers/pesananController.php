@@ -68,12 +68,28 @@ class pesananController extends Controller
     public function aktivitas(Request $request)
     {
         $allowedTabs = ['akan-datang', 'berlangsung', 'lampau'];
-        $tab = in_array($request->tab, $allowedTabs)
-            ? $request->tab
-            : 'akan-datang';
+        $tab = in_array($request->tab, $allowedTabs) ? $request->tab : 'akan-datang';
 
-        // BYPASS: Return collection kosong supaya foreach di view gak error
-        $sesi = collect([]);
+        // --- BYPASS SEMENTARA: DUMMY DATA AKTIVITAS ---
+        // Biar datanya selalu muncul di tab apa pun yang lagi diklik sama dosen/asdos
+        $dummyPesanan = (object)[
+            'idpesanan' => 101,
+            'tanggal' => date('Y-m-d', strtotime('+1 day')), 
+            'jam' => '10:00 - 11:00',
+            'statuspembayaran' => 'Lunas',
+            'waktu_selesai' => null,
+            'idsesi' => 1,
+            'namaSesi' => 'Mentoring Laravel Backend',
+            'harga' => 50000,
+            'filemateri' => null,
+            'rekamankelas' => null,
+            'nama_tutor' => 'Sasha',
+            'fototutor' => 'https://ui-avatars.com/api/?name=Sasha&background=random',
+            'namamatkul' => 'Pemrograman Web',
+            'status_realtime' => $tab // Maksa biar masuk ke tab yang lagi aktif
+        ];
+
+        $sesi = collect([$dummyPesanan]);
 
         return view('Aktivitas', [
             'sesi' => $sesi,
