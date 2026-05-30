@@ -1,34 +1,22 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-//Nailah Adlina - 5026231068
+// Nailah Adlina - 5026231068
 
 class matakuliahController extends Controller
 {
     public function materi($idkategori)
     {
-        $kategori = DB::table('kategori')
-            ->where('idkategori', $idkategori)
-            ->first();
+        // --- BYPASS SEMENTARA ---
+        $kategori = (object) ['idkategori' => $idkategori, 'namakategori' => 'Kategori Dummy'];
+        
+        // Kasih dummy matkul biar UI nggak kosong
+        $matakuliah = collect([
+            (object)['idmatkul' => 1, 'namamatkul' => 'Matkul Dummy 1', 'jumlah_sesi' => 3],
+            (object)['idmatkul' => 2, 'namamatkul' => 'Matkul Dummy 2', 'jumlah_sesi' => 5]
+        ]);
 
-        $matakuliah = DB::table('matakuliah as m')
-            ->leftJoin('sesi as s', 's.idmatkul', '=', 'm.idmatkul')
-            ->where('m.idkategori', $idkategori)
-            ->select(
-                'm.idmatkul',
-                'm.namamatkul',
-                DB::raw('COUNT(s.idsesi) as jumlah_sesi')
-            )
-            ->groupBy('m.idmatkul', 'm.namamatkul')
-            ->get();
-
-        return view('List-Materi', compact(
-            'kategori',
-            'matakuliah'
-        ));
+        return view('List-Materi', compact('kategori', 'matakuliah'));
     }
 }
