@@ -147,7 +147,7 @@
 
             </div>
 
-            <h3 class="profile-name">{{ $user->username }}</h3>
+            <h3 class="profile-name">{{ $user->name }}</h3>
             <p class="profile-email">{{ $user->email }}</p>
         </div>
 
