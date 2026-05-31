@@ -10,10 +10,7 @@ class Sesi extends Model
     protected $table = 'sesi';
     protected $primaryKey = 'idsesi';
     
-    // START: BARIS WAJIB UNTUK ID STRING (S01, S02...)
-    public $incrementing = false;
-    protected $keyType = 'string';
-    // END: BARIS WAJIB
+    // Gak perlu public $incrementing = false; dan protected $keyType = 'string'; karena id kita angka!
 
     protected $fillable = [
         'idmatkul', 'idtutor',
