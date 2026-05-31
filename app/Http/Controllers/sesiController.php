@@ -26,7 +26,9 @@ class sesiController extends Controller
     {
         $sesi = (object) [
             'idsesi' => $idsesi, 'namaSesi' => 'Sesi Dummy', 'harga' => 50000, 
-            'tutor' => (object)['nama' => 'Sasha'], 
+            'tutor' => (object)[
+            'nama' => 'Sasha', 
+            'fototutor' => 'https://ui-avatars.com/api/?name=Sasha&background=random'], 
             'matakuliah' => (object)['namamatkul' => 'Matkul Dummy']
         ];
         $bookedDates = [];

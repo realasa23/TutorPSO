@@ -69,15 +69,6 @@
         .card-detail-sesi h4,
         .card-detail-sesi p {
             margin-bottom: 4px;
-
-        }
-
-        .full-width-btn {
-            background-color: #495057;
-            color: white;
-            padding: 0.75rem 0;
-            border-radius: 10px;
-            border: none;
         }
 
         .profile-img {
@@ -96,7 +87,6 @@
 
         .nama-tutor {
             color: #D65609 !important;
-
         }
 
         .nama-matkul {
@@ -126,18 +116,13 @@
             margin-bottom: 20px;
         }
 
-        .border {
-            margin-top: 20px;
-            margin-bottom: 10px;
-        }
-
         .total-row {
             display: flex !important;
             flex-direction: row !important;
             justify-content: space-between !important;
             align-items: center !important;
             width: 100%;
-            margin-top: 100px;
+            margin-top: 16px;
         }
 
         .total-title,
@@ -146,7 +131,6 @@
             font-weight: 600;
             margin: 0;
             white-space: nowrap;
-
         }
 
         .full-width-btn {
@@ -206,8 +190,7 @@
             </span>
         </div>
 
-
-        <div class= "pembayaran">
+        <div class="pembayaran">
             <h3 style="font-size: 1.1rem; font-weight: bold;">Pembayaran</h3>
 
             <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
@@ -231,12 +214,14 @@
                     Rp{{ number_format($sesi->harga + 5000 - 5000, 0, ',', '.') }}
                 </h2>
             </div>
-
         </div>
 
         <div class="p-2 bg-white">
             <form action="{{ route('pesanan.store.regular') }}" method="POST">
                 @csrf
+                <input type="hidden" name="idsesi" value="{{ $sesi->idsesi }}">
+                <input type="hidden" name="tanggal" value="{{ $tanggal }}">
+                <input type="hidden" name="jam" value="{{ $jam }}">
                 <button type="submit" class="btn w-100 full-width-btn">
                     <p class="order-button my-0">Pesan Sesi</p>
                 </button>
@@ -246,9 +231,13 @@
         <div class="p-2 bg-white">
             <form action="{{ route('pesanan.store.trial') }}" method="POST">
                 @csrf
+                <input type="hidden" name="idsesi" value="{{ $sesi->idsesi }}">
+                <input type="hidden" name="tanggal" value="{{ $tanggal }}">
+                <input type="hidden" name="jam" value="{{ $jam }}">
                 <button type="submit" class="btn w-100 full-width-btn">
                     <p class="order-button my-0">Gunakan Trial</p>
                 </button>
             </form>
         </div>
-    @endsection
+    </div>
+@endsection

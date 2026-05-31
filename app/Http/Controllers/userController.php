@@ -91,32 +91,29 @@ class UserController extends Controller
         }
 
         $request->validate([
-            'username'   => 'required|string|max:100',
-            'email'      => 'required|email|max:150',
-            'nomorhp'    => 'nullable|string|max:20',
-            'fotoprofil' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+            'fotoprofil' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        $dataUpdate = [
-            'name' => $request->username, // disesuaikan dengan kolom di DB yaitu 'name'
-            'email'    => $request->email,
-            // 'nomorhp'  => $request->nomorhp // di-comment karena kolom belum ada di DB
-        ];
+        $dataUpdate = [];
 
         if ($request->hasFile('fotoprofil')) {
-            $file = $request->file('fotoprofil');
+            $file     = $request->file('fotoprofil');
             $filename = 'profile_' . $userId . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('profile', $filename, 'public');
 
-            $dataUpdate['fotoprofil'] = 'storage/' . $path;
+            // Simpan ke storage/app/public/profile/
+            $file->storeAs('profile', $filename, 'public');
+
+            // Path yang disimpan ke DB, diakses via asset('storage/profile/xxx.jpg')
+            $dataUpdate['fotoprofil'] = 'storage/profile/' . $filename;
         }
 
-        // 'user' jadi 'users', 'userid' jadi 'id'
-        DB::table('users')
-            ->where('id', $userId)
-            ->update($dataUpdate);
+        if (!empty($dataUpdate)) {
+            DB::table('users')
+                ->where('id', $userId)
+                ->update($dataUpdate);
+        }
 
-        return back()->with('success', 'Profil berhasil diperbarui');
+        return back()->with('success', 'Foto profil berhasil diperbarui');
     }
 
     public function search(Request $request)
