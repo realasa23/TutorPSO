@@ -10,7 +10,10 @@ class kategoriController extends Controller
     public function kategori()
     {
         // Kodingan Asli Nembak Database
-        $kategori = DB::table('kategori')->get();
+        $kategori = DB::table('kategori')
+            ->select('kategori.*') 
+            ->selectRaw('(SELECT COUNT(*) FROM matakuliah WHERE matakuliah.idkategori = kategori.idkategori) as total_materi')
+            ->get();
         return view('Kategori', compact('kategori'));
     }
 }

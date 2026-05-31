@@ -14,8 +14,11 @@ class matakuliahController extends Controller
             ->where('idkategori', $idkategori)
             ->first();
 
-        $matakuliah = DB::table('matakuliah')
-            ->where('idkategori', $idkategori)
+        $matakuliah = DB::table('matakuliah as m')
+            ->select('m.*') 
+            // Menghitung jumlah sesi berdasarkan idmatkul
+            ->selectRaw('(SELECT COUNT(*) FROM sesi WHERE sesi.idmatkul = m.idmatkul) as jumlah_sesi')
+            ->where('m.idkategori', $idkategori) // Sesuaikan variabel $idkategori ini dengan yang ada di controllermu
             ->get();
 
         return view('List-Materi', compact('kategori', 'matakuliah'));

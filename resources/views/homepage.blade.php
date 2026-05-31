@@ -1,4 +1,18 @@
 {{-- Harya Raditya Handoyo - 5026231176 --}}
+@php
+    $userId = session('user_id') ?? \Illuminate\Support\Facades\Auth::id();
+    $namaUser = 'User';
+
+    if ($userId) {
+        // Kita gunakan 'users' (pakai s) sesuai tabel asli di Supabase kamu
+        $userData = \Illuminate\Support\Facades\DB::table('users')->where('id', $userId)->first();
+        
+        if ($userData) {
+            $namaUser = $userData->name;
+        }
+    }
+@endphp
+
 @extends('layout.Mobile-View')
 @section('page-style')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -11,8 +25,12 @@
             --cat-h: 150px;
             --cat-r: 16px;
             --notch: 28px;
-            --rec-w: 148px;
-            --rec-h: 200px;
+            --rec-w: 152px;
+            --rec-h: 210px;
+            --tile: 116px;
+            --bg-start: #c9d2ff;
+            --bg-mid: #a9b7ff;
+            --bg-end: #8fc3ff;
             --ink: #1b2430;
             --ink-dim: #667085;
             --orange-1: #ffd2a6;
@@ -24,28 +42,74 @@
             --pink-1: #ffc7d6;
             --pink-2: #ff9fb7;
             --pink-ink: #7e2241;
+            --promo-h: 180px;
         }
 
-        * { box-sizing: border-box }
-        body { font-family: 'Poppins', system-ui }
-        a { text-decoration: none }
+        * {
+            box-sizing: border-box
+        }
 
-        /* ── Header ── */
+        body {
+            font-family: 'Poppins', system-ui
+        }
+
+        a {
+            text-decoration: none
+        }
+
+        .content-container {
+            flex: 1;
+            padding: 10px;
+            background: white;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            z-index: 5;
+            position: relative;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 40px;
+            height: 40px;
+        }
+
+        .avatar-48 {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .avatar-fallback {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6f7cff, #8fc3ff);
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+        }
+
         .header-bg {
-            padding: 14px 14px 0;
+            padding: 14px;
+            margin: 0px 12px;
         }
 
         .hello-small {
             color: #10224d;
-            font-size: 15px;
+            font-size: 16px;
             font-style: italic;
             font-weight: 400;
         }
 
         .hello-name {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 700;
-            color: #10224d;
+            color: #10224d
         }
 
         .btn-icon {
@@ -53,110 +117,118 @@
             height: 36px;
             display: grid;
             place-items: center;
-            border-radius: 8px;
-            color: #10224d;
+            border-radius: 2px;
+            color: #fff;
             border: 0;
-            background: transparent;
-            font-size: 18px;
         }
 
-        /* ── Promo carousel ── */
         .hero-body {
-            padding: 10px 14px 0;
+            padding: 0 .75rem
         }
 
         .promo-card-detail {
-            height: 155px;
+            height: 160px;
             background-size: cover;
-            background-position: right center;
+            background-position: right;
             background-repeat: no-repeat;
-            border-radius: 18px;
-            box-shadow: 0 4px 10px rgba(0,0,0,.12);
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
             padding: 18px 18px;
+            position: relative;
             display: flex;
             align-items: center;
-            margin-bottom: 4px;
-        }
-
-        .promo-card-detail.trial  { background-image: url('{{ asset('trial-card.png') }}'); }
-        .promo-card-detail.refund { background-image: url('{{ asset('refund-card.png') }}'); }
-        .promo-card-detail.tutor  { background-image: url('{{ asset('tutor-card.png') }}'); }
-
-        .promo-content { max-width: 60%; }
-        .promo-content.trial  { color: #FF687F; }
-        .promo-content.refund { color: #D65609; }
-        .promo-content.tutor  { color: #566CD8; }
-
-        .promo-content h5 {
-            font-weight: 700;
-            font-size: 15px;
-            margin-bottom: 3px;
-            line-height: 1.3;
-        }
-
-        .promo-content p {
-            font-size: 13px;
-            opacity: .9;
             margin-bottom: 10px;
         }
 
-        .btn-resp {
-            border-radius: 10px;
-            padding: .35rem .8rem;
+        .promo-card-detail.trial {
+            background-image: url('{{ asset('trial-card.png') }}');
+        }
+
+        .promo-card-detail.refund {
+            background-image: url('{{ asset('refund-card.png') }}');
+        }
+
+        .promo-card-detail.tutor {
+            background-image: url('{{ asset('tutor-card.png') }}');
+        }
+
+        .promo-content {
+            max-width: 65%;
+        }
+
+        .promo-content.trial {
+            color: #FF687F;
+        }
+
+        .promo-content.refund {
+            color: #D65609;
+        }
+
+        .promo-content.tutor {
+            color: #566CD8;
+        }
+
+
+        .promo-content h5 {
             font-weight: 600;
-            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .promo-content p {
+            font-size: 14px;
+            opacity: .9;
+            margin-bottom: 12px;
+        }
+
+        .btn-resp {
+            border-radius: 12px;
+            padding: .45rem .85rem;
+            font-weight: 600;
             background: transparent;
         }
 
-        .btn-promo-trial  { border: 1.5px solid #FF687F; color: #FF687F; }
-        .btn-promo-refund { border: 1.5px solid #D65609; color: #D65609; }
-        .btn-promo-tutor  { border: 1.5px solid #566CD8; color: #566CD8; }
-
-        /* Carousel dots */
-        .carousel-indicators {
-            position: static;
-            margin: 6px 0 0;
-            justify-content: center;
+        .btn-promo-trial {
+            border: 1.5px solid #FF687F;
+            color: #FF687F;
         }
 
-        .carousel-indicators [data-bs-target] {
-            width: 7px;
-            height: 7px;
+        .btn-promo-refund {
+            border: 1.5px solid #D65609;
+            color: #D65609;
+        }
+
+        .btn-promo-tutor {
+            border: 1.5px solid #566CD8;
+            color: #566CD8;
+        }
+
+        .promo-indicators {
+            position: static;
+            margin-top: .5rem
+        }
+
+        .promo-indicators [data-bs-target] {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             border: 0;
-            background: #c5ceff;
-            margin: 0 3px;
-            opacity: 1;
+            background: #ffffffaa;
+            margin: 0 4px
         }
 
-        .carousel-indicators .active {
-            background: #566CD8;
-            width: 20px;
-            border-radius: 4px;
-        }
-
-        /* ── White content card ── */
-        .content-container {
-            flex: 1;
-            padding: 16px 14px;
-            background: white;
-            border-top-left-radius: 22px;
-            border-top-right-radius: 22px;
-            box-shadow: 0 -2px 10px rgba(0,0,0,.08);
-            margin-top: 14px;
-            position: relative;
-            z-index: 5;
-            /* Enough padding at bottom for navbar */
-            padding-bottom: 90px;
+        .promo-indicators .active {
+            background: #fff
         }
 
         .section-title {
             color: #10224d;
             font-weight: 700;
-            font-size: 17px;
+            font-size: 18px;
         }
 
-        .section-sub { color: var(--ink-dim) }
+        .section-sub {
+            color: var(--ink-dim)
+        }
 
         .badge-pill {
             display: inline-block;
@@ -164,30 +236,35 @@
             color: #10224d;
             border-radius: 12px;
             font-weight: 500;
-            font-size: 12px;
-            padding: .3rem .65rem;
+            font-size: 13px;
+            padding: .35rem .7rem
         }
 
-        /* ── Horizontal scroll strip ── */
         .snap-x {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
-            padding-bottom: 4px;
+            padding-bottom: 2px;
             scrollbar-width: none;
-            -ms-overflow-style: none;
+            -ms-overflow-style: none
         }
 
-        .snap-x::-webkit-scrollbar { display: none }
+        .snap-x::-webkit-scrollbar {
+            display: none;
+        }
 
-        /* ── Category cards ── */
+        .snap-x::-webkit-scrollbar-thumb {
+            background: #d7dcff;
+            border-radius: 10px
+        }
+
         .cat-card {
             position: relative;
             flex: 0 0 var(--cat-w);
             height: var(--cat-h);
             border-radius: var(--cat-r);
-            padding: 10px 16px 10px 10px;
+            padding: 10px 18px 10px 12px;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -200,15 +277,17 @@
             justify-content: space-between;
         }
 
+
         .cat-notch {
             position: absolute;
-            right: calc(-1 * var(--notch) / 2);
+            right: calc(-1*var(--notch)/2);
             top: 50%;
             width: var(--notch);
             height: var(--notch);
             transform: translateY(-50%);
             background: #fff;
             border-radius: 50%;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .04)
         }
 
         .cat-decor {
@@ -223,19 +302,19 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
             background: #fff;
-            box-shadow: 0 4px 10px rgba(0,0,0,.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, .08);
         }
 
         .cat-title {
             z-index: 1;
             margin: 2px 0 2px;
             font-weight: 600;
-            line-height: 1.2;
-            font-size: 13px;
+            line-height: 1.15;
+            font-size: 14px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -245,20 +324,31 @@
         .cat-sub {
             z-index: 1;
             color: #ffffff;
-            opacity: .95;
+            opacity: .96;
             font-weight: 500;
-            font-size: 12px;
+            font-size: 13px;
         }
 
-        .cat-orange { background-image: url('{{ asset('card-orange.png') }}');  color: var(--orange-ink); }
-        .cat-indigo { background-image: url('{{ asset('card-lilac.png') }}');   color: var(--indigo-ink); }
-        .cat-pink   { background-image: url('{{ asset('card-pink.png') }}');    color: var(--pink-ink);   }
+        .cat-orange {
+            background-image: url('{{ asset('card-orange.png') }}');
+            color: var(--orange-ink);
+        }
 
-        /* ── Tutor recommendation cards ── */
+        .cat-indigo {
+            background-image: url('{{ asset('card-lilac.png') }}');
+            color: var(--indigo-ink);
+        }
+
+        .cat-pink {
+            background-image: url('{{ asset('card-pink.png') }}');
+            color: var(--pink-ink);
+        }
+
+
         .rec-card {
             flex: 0 0 var(--rec-w);
             height: var(--rec-h);
-            border-radius: 18px;
+            border-radius: 20px;
             overflow: hidden;
             background-size: cover;
             background-position: center;
@@ -266,110 +356,85 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            box-shadow: 0 2px 10px rgba(30,40,80,.12);
-            scroll-snap-align: start;
+            box-shadow: 0 0 10px rgba(30, 40, 80, .12);
         }
 
-        .rec-orange { background-image: url('{{ asset('rec-orange.png') }}'); }
-        .rec-lilac  { background-image: url('{{ asset('rec-lilac.png') }}');  }
-        .rec-pink   { background-image: url('{{ asset('rec-pink.png') }}');   }
 
-        /* Photo area — flex-grow fills remaining space above the info strip */
+        .rec-orange {
+            background-image: url('{{ asset('rec-orange.png') }}');
+        }
+
+        .rec-lilac {
+            background-image: url('{{ asset('rec-lilac.png') }}');
+        }
+
+        .rec-pink {
+            background-image: url('{{ asset('rec-pink.png') }}');
+        }
+
         .rec-image {
-            flex: 1;
+            height: 120px;
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            overflow: hidden;
-            padding: 0 6px;
         }
 
         .rec-image img {
-            width: 100%;
             height: 100%;
-            object-fit: cover;
-            object-position: top center;
-            border-radius: 12px 12px 0 0;
-        }
-
-        /* Fallback avatar when no real photo */
-        .rec-avatar-fallback {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: rgba(255,255,255,.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            font-weight: 700;
-            color: #566CD8;
-            margin-bottom: 8px;
+            object-fit: contain;
         }
 
         .rec-info {
             background: #ffffff;
             width: 100%;
-            padding: 8px 10px 10px;
+            padding: 10px 14px;
         }
 
         .rec-name {
-            font-size: 13px;
+            font-size: 15px;
             font-weight: 700;
             color: #2b2d42;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .rec-role {
-            font-size: 11px;
+            font-size: 13px;
             color: #7b7f9e;
-            margin-bottom: 3px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            margin-bottom: 5px;
         }
 
         .rec-rating {
             display: flex;
             align-items: center;
-            gap: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #1b2430;
+            gap: 6px;
+            font-size: 13px;
         }
 
-        .rec-rating i { color: #ffc107; font-size: 11px; }
+        .rec-rating i {
+            color: #ffc107;
+        }
     </style>
 @endsection
 
 @section('content')
     <div class="homepage-container">
-
-        {{-- Header --}}
         <div class="header-bg">
             <div class="d-flex justify-content-between align-items-center">
-                <span class="hello-small">
-                    Halo, <strong class="hello-name">{{ $user->name ?? $user->username ?? 'User' }}</strong>
-                </span>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="hello-small">
+                        Halo,
+                        <strong class="hello-name">{{ $namaUser }}</strong>
+                    </span>
+                </div>
                 <a class="btn-icon" aria-label="Cari" href="{{ route('search') }}">
                     <i class="bi bi-search"></i>
                 </a>
             </div>
         </div>
 
-        {{-- Promo Carousel --}}
         <section class="hero">
-            <div class="hero-body">
-                <div id="promoCarousel" class="carousel slide" data-bs-ride="carousel"
-                     data-bs-touch="true" data-bs-interval="3000">
-
-                    <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="0" class="active"></button>
-                        <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="1"></button>
-                        <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="2"></button>
-                    </div>
+            <div class="container hero-body">
+                <div id="promoCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-touch="true"
+                    data-bs-interval="2000">
 
                     <div class="carousel-inner">
                         <div class="carousel-item active">
@@ -388,7 +453,7 @@
                                     <h5>Tidak Puas dengan Sesi Tutormu?</h5>
                                     <p>Lakukan Refund!</p>
                                     <a href="{{ route('aktivitas', ['tab' => 'lampau']) }}"
-                                       class="btn btn-resp btn-promo-refund">Cek Sekarang</a>
+                                        class="btn btn-resp btn-promo-refund">Cek Sekarang</a>
                                 </div>
                             </div>
                         </div>
@@ -407,86 +472,92 @@
             </div>
         </section>
 
-        {{-- Main content --}}
         <main class="content-container">
+            <div class="surface p-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <div class="section-title">Kategori</div>
+                    <a href="{{ route('kategori') }}" class="badge-pill">Lihat Semua</a>
+                </div>
+                <div class="section-sub small mb-3">Pilih Kategori Bidang yang Kamu Inginkan</div>
 
-            {{-- Kategori --}}
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <div class="section-title">Kategori</div>
-                <a href="{{ route('kategori') }}" class="badge-pill">Lihat Semua</a>
-            </div>
-            <div class="section-sub small mb-3">Pilih Kategori Bidang yang Kamu Inginkan</div>
+                <div class="snap-x mb-3">
+                    @foreach ($kategori as $index => $kat)
+                        @php
+                            $styles = [
+                                [
+                                    'card' => 'cat-orange',
+                                    'icon' => 'bi-database',
+                                    'iconColor' => 'text-warning',
+                                ],
+                                [
+                                    'card' => 'cat-indigo',
+                                    'icon' => 'bi-window-sidebar',
+                                    'iconColor' => 'text-primary',
+                                ],
+                                [
+                                    'card' => 'cat-pink',
+                                    'icon' => 'bi-code-slash',
+                                    'iconColor' => 'text-danger',
+                                ],
+                            ];
 
-            <div class="snap-x mb-4">
-                @foreach ($kategori as $index => $kat)
-                    @php
-                        $styles = [
-                            ['card' => 'cat-orange', 'icon' => 'bi-database',      'iconColor' => 'text-warning'],
-                            ['card' => 'cat-indigo', 'icon' => 'bi-window-sidebar','iconColor' => 'text-primary'],
-                            ['card' => 'cat-pink',   'icon' => 'bi-code-slash',    'iconColor' => 'text-danger'],
-                        ];
-                        $style = $styles[$index % count($styles)];
-                    @endphp
+                            $style = $styles[$index % count($styles)];
+                        @endphp
 
-                    <article class="cat-card {{ $style['card'] }}"
-                             onclick="location.href='{{ route('materi', $kat->idkategori) }}'"
-                             style="cursor:pointer">
-                        <div class="cat-decor"></div>
-                        <span class="cat-notch"></span>
-                        <div class="cat-icon">
-                            <i class="bi {{ $style['icon'] }} {{ $style['iconColor'] }}"></i>
-                        </div>
-                        <div>
-                            <div class="cat-title">{{ $kat->namakategori }}</div>
-                            <small class="cat-sub">{{ $kat->total_materi }} Materi</small>
-                        </div>
-                    </article>
-                @endforeach
-            </div>
+                        <article class="cat-card {{ $style['card'] }}"
+                            onclick="location.href='{{ route('materi', $kat->idkategori) }}'" style="cursor:pointer">
 
-            {{-- Rekomendasi Tutor --}}
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <div class="section-title">Rekomendasi Tutor</div>
-                <a href="{{ url('/tutor') }}" class="badge-pill">Lihat Semua</a>
-            </div>
-            <div class="section-sub small mb-3">Cari Tutor Yang Cocok Untukmu</div>
+                            <div class="cat-decor"></div>
+                            <span class="cat-notch"></span>
 
-            <div class="snap-x">
-                @foreach ($tutor as $index => $t)
-                    @php
-                        $bgClass = $index % 3 == 0 ? 'rec-orange' : ($index % 3 == 1 ? 'rec-lilac' : 'rec-pink');
-                        $initials = collect(explode(' ', $t->nama))->take(2)->map(fn($w) => strtoupper($w[0]))->join('');
-                        $isExternal = str_starts_with($t->fototutor, 'http');
-                    @endphp
-                    <article class="rec-card {{ $bgClass }}"
-                             onclick="location.href='{{ route('profiletutor', $t->idtutor) }}'"
-                             style="cursor:pointer">
-                        <div class="rec-image">
-                            @if ($isExternal)
-                                {{-- URL eksternal (ui-avatars dll) — tampilkan sebagai inisial sendiri --}}
-                                <div class="rec-avatar-fallback">{{ $initials }}</div>
-                            @else
-                                <img src="{{ asset($t->fototutor) }}"
-                                     alt="{{ $t->nama }}"
-                                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                                <div class="rec-avatar-fallback" style="display:none">{{ $initials }}</div>
-                            @endif
-                        </div>
-                        <div class="rec-info">
-                            <div class="rec-name">{{ $t->nama }}</div>
-                            <div class="rec-role">{{ $t->pekerjaan }}</div>
-                            <div class="rec-rating">
-                                <i class="bi bi-star-fill"></i>
-                                {{ number_format($t->ratingtutor, 1) }}
+                            <div class="cat-icon">
+                                <i class="bi {{ $style['icon'] }} {{ $style['iconColor'] }}"></i>
                             </div>
-                        </div>
-                    </article>
-                @endforeach
-            </div>
 
+                            <div>
+                                <div class="cat-title">{{ $kat->namakategori }}</div>
+                                <small class="cat-sub">
+                                    {{ $kat->total_materi }} Materi
+                                </small>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-1 mt-2">
+                    <div class="section-title">Rekomendasi Tutor</div>
+                    <a href="{{ url('/tutor') }}" class="badge-pill">Lihat Semua</a>
+                </div>
+                <div class="section-sub small mb-2">Cari Tutor Yang Cocok Untukmu</div>
+
+                <div class="snap-x">
+                    @foreach ($tutor as $index => $t)
+                        @php
+                            $bgClass = $index % 3 == 0 ? 'rec-orange' : ($index % 3 == 1 ? 'rec-lilac' : 'rec-pink');
+                        @endphp
+                        <article class="rec-card {{ $bgClass }}"
+                            onclick="location.href='{{ route('profiletutor', $t->idtutor) }}'" style="cursor:pointer">
+                            <div class="rec-image">
+                                <img src="{{ asset($t->fototutor) }}" alt="{{ $t->nama }}">
+                            </div>
+                            <div class="rec-info">
+                                <div class="rec-name">{{ $t->nama }}</div>
+                                <div class="rec-role">{{ $t->pekerjaan }}</div>
+                                <div class="rec-rating">
+                                    <i class="bi bi-star-fill"></i>
+                                    {{ number_format($t->ratingtutor, 1) }}
+                                </div>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+            </div>
         </main>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+@endsection
+
+
+@section('navbar')
     @include('layout.Navbar')
 @endsection

@@ -25,10 +25,14 @@ class sesiController extends Controller
     public function pesanSesi($idsesi)
     {
         $sesi = (object) [
-            'idsesi' => $idsesi, 'namaSesi' => 'Sesi Dummy', 'harga' => 50000, 
+            'idsesi' => $idsesi, 
+            'namaSesi' => 'Sesi Dummy', 
+            'harga' => 50000, 
+            'tipe' => 'online', // FIX 1: Penambahan tipe agar badge online/offline muncul
             'tutor' => (object)[
-            'nama' => 'Sasha', 
-            'fototutor' => 'https://ui-avatars.com/api/?name=Sasha&background=random'], 
+                'nama' => 'Sasha', 
+                'fototutor' => 'https://ui-avatars.com/api/?name=Sasha&background=random'
+            ], 
             'matakuliah' => (object)['namamatkul' => 'Matkul Dummy']
         ];
         $bookedDates = [];
@@ -44,7 +48,15 @@ class sesiController extends Controller
     public function pilihJam($idsesi)
     {
         $tanggal = session('tanggal_pesanan') ?? '2026-05-31';
-        $sesi = (object) ['idsesi' => $idsesi, 'namaSesi' => 'Sesi Dummy'];
+        $sesi = (object) [
+            'idsesi' => $idsesi, 
+            'namaSesi' => 'Sesi Dummy',
+            'tipe' => 'online',
+            'tutor' => (object)[
+                'nama' => 'Sasha', 
+                'fototutor' => 'https://ui-avatars.com/api/?name=Sasha&background=random'
+            ]
+        ];
         $jamTerbooking = [];
         return view('Pemilihan-Jam', compact('sesi', 'tanggal', 'jamTerbooking'));
     }
@@ -60,8 +72,14 @@ class sesiController extends Controller
         $tanggal = session('tanggal_pesanan') ?? '2026-05-31';
         $jam     = session('jam_pesanan') ?? '10:00';
         $sesi = (object) [
-            'idsesi' => $idsesi, 'namaSesi' => 'Sesi Dummy', 'harga' => 50000, 
-            'tutor' => (object)['nama' => 'Sasha'], 
+            'idsesi' => $idsesi, 
+            'namaSesi' => 'Sesi Dummy', 
+            'harga' => 50000,
+            'tipe' => 'online', 
+            'tutor' => (object)[
+                'nama' => 'Sasha',
+                'fototutor' => 'https://ui-avatars.com/api/?name=Sasha&background=random' // FIX 2: Penambahan fototutor untuk halaman akhir
+            ], 
             'matakuliah' => (object)['namamatkul' => 'Matkul Dummy']
         ];
         return view('Detail-Pesanan', compact('sesi', 'tanggal', 'jam'));
