@@ -55,13 +55,13 @@ jobs:
       - name: 'Deploy to Azure Web App for Container'
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'nama-webapp-kamu'
+          app-name: 'tutorpso14'
           publish-profile: ${{ secrets.AZURE_CREDENTIALS }} 
           images: 'nama-registry.azurecr.io/nama-image:latest'
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: PSO14
+          app-name: tutorpso14
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
       - name: Azure logout
