@@ -36,12 +36,12 @@ services:
     image: mysql:8.0
     container_name: tutorpso_db
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE:-dbtutor_pppltutor}
-      MYSQL_USER: ${DB_USERNAME:-tutor_user}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootsecret}
-    ports:
-      - "3306:3306"
+      DB_CONNECTION=pgsql
+      DB_HOST=aws-1-ap-northeast-1.pooler.supabase.com
+      DB_PORT=6543
+      DB_DATABASE=postgres
+      DB_USERNAME=postgres.spzxnzybmhjdqzlcuegp
+      DB_PASSWORD=TutorPso26!
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
