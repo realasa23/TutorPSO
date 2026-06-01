@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up()
 {
+    if (!Schema::hasTable('matakuliah')) {
     Schema::create('matakuliah', function (Blueprint $table) {
         $table->id('idmatkul'); // Primary Key
         $table->string('namamatkul', 150);
@@ -20,6 +21,7 @@ return new class extends Migration
         // Foreign Key ke tabel kategori
         $table->foreign('idkategori')->references('idkategori')->on('kategori')->onDelete('cascade');
     });
+    }
 }
 
     /**

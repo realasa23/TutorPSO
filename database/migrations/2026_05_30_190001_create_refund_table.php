@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up()
 {
+    if (!Schema::hasTable('refund')) {
     Schema::create('refund', function (Blueprint $table) {
         $table->id('idrefund');
         $table->unsignedBigInteger('idlaporan');
@@ -21,6 +22,7 @@ return new class extends Migration
         // Foreign Key nyambung ke tabel laporanmasalah
         $table->foreign('idlaporan')->references('idlaporan')->on('laporanmasalah')->onDelete('cascade');
     });
+    }
 }
 
     /**

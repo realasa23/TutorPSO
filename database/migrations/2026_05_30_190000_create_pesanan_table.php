@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up()
 {
+    if (!Schema::hasTable('pesanan')) {
     Schema::create('pesanan', function (Blueprint $table) {
         $table->id('idpesanan'); // Primary Key
         $table->unsignedBigInteger('idsesi');
@@ -24,6 +25,7 @@ return new class extends Migration
         $table->foreign('idsesi')->references('idsesi')->on('sesi')->onDelete('cascade');
         $table->foreign('userid')->references('id')->on('users')->onDelete('cascade');
     });
+    }
 }
 
     /**

@@ -20,7 +20,7 @@ php artisan route:clear || true
 php artisan view:clear || true
 
 echo "==> Running migrations..."
-php artisan migrate --force
+php artisan migrate --force || echo "⚠️  Migration warning (tables may already exist), continuing..."
 
 echo "==> Caching config & routes..."
 php artisan config:cache

@@ -10,13 +10,15 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
+{
+    if (!Schema::hasTable('kategori')) {
         Schema::create('kategori', function (Blueprint $table) {
-            $table->id('idkategori'); // Primary Key
-            $table->string('namakategori', 100);
+            $table->bigIncrements('idkategori');
+            $table->string('namakategori');
             $table->timestamps();
         });
     }
+}
 
     /**
      * Reverse the migrations.

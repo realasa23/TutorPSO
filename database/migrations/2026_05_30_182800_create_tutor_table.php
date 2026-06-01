@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up()
 {
-    Schema::create('tutor', function (Blueprint $table) {
-        $table->id('idtutor'); // Primary Key
-        $table->string('nama', 150);
-        $table->string('pekerjaan', 100)->nullable();
-        $table->text('deskripsi')->nullable();
-        $table->string('fototutor')->nullable();
+        if (!Schema::hasTable('tutor')) {
+        Schema::create('tutor', function (Blueprint $table) {
+            $table->id('idtutor'); // Primary Key
+            $table->string('nama', 150);
+            $table->string('pekerjaan', 100)->nullable();
+            $table->text('deskripsi')->nullable();
+            $table->string('fototutor')->nullable();
         $table->timestamps();
     });
+        }
 }
 
     /**
