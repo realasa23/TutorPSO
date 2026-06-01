@@ -9,16 +9,11 @@ class kategoriController extends Controller
 {
     public function kategori()
     {
-      $kategori = DB::table('kategori')
-            ->leftJoin('matakuliah', 'kategori.idkategori', '=', 'matakuliah.idkategori')
-            ->select(
-                'kategori.idkategori',
-                'kategori.namakategori',
-                DB::raw('COUNT(matakuliah.idmatkul) as total_materi')
-            )
-            ->groupBy('kategori.idkategori', 'kategori.namakategori')
+        // Kodingan Asli Nembak Database
+        $kategori = DB::table('kategori')
+            ->select('kategori.*') 
+            ->selectRaw('(SELECT COUNT(*) FROM matakuliah WHERE matakuliah.idkategori = kategori.idkategori) as total_materi')
             ->get();
-
         return view('Kategori', compact('kategori'));
     }
 }

@@ -5,79 +5,64 @@ use App\Models\Sesi;
 use App\Models\Pesanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth; // Tambahan untuk fitur Auth/Login
 use Carbon\Carbon;
 
-//Nailah Adlina - 5026231068
-//Mirna Irawan - 5026221192
+// Nailah Adlina - 5026231068
+// Mirna Irawan - 5026221192
 
 class pesananController extends Controller
 {
     public function storeRegular(Request $request)
     {
-        $idsesi   = session('idsesi');
-        $tanggal  = session('tanggal_pesanan');
-        $jam      = session('jam_pesanan');
+        // 1. Ambil data dari Session yang disimpan saat milih jadwal
+        $tanggal = session('tanggal_pesanan');
+        $jam     = session('jam_pesanan');
+        $idsesi  = $request->idsesi ?? session('idsesi') ?? 1; 
+        
+        // PENGAMBILAN USER ID ASLI
+        $userId = session('user_id') ?? Auth::id(); 
+        if (!$userId) return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
 
-        $userId = session('user_id');
-
-        if (!$idsesi || !$tanggal || !$jam) {
-            return redirect()->back()->with('error', 'Data pesanan tidak lengkap. Silakan ulangi pemesanan.');
-        }
-
-        $user = DB::table('user')->where('userid', $userId)->first();
-        $sesi = Sesi::findOrFail($idsesi);
-
-        Pesanan::create([
-            'idsesi'           => $idsesi,
-            'userid'           => $user->userid, 
-            'tanggal'          => $tanggal,
-            'jam'              => $jam,
-            'biaya'            => $sesi->harga,
-            'istrial'          => false,
-            'statuspembayaran' => 'berhasil',
+        // 2. Insert ke tabel pesanan di Supabase
+        DB::table('pesanan')->insert([
+            'idsesi'  => $idsesi,
+            'userid'  => $userId, // Sudah menggunakan ID dinamis
+            'tanggal' => $tanggal,
+            'jam'     => $jam,
+            'biaya'   => 50000, 
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
-        return view ('Konfirmasi-Pesanan');
+        // 3. Bersihkan memori agar pesanan selanjutnya tidak tertumpuk
+        session()->forget(['tanggal_pesanan', 'jam_pesanan', 'idsesi']);
+
+        return view('Konfirmasi-Pesanan');
     }
 
     public function storeTrial(Request $request)
     {
-        $idsesi   = session('idsesi');
-        $tanggal  = session('tanggal_pesanan');
-        $jam      = session('jam_pesanan');
-        $userId = session('user_id');
-        $user = DB::table('user')->where('userid', $userId)->first();
+        $tanggal = session('tanggal_pesanan');
+        $jam     = session('jam_pesanan');
+        $idsesi  = $request->idsesi ?? session('idsesi') ?? 1;
 
-        if (!$idsesi || !$tanggal || !$jam) {
-            return redirect()->back()->with('error', 'Data pesanan tidak lengkap. Silakan ulangi pemesanan.');
-        }
+        $userId = session('user_id') ?? Auth::id(); 
+        if (!$userId) return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
 
-        if ($user->kuotatrial <= 0) {
-            return redirect()->back()->with('error', 'Kuota trial kamu sudah habis.');
-        }
-
-        $sesi = Sesi::findOrFail($idsesi);
-
-        DB::transaction(function () use ($user, $idsesi, $tanggal, $jam) {
-
-        DB::table('user')
-            ->where('userid', $user->userid)
-            ->update([
-                'kuotatrial' => $user->kuotatrial - 1
-            ]);
-
-        Pesanan::create([
-            'idsesi'           => $idsesi,
-            'userid'           => $user->userid,
-            'tanggal'          => $tanggal,
-            'jam'              => $jam,
-            'biaya'            => 0,
-            'istrial'          => true,
-            'statuspembayaran' => 'free',
+        DB::table('pesanan')->insert([
+            'idsesi'  => $idsesi,
+            'userid'  => $userId, // Sudah menggunakan ID dinamis
+            'tanggal' => $tanggal,
+            'jam'     => $jam,
+            'biaya'   => 0, // Harga 0 karena Trial
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
-    });
 
-         return view ('Konfirmasi-Trial');
+        session()->forget(['tanggal_pesanan', 'jam_pesanan', 'idsesi']);
+
+        return view('Konfirmasi-Trial');
     }
 
     private function tentukanStatusTanggal($tanggal, $jam, $durasi = 50, $waktuSelesai = null)
@@ -99,127 +84,100 @@ class pesananController extends Controller
         return 'lampau';
     }
 
-
     public function gabungSesi($idpesanan)
     {
-        $userId = session('user_id');
+        $userId = session('user_id') ?? Auth::id(); 
+        if (!$userId) return redirect('/login');
 
+        // Ambil data asli dari database dengan cara menggabungkan (JOIN) tabel
         $pesanan = DB::table('pesanan')
-            ->where('idpesanan', $idpesanan)
-            ->where('userid', $userId)
+            ->join('sesi', 'pesanan.idsesi', '=', 'sesi.idsesi')
+            ->join('tutor', 'sesi.idtutor', '=', 'tutor.idtutor')
+            ->select('pesanan.*', 'sesi.namaSesi', 'tutor.nama as nama_tutor')
+            ->where('pesanan.idpesanan', $idpesanan)
+            ->where('pesanan.userid', $userId) // Keamanan ekstra agar tidak bisa masuk ke sesi orang lain
             ->first();
 
-        if (!$pesanan) abort(404);
+        if (!$pesanan) {
+            abort(404, 'Sesi tidak ditemukan atau bukan milik Anda');
+        }
 
         return view('Sesi-Berlangsung', compact('pesanan'));
     }
 
     public function endCall($idpesanan)
-    {
-        DB::table('pesanan')
-            ->where('idpesanan', $idpesanan)
-            ->update([
-                'waktu_selesai' => now()
-            ]);
-
+    {   
         return redirect()->route('aktivitas', ['tab' => 'lampau']);
     }
 
-
     public function aktivitas(Request $request)
     {
-        $userId = session('user_id');
-
         $allowedTabs = ['akan-datang', 'berlangsung', 'lampau'];
-        $tab = in_array($request->tab, $allowedTabs)
-            ? $request->tab
-            : 'akan-datang';
+        $tab = in_array($request->tab, $allowedTabs) ? $request->tab : 'akan-datang';
 
-        $pesanan = DB::table('pesanan')
+        $userId = session('user_id') ?? Auth::id(); 
+        if (!$userId) return redirect('/login');
+
+        // Ambil SEMUA riwayat pesanan milik user yang sedang login
+        $semuaPesanan = DB::table('pesanan')
             ->join('sesi', 'pesanan.idsesi', '=', 'sesi.idsesi')
             ->join('tutor', 'sesi.idtutor', '=', 'tutor.idtutor')
             ->join('matakuliah', 'sesi.idmatkul', '=', 'matakuliah.idmatkul')
-            ->where('pesanan.userid', $userId)
-            ->select(
-                'pesanan.idpesanan',
-                'pesanan.tanggal',
-                'pesanan.jam',
-                'pesanan.statuspembayaran',
-                'pesanan.waktu_selesai',
-                'sesi.idsesi',
-                'sesi.namaSesi',
-                'sesi.harga',
-                'sesi.filemateri',
-                'sesi.rekamankelas',
-                'tutor.nama as nama_tutor',
-                'tutor.fototutor',
-                'matakuliah.namamatkul'
-            )
+            ->select('pesanan.*', 'sesi.namaSesi', 'sesi.harga', 'tutor.nama as nama_tutor', 'tutor.fototutor', 'matakuliah.namamatkul')
+            ->where('pesanan.userid', $userId) // Filter otomatis sesuai akun yang login
+            ->orderBy('pesanan.tanggal', 'asc')
             ->get();
 
-        $sesi = $pesanan->filter(function ($p) use ($tab) {
-            $p->status_realtime = $this->tentukanStatusTanggal(
-                $p->tanggal,
-                $p->jam,
-                50,
-                $p->waktu_selesai
-            );
-            return $p->status_realtime === $tab;
-        });
+        $sesi = collect();
 
-        if ($tab === 'akan-datang') {
-            $sesi = $sesi->sortBy(function ($p) {
-                return $p->tanggal . ' ' . $p->jam;
-            });
-        } elseif ($tab === 'lampau') {
-            $sesi = $sesi->sortByDesc(function ($p) {
-                return $p->tanggal . ' ' . $p->jam;
-            });
+        // Filter data agar hanya muncul di Tab yang sesuai (Akan Datang / Berlangsung / Lampau)
+        foreach ($semuaPesanan as $p) {
+            $status_realtime = $this->tentukanStatusTanggal($p->tanggal, $p->jam, 50, null);
+            
+            if ($status_realtime == $tab) {
+                $p->status_realtime = $status_realtime;
+                $p->statuspembayaran = 'Lunas'; // Default UI display
+                $p->filemateri = null;
+                $p->rekamankelas = null;
+                
+                $sesi->push($p);
+            }
         }
 
         return view('Aktivitas', [
-            'sesi' => $sesi->values(),
+            'sesi' => $sesi,
             'tab'  => $tab
         ]);
     }
 
     public function detail($idpesanan)
     {
-        $userId = session('user_id');
-        if (!$userId) {
-            return redirect('/login');
-        }
+        $userId = session('user_id') ?? Auth::id(); 
+        if (!$userId) return redirect('/login');
 
+        // Ambil data pesanan spesifik beserta detail tutor dan mata kuliah
         $pesanan = DB::table('pesanan')
             ->join('sesi', 'pesanan.idsesi', '=', 'sesi.idsesi')
             ->join('tutor', 'sesi.idtutor', '=', 'tutor.idtutor')
             ->join('matakuliah', 'sesi.idmatkul', '=', 'matakuliah.idmatkul')
+            ->select('pesanan.*', 'sesi.namaSesi', 'sesi.harga', 'tutor.nama as nama_tutor', 'tutor.fototutor', 'matakuliah.namamatkul')
             ->where('pesanan.idpesanan', $idpesanan)
-            ->where('pesanan.userid', $userId)
-            ->select(
-                'pesanan.idpesanan',
-                'pesanan.tanggal as tanggal_pesanan',
-                'pesanan.jam as jam_pesanan',
-                'pesanan.biaya as biaya',
-                'sesi.namaSesi',
-                'sesi.harga',
-                'sesi.filemateri',
-                'sesi.rekamankelas',
-                'sesi.deskripsi',
-                'tutor.nama as nama_tutor',
-                'tutor.fototutor',
-                'matakuliah.namamatkul'
-            )
+            ->where('pesanan.userid', $userId) // Keamanan agar tidak bisa melihat detail orang lain
             ->first();
 
         if (!$pesanan) {
-            abort(404);
+            abort(404, 'Detail pesanan tidak ditemukan atau bukan milik Anda');
         }
 
-        $statusRealtime = $this->tentukanStatusTanggal(
-            $pesanan->tanggal_pesanan,
-            $pesanan->jam_pesanan
-        );
+        // Variabel tambahan untuk UI Blade
+        $pesanan->filemateri = null;
+        $pesanan->rekamankelas = null;
+        $pesanan->deskripsi = 'Ini adalah deskripsi materi.';
+
+        $pesanan->tanggal_pesanan = $pesanan->tanggal;
+        $pesanan->jam_pesanan = $pesanan->jam;
+
+        $statusRealtime = $this->tentukanStatusTanggal($pesanan->tanggal, $pesanan->jam, 50, null);
 
         return view('Detail-Aktivitas', compact('pesanan', 'statusRealtime'));
     }

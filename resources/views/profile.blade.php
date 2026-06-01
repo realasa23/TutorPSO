@@ -147,7 +147,7 @@
 
             </div>
 
-            <h3 class="profile-name">{{ $user->username }}</h3>
+            <h3 class="profile-name">{{ $user->name ?? $user->username ?? 'User' }}</h3>
             <p class="profile-email">{{ $user->email }}</p>
         </div>
 
@@ -180,5 +180,9 @@
     </script>
 
 
+@endsection
+
+
+@section('navbar')
     @include('layout.Navbar')
 @endsection

@@ -1,4 +1,18 @@
 {{-- Harya Raditya Handoyo - 5026231176 --}}
+@php
+    $userId = session('user_id') ?? \Illuminate\Support\Facades\Auth::id();
+    $namaUser = 'User';
+
+    if ($userId) {
+        // Kita gunakan 'users' (pakai s) sesuai tabel asli di Supabase kamu
+        $userData = \Illuminate\Support\Facades\DB::table('users')->where('id', $userId)->first();
+        
+        if ($userData) {
+            $namaUser = $userData->name;
+        }
+    }
+@endphp
+
 @extends('layout.Mobile-View')
 @section('page-style')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -407,7 +421,8 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-2">
                     <span class="hello-small">
-                        Halo, <strong class="hello-name">{{ $user->username ?? 'User' }}</strong>
+                        Halo,
+                        <strong class="hello-name">{{ $namaUser }}</strong>
                     </span>
                 </div>
                 <a class="btn-icon" aria-label="Cari" href="{{ route('search') }}">
@@ -540,5 +555,9 @@
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+@endsection
+
+
+@section('navbar')
     @include('layout.Navbar')
 @endsection

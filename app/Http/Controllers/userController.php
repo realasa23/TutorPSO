@@ -12,43 +12,61 @@ class UserController extends Controller
 {
     public function home()
     {
-        $user = DB::table('user')
-            ->where('userid', session('user_id'))
+        // Ambil data user yang lagi login
+        $user = DB::table('users')
+            ->where('id', session('user_id'))
             ->first();
 
-        $kategori = DB::table('kategori')
-            ->leftJoin('matakuliah', 'kategori.idkategori', '=', 'matakuliah.idkategori')
-            ->select(
-                'kategori.idkategori',
-                'kategori.namakategori',
-                DB::raw('COUNT(matakuliah.idmatkul) as total_materi')
-            )
-            ->groupBy('kategori.idkategori', 'kategori.namakategori')
-            ->get();
+        // --- BYPASS SEMENTARA: DUMMY DATA UNTUK HOME ---
+        
+        // 1. Dummy Kategori
+        $kategori = collect([
+            (object)[
+                'idkategori' => 1,
+                'namakategori' => 'Matematika & IPA',
+                'total_materi' => 5
+            ],
+            (object)[
+                'idkategori' => 2,
+                'namakategori' => 'Bahasa & Sastra',
+                'total_materi' => 3
+            ],
+            (object)[
+                'idkategori' => 3,
+                'namakategori' => 'Ilmu Sosial',
+                'total_materi' => 2
+            ],
+        ]);
 
-        $tutor = DB::table('tutor as t')
-            ->leftJoin('sesi as s', 's.idtutor', '=', 't.idtutor')
-            ->leftJoin('pesanan as p', 'p.idsesi', '=', 's.idsesi')
-            ->leftJoin('review as r', 'r.idpesanan', '=', 'p.idpesanan')
-            ->select(
-                't.idtutor',
-                't.nama',
-                't.pekerjaan',
-                't.fototutor',
-                DB::raw('COALESCE(AVG(r.rating),0) as ratingtutor'),
-                DB::raw('COUNT(DISTINCT r.idreview) as total_review')
-            )
-            ->groupBy(
-                't.idtutor',
-                't.nama',
-                't.pekerjaan',
-                't.fototutor'
-            )
-            ->orderByDesc('ratingtutor')
-            ->orderByDesc('total_review')
-            ->limit(6)
-            ->get();
+        // 2. Dummy Tutor (Top 6)
+        $tutor = collect([
+            (object)[
+                'idtutor' => 1,
+                'nama' => 'Dr. Budi Santoso',
+                'pekerjaan' => 'Dosen Matematika',
+                'fototutor' => 'https://ui-avatars.com/api/?name=Budi+Santoso',
+                'ratingtutor' => 4.9,
+                'total_review' => 125
+            ],
+            (object)[
+                'idtutor' => 2,
+                'nama' => 'Siti Nuraini, M.Pd.',
+                'pekerjaan' => 'Guru Bahasa Inggris',
+                'fototutor' => 'https://ui-avatars.com/api/?name=Siti+Nuraini',
+                'ratingtutor' => 4.8,
+                'total_review' => 98
+            ],
+            (object)[
+                'idtutor' => 3,
+                'nama' => 'Andi Pratama',
+                'pekerjaan' => 'Ahli Sejarah',
+                'fototutor' => 'https://ui-avatars.com/api/?name=Andi+Pratama',
+                'ratingtutor' => 4.7,
+                'total_review' => 85
+            ],
+        ]);
 
+        // Kirim data dummy ke view Homepage
         return view('Homepage', compact('user', 'kategori', 'tutor'));
     }
 
@@ -60,7 +78,8 @@ class UserController extends Controller
             return redirect('/login');
         }
 
-        $user = DB::table('user')->where('userid', $userId)->first();
+        // 'user' jadi 'users', 'userid' jadi 'id'
+        $user = DB::table('users')->where('id', $userId)->first();
         return view('Profile', compact('user'));
     }
 
@@ -72,103 +91,41 @@ class UserController extends Controller
         }
 
         $request->validate([
-            'username'   => 'required|string|max:100',
-            'email'      => 'required|email|max:150',
-            'nomorhp'    => 'nullable|string|max:20',
-            'fotoprofil' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+            'fotoprofil' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        $dataUpdate = [
-            'username' => $request->username,
-            'email'    => $request->email,
-            'nomorhp'  => $request->nomorhp
-        ];
+        $dataUpdate = [];
 
         if ($request->hasFile('fotoprofil')) {
-            $file = $request->file('fotoprofil');
+            $file     = $request->file('fotoprofil');
             $filename = 'profile_' . $userId . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('profile', $filename, 'public');
 
-            $dataUpdate['fotoprofil'] = 'storage/' . $path;
+            // Simpan ke storage/app/public/profile/
+            $file->storeAs('profile', $filename, 'public');
+
+            // Path yang disimpan ke DB, diakses via asset('storage/profile/xxx.jpg')
+            $dataUpdate['fotoprofil'] = 'storage/profile/' . $filename;
         }
 
-        DB::table('user')
-            ->where('userid', $userId)
-            ->update($dataUpdate);
+        if (!empty($dataUpdate)) {
+            DB::table('users')
+                ->where('id', $userId)
+                ->update($dataUpdate);
+        }
 
-        return back()->with('success', 'Profil berhasil diperbarui');
+        return back()->with('success', 'Foto profil berhasil diperbarui');
     }
 
     public function search(Request $request)
     {
         $keyword = $request->query('q');
-        $categories = DB::table('kategori')
-            ->when($keyword, fn ($q) =>
-                $q->where('namakategori', 'LIKE', "%{$keyword}%")
-            )
-            ->select(
-                'idkategori as id',
-                'namakategori as title'
-            )
-            ->get()
-            ->map(function ($item) {
-                $item->type = 'Kategori';
-                $item->subtitle = 'Kategori';
-                $item->icon = 'bi-grid';
-                $item->theme = 'orange';
-                return $item;
-            });
-
-        $matkul = DB::table('matakuliah')
-            ->when($keyword, fn ($q) =>
-                $q->where('namamatkul', 'LIKE', "%{$keyword}%")
-            )
-            ->select(
-                'idmatkul as id',
-                'namamatkul as title'
-            )
-            ->get()
-            ->map(function ($item) {
-                $item->type = 'Mata Kuliah';
-                $item->subtitle = 'Mata Kuliah';
-                $item->icon = 'bi-book';
-                $item->theme = 'indigo';
-                return $item;
-            });
-
-        $tutor = DB::table('tutor')
-            ->when($keyword, fn ($q) =>
-                $q->where('nama', 'LIKE', "%{$keyword}%")
-            )
-            ->select(
-                'idtutor as id',
-                'nama as title'
-            )
-            ->get()
-            ->map(function ($item) {
-                $item->type = 'Tutor';
-                $item->subtitle = 'Tutor';
-                $item->icon = 'bi-person';
-                $item->theme = 'pink';
-                return $item;
-            });
-
-        $sesi = DB::table('sesi')
-            ->when($keyword, fn ($q) =>
-                $q->where('namaSesi', 'LIKE', "%{$keyword}%")
-            )
-            ->select(
-                'idsesi as id',
-                'namaSesi as title'
-            )
-            ->get()
-            ->map(function ($item) {
-                $item->type = 'Sesi Tutor';
-                $item->subtitle = 'Sesi Tutor';
-                $item->icon = 'bi-calendar-event';
-                $item->theme = 'indigo';
-                return $item;
-            });
+        
+        // --- BYPASS SEMENTARA JUGA ---
+        // Biar pas fitur search dicoba nggak muncul error tabel missing.
+        $categories = collect([]);
+        $matkul = collect([]);
+        $tutor = collect([]);
+        $sesi = collect([]);
 
         $results = collect()
             ->merge($categories)
@@ -178,7 +135,6 @@ class UserController extends Controller
 
         return view('Pencarian', compact('results', 'keyword'));
     }
-
 
     public function logout()
     {

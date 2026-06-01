@@ -290,5 +290,9 @@
         @endforelse
 
     </div>
+@endsection
+
+
+@section('navbar')
     @include('layout.Navbar')
 @endsection

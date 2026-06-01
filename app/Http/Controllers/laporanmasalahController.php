@@ -5,6 +5,7 @@ use App\Models\laporanmasalah;
 use App\Models\Refund;
 use App\Models\user; 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth; // Tambahkan ini jika menggunakan Auth bawaan Laravel
 
 //Michelle Lea Amanda - 5026231214
 //Nailah Adlina - 5026231068
@@ -13,9 +14,14 @@ class laporanmasalahController extends Controller
 {
     public function create($idpesanan)
     {
-        $userId = session('user_id');
+        // PENGAMBILAN USER ID ASLI:
+        // Jika pakai session manual, gunakan: session('user_id')
+        // Jika pakai Auth bawaan Laravel, gunakan: Auth::id()
+        $userId = session('user_id') ?? Auth::id(); 
+        
+        // Jika user belum login, tendang ke halaman login
         if (!$userId) {
-            return redirect('/login');
+            return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
         $pesanan = DB::table('pesanan')
@@ -28,7 +34,7 @@ class laporanmasalahController extends Controller
                 'pesanan.idsesi',
                 'pesanan.tanggal',
                 'pesanan.jam',
-                'sesi.namasesi',
+                'sesi.namaSesi as namasesi', 
                 'tutor.nama as nama_tutor',
                 'tutor.fototutor'
             )
@@ -39,9 +45,8 @@ class laporanmasalahController extends Controller
         }
 
         $sudahLapor = DB::table('laporanmasalah')
-        ->where('idpesanan', $pesanan->idpesanan)
-        ->exists();
-
+            ->where('idsesi', $pesanan->idsesi) 
+            ->exists();
 
         if ($sudahLapor) {
             return redirect()
@@ -54,7 +59,6 @@ class laporanmasalahController extends Controller
 
     public function detailMasalah(Request $request, $idpesanan)
     {
-
         $jenisMasalah = $request->query('jenis');
         $idpesanan = $request->route('idpesanan');
 
@@ -62,7 +66,9 @@ class laporanmasalahController extends Controller
             abort(404);
         }
 
-        $userId = session('user_id');
+        // PENGAMBILAN USER ID ASLI
+        $userId = session('user_id') ?? Auth::id(); 
+        
         if (!$userId) {
             return redirect('/login');
         }
@@ -76,7 +82,7 @@ class laporanmasalahController extends Controller
                 'pesanan.idpesanan',
                 'pesanan.tanggal',
                 'pesanan.jam',
-                'sesi.namasesi',
+                'sesi.namaSesi as namasesi', 
                 'tutor.nama as nama_tutor',
                 'tutor.fototutor'
             )
@@ -97,7 +103,8 @@ class laporanmasalahController extends Controller
             'deskripsi' => 'required|string',
         ]);
 
-        $userId = session('user_id');
+        // PENGAMBILAN USER ID ASLI
+        $userId = session('user_id') ?? Auth::id(); 
 
         $pesanan = DB::table('pesanan')
             ->where('idpesanan', $request->idpesanan)
@@ -115,27 +122,30 @@ class laporanmasalahController extends Controller
 
         $idlaporan = DB::table('laporanmasalah')->insertGetId([
             'userid'            => $userId,
-            'idpesanan'         => $pesanan->idpesanan,
+            'idsesi'            => $pesanan->idsesi, 
             'kategorimasalah'   => $request->jenis_masalah,
             'deskripsimasalah'  => $request->deskripsi,
             'statuslaporan'     => $isRefund
                 ? 'Refund_Diajukan'
                 : 'Laporan_Diterima',
-        ]);
+            'created_at'        => now(),
+            'updated_at'        => now(),
+        ], 'idlaporan'); // <--- TAMBAHKAN KATA 'idlaporan' DI SINI
 
         if ($isRefund) {
             DB::table('refund')->insert([
                 'idlaporan'          => $idlaporan,
                 'statusrefund'       => 'Diproses',
                 'jumlahpengembalian' => $pesanan->biaya,
+                'created_at'         => now(),
+                'updated_at'         => now(),
             ]);
         }
 
         return redirect()
-        ->route('laporan.selesai')
-        ->with('type', $isRefund ? 'refund' : 'laporan');
+            ->route('laporan.selesai')
+            ->with('type', $isRefund ? 'refund' : 'laporan');
     }
-
 
     public function laporanSukses(Request $request)
     {
