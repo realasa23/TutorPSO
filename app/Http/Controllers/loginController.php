@@ -4,8 +4,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-//Peter Christian Erastus - 5026231138
-
 class loginController extends Controller
 {
     public function index()
@@ -45,20 +43,33 @@ class loginController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+<<<<<<< HEAD
             'email' => 'required|email|unique:users',
+=======
+            'email' => 'required|email|unique:user', 
+>>>>>>> conf
             'password' => 'required|min:6|confirmed',
             'phone' => 'required|string'
         ]);
 
+<<<<<<< HEAD
         $exists = DB::table('users')->where('email', $validated['email'])->exists();
+=======
+        $exists = DB::table('user')->where('email', $validated['email'])->exists(); 
+>>>>>>> conf
 
         if ($exists) {
             return back()->withErrors(['email' => 'Email already registered'])->withInput();
         }
 
+<<<<<<< HEAD
         // Baris 'nomorhp' udah aku hapus biar nggak error pas masukin ke database Supabase
         DB::table('users')->insert([
             'name' => $validated['name'],
+=======
+        DB::table('user')->insert([ 
+            'username' => $validated['name'],
+>>>>>>> conf
             'email' => $validated['email'],
             'password' => Hash::make($validated['password'])
         ]);

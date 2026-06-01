@@ -11,8 +11,6 @@ return new class extends Migration
      */
     public function up()
 {
-    // Cek apakah tabel 'review' SUDAH ADA?
-    // Jika BELUM ADA (!), baru buat.
     if (!Schema::hasTable('review')) {
         Schema::create('review', function (Blueprint $table) {
             $table->id('idreview'); 
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('review');
     }
 };
