@@ -40,8 +40,14 @@ jobs:
           cache-to: type=inline
 
       - name: Trigger Azure redeploy
+        env:
+          WEBHOOK_URL: ${{ secrets.AZURE_WEBHOOK_URL }}
         run: |
-          HTTP=$(curl -s -o /dev/null -w "%{http_code}" \
-            -X POST "${{ secrets.AZURE_WEBHOOK_URL }}")
+          HTTP=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$WEBHOOK_URL")
           echo "Status: $HTTP"
-          [[ "$HTTP" == "200" ]] && echo "✅ Deploy triggered" || (echo "❌ Failed: $HTTP" && exit 1)
+          if [[ "$HTTP" == "200" ]] || [[ "$HTTP" == "202" ]]; then
+            echo "✅ Deploy triggered"
+          else
+            echo "❌ Failed: $HTTP"
+            exit 1
+          fi
