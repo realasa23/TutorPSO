@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tutorpso_app
+    ports:
+      - "8000:80"
+    environment:
+      APP_NAME: TutorPSO
+      APP_ENV: production
+      APP_KEY: ${APP_KEY}
+      APP_DEBUG: "false"
+      APP_URL: ${APP_URL:-http://localhost:8000}
+
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-dbtutor_pppltutor}
+      DB_USERNAME: ${DB_USERNAME:-tutor_user}
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
+
+      CACHE_DRIVER: file
+      SESSION_DRIVER: file
+      QUEUE_CONNECTION: sync
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - storage_data:/var/www/html/storage/app/public
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.0
+    container_name: tutorpso_db
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-dbtutor_pppltutor}
+      MYSQL_USER: ${DB_USERNAME:-tutor_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootsecret}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  storage_data:
