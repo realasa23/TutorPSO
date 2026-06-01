@@ -1,19 +1,15 @@
 name: Build & Deploy to Azure
-
 on:
   push:
     branches:
       - master
   workflow_dispatch:
-
 env:
   REGISTRY: tutorpso14.azurecr.io
   IMAGE_NAME: tutorpso-app
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,25 +35,9 @@ jobs:
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           cache-to: type=inline
 
-      - name: Trigger Azure redeploy
-        env:
-          WEBHOOK_URL: ${{ secrets.AZURE_WEBHOOK_URL }}
-        run: |
-          HTTP=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$WEBHOOK_URL")
-          echo "Status: $HTTP"
-          if [[ "$HTTP" == "200" ]] || [[ "$HTTP" == "202" ]]; then
-            echo "✅ Deploy triggered"
-          else
-            echo "❌ Failed: $HTTP"
-            exit 1
-          fi
-          - name: Force restart Azure Web App
-            uses: azure/login@v1
-            with:
-              creds: ${{ secrets.AZURE_CREDENTIALS }}
-          
-          - name: Restart Web App
-            run: |
-              az webapp restart \
-                --name tutorpso14 \
-                --resource-group <Tutor>
+      - name: Deploy & Restart via Publish Profile
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: tutorpso14
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
