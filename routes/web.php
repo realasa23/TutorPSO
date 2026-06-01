@@ -10,29 +10,29 @@ use App\Http\Controllers\refundController;
 use App\Http\Controllers\reviewController;
 use App\Http\Controllers\tutorController;
 use App\Http\Controllers\userController;
-use App\Http\Controllers\loginController;
+use App\Http\Controllers\Logincontroller;
 
 
-Route::get('/', [logincontroller::class, 'index']);
-Route::get('/login', [logincontroller::class, 'login']);
-Route::get('/register', [logincontroller::class, 'register']);
-Route::post('/login', [logincontroller::class, 'handleLogin']);
-Route::post('/register', [logincontroller::class, 'handleRegister']);
+Route::get('/', [Logincontroller::class, 'index']);
+Route::get('/login', [Logincontroller::class, 'login']);
+Route::get('/register', [Logincontroller::class, 'register']);
+Route::post('/login', [Logincontroller::class, 'handleLogin']);
+Route::post('/register', [Logincontroller::class, 'handleRegister']);
 Route::get('/home', [UserController::class, 'home'])->name('home');
 Route::get('/search', [UserController::class, 'search'])->name('search');
 
 Route::get('/kategori', [kategoriController::class, 'kategori'])->name('kategori');
 Route::get('/kategori/{id}/materi', [matakuliahController::class, 'materi'])->name('materi');
-Route::get('/materi/{idmatkul}/sesi', [sesiController::class, 'listSesi'])->name('sesi');
+Route::get('/materi/{idmatkul}/sesi', [SesiController::class, 'listSesi'])->name('sesi');
 Route::get('/tutor', [tutorController::class, 'recTutor'])->name('tutor');
 Route::get('/tutor/{id}', [tutorController::class, 'profile'])->name('profiletutor');
 Route::get('/tutor/{idtutor}/sesi',[tutorController::class, 'listSesi'])->name('tutor.sesi');
 
-Route::get('/pesan-sesi/{idsesi}', [sesiController::class, 'pesanSesi'])->name('pesanan.tanggal');
-Route::post('/pesan-sesi/{idsesi}', [sesiController::class, 'pilihTanggalStore'])->name('pesanan.tanggal.store');
-Route::get('/pesan-sesi/{idsesi}/jam', [sesiController::class, 'pilihJam'])->name('pesanan.jam');
-Route::post('/pesan-sesi/{idsesi}/jam', [sesiController::class, 'pilihJamStore'])->name('pesanan.jam.store');
-Route::get('/pesan-sesi/{idsesi}/detail', [sesiController::class, 'lihatDetailPesanan'])->name('pesanan.detail');
+Route::get('/pesan-sesi/{idsesi}', [SesiController::class, 'pesanSesi'])->name('pesanan.tanggal');
+Route::post('/pesan-sesi/{idsesi}', [SesiController::class, 'pilihTanggalStore'])->name('pesanan.tanggal.store');
+Route::get('/pesan-sesi/{idsesi}/jam', [SesiController::class, 'pilihJam'])->name('pesanan.jam');
+Route::post('/pesan-sesi/{idsesi}/jam', [SesiController::class, 'pilihJamStore'])->name('pesanan.jam.store');
+Route::get('/pesan-sesi/{idsesi}/detail', [SesiController::class, 'lihatDetailPesanan'])->name('pesanan.detail');
 Route::post('/konfirmasi-pesanan',[pesananController::class, 'storeRegular'])->name('pesanan.store.regular');
 Route::post('/konfirmasi-trial',[pesananController::class, 'storeTrial'])->name('pesanan.store.trial');
 Route::get('/gabung-sesi/{idpesanan}',[pesananController::class, 'gabungSesi'])->name('sesi.berlangsung');
