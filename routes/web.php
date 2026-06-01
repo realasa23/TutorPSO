@@ -10,7 +10,7 @@ use App\Http\Controllers\refundController;
 use App\Http\Controllers\reviewController;
 use App\Http\Controllers\tutorController;
 use App\Http\Controllers\userController;
-use App\Http\Controllers\logincontroller;
+use App\Http\Controllers\loginController;
 
 
 Route::get('/', [logincontroller::class, 'index']);
