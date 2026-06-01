@@ -22,6 +22,13 @@ php artisan view:clear || true
 echo "==> Running migrations..."
 php artisan migrate --force || echo "⚠️  Migration warning (tables may already exist), continuing..."
 
+echo "==> Fixing storage permissions..."
+chown -R www-data:www-data /var/www/html/storage
+chown -R www-data:www-data /var/www/html/bootstrap/cache
+chmod -R 775 /var/www/html/storage
+chmod -R 775 /var/www/html/bootstrap/cache
+php artisan storage:link || true
+
 echo "==> Caching config & routes..."
 php artisan config:cache
 php artisan route:cache
