@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -24,14 +25,13 @@ class loginController extends Controller
     public function handleLogin(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required|email',
+            'email'    => 'required|email',
             'password' => 'required'
         ]);
 
         $user = DB::table('users')->where('email', $validated['email'])->first();
 
         if ($user && Hash::check($validated['password'], $user->password)) {
-            // Typo 'ssession' udah aku perbaiki jadi 'session'
             session(['user_id' => $user->id, 'user_email' => $user->email]);
             return redirect('/home')->with('success', 'Login successful');
         }
@@ -42,36 +42,24 @@ class loginController extends Controller
     public function handleRegister(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-<<<<<<< HEAD
-            'email' => 'required|email|unique:users',
-=======
-            'email' => 'required|email|unique:user', 
->>>>>>> conf
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users',  // tabel: users ✅
             'password' => 'required|min:6|confirmed',
-            'phone' => 'required|string'
+            // DIHAPUS: 'phone' karena kolom ini tidak ada di tabel users Supabase kamu
         ]);
 
-<<<<<<< HEAD
         $exists = DB::table('users')->where('email', $validated['email'])->exists();
-=======
-        $exists = DB::table('user')->where('email', $validated['email'])->exists(); 
->>>>>>> conf
 
         if ($exists) {
             return back()->withErrors(['email' => 'Email already registered'])->withInput();
         }
 
-<<<<<<< HEAD
-        // Baris 'nomorhp' udah aku hapus biar nggak error pas masukin ke database Supabase
         DB::table('users')->insert([
-            'name' => $validated['name'],
-=======
-        DB::table('user')->insert([ 
-            'username' => $validated['name'],
->>>>>>> conf
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password'])
+            'name'       => $validated['name'],   // kolom: name ✅
+            'email'      => $validated['email'],
+            'password'   => Hash::make($validated['password']),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         return redirect('/login')->with('success', 'Registration successful. Please login.');

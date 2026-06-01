@@ -202,11 +202,11 @@
             @forelse ($reviews as $r)
                 <div class="review-card">
                     <div class="review-avatar">
-                        {{ strtoupper(substr($r->username, 0, 1)) }}
+                        {{ strtoupper(substr($r->nama_user, 0, 1)) }}
                     </div>
                     <div>
                         <p class="review-name">
-                            {{ $r->username }}
+                            {{ $r->nama_user }}
                         </p>
                         <div class="profile-rating justify-content-start">
                             <i class="bi bi-star-fill"></i>

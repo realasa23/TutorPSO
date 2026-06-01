@@ -1,19 +1,15 @@
 name: Build & Deploy to Azure
-
 on:
   push:
     branches:
       - master
   workflow_dispatch:
-
 env:
   REGISTRY: tutorpso14.azurecr.io
   IMAGE_NAME: tutorpso-app
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
