@@ -51,3 +51,13 @@ jobs:
             echo "❌ Failed: $HTTP"
             exit 1
           fi
+          - name: Force restart Azure Web App
+            uses: azure/login@v1
+            with:
+              creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+          - name: Restart Web App
+            run: |
+              az webapp restart \
+                --name tutorpso14 \
+                --resource-group <Tutor>
