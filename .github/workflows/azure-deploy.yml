@@ -12,7 +12,6 @@ env:
 
 jobs:
   build-and-deploy:
-    name: Build & Deploy
     runs-on: ubuntu-latest
 
     steps:
@@ -40,23 +39,9 @@ jobs:
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           cache-to: type=inline
 
-      - name: Trigger Azure to pull new image
+      - name: Trigger Azure redeploy
         run: |
-          PP='${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}'
-          KUDU_USER=$(echo "$PP" | grep -oP '(?<=userName=")[^"]+' | head -1)
-          KUDU_PASS=$(echo "$PP" | grep -oP '(?<=userPWD=")[^"]+' | head -1)
-
-          echo "Triggering container refresh..."
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
-            "https://tutorpso14.scm.azurewebsites.net/api/docker/webhook" \
-            -u "$KUDU_USER:$KUDU_PASS" \
-            -H "Content-Type: application/json" \
-            -d '{}')
-
-          echo "Response: $HTTP_STATUS"
-          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
-            echo "✅ Deployment triggered successfully"
-          else
-            echo "❌ Failed with HTTP $HTTP_STATUS"
-            exit 1
-          fi
+          HTTP=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST "${{ secrets.AZURE_WEBHOOK_URL }}")
+          echo "Status: $HTTP"
+          [[ "$HTTP" == "200" ]] && echo "✅ Deploy triggered" || (echo "❌ Failed: $HTTP" && exit 1)
