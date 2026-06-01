@@ -13,6 +13,12 @@ until php -r "
   sleep 3
 done
 
+echo "==> Clearing caches..."
+php artisan config:clear || true
+php artisan cache:clear || true
+php artisan route:clear || true
+php artisan view:clear || true
+
 echo "==> Running migrations..."
 php artisan migrate --force
 
