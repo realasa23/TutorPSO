@@ -1,6 +1,3 @@
-# ================================
-# Stage 1: Build frontend assets
-# ================================
 FROM node:18-alpine AS frontend
 
 WORKDIR /app
@@ -11,9 +8,6 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# ================================
-# Stage 2: PHP production image
-# ================================
 FROM php:8.2-apache AS production
 
 # Install system dependencies
