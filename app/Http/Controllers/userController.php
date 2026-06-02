@@ -67,7 +67,7 @@ class UserController extends Controller
         ]);
 
         // Kirim data dummy ke view Homepage
-        return view('Homepage', compact('user', 'kategori', 'tutor'));
+        return view('homepage', compact('user', 'kategori', 'tutor'));
     }
 
 
@@ -80,7 +80,7 @@ class UserController extends Controller
 
         // 'user' jadi 'users', 'userid' jadi 'id'
         $user = DB::table('users')->where('id', $userId)->first();
-        return view('Profile', compact('user'));
+        return view('profile', compact('user'));
     }
 
     public function updateProfile(Request $request)
