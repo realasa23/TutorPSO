@@ -12,64 +12,41 @@ class UserController extends Controller
 {
     public function home()
     {
-        // Ambil data user yang lagi login
         $user = DB::table('users')
             ->where('id', session('user_id'))
             ->first();
 
-        // --- BYPASS SEMENTARA: DUMMY DATA UNTUK HOME ---
-        
-        // 1. Dummy Kategori
-        $kategori = collect([
-            (object)[
-                'idkategori' => 1,
-                'namakategori' => 'Matematika & IPA',
-                'total_materi' => 5
-            ],
-            (object)[
-                'idkategori' => 2,
-                'namakategori' => 'Bahasa & Sastra',
-                'total_materi' => 3
-            ],
-            (object)[
-                'idkategori' => 3,
-                'namakategori' => 'Ilmu Sosial',
-                'total_materi' => 2
-            ],
-        ]);
+        // Real query kategori + hitung total matakuliah per kategori
+        $kategori = DB::table('kategori')
+            ->leftJoin('matakuliah', 'kategori.idkategori', '=', 'matakuliah.idkategori')
+            ->select(
+                'kategori.idkategori',
+                'kategori.namakategori',
+                DB::raw('COUNT(matakuliah.idmatkul) as total_materi')
+            )
+            ->groupBy('kategori.idkategori', 'kategori.namakategori')
+            ->get();
 
-        // 2. Dummy Tutor (Top 6)
-        $tutor = collect([
-            (object)[
-                'idtutor' => 1,
-                'nama' => 'Dr. Budi Santoso',
-                'pekerjaan' => 'Dosen Matematika',
-                'fototutor' => 'https://ui-avatars.com/api/?name=Budi+Santoso',
-                'ratingtutor' => 4.9,
-                'total_review' => 125
-            ],
-            (object)[
-                'idtutor' => 2,
-                'nama' => 'Siti Nuraini, M.Pd.',
-                'pekerjaan' => 'Guru Bahasa Inggris',
-                'fototutor' => 'https://ui-avatars.com/api/?name=Siti+Nuraini',
-                'ratingtutor' => 4.8,
-                'total_review' => 98
-            ],
-            (object)[
-                'idtutor' => 3,
-                'nama' => 'Andi Pratama',
-                'pekerjaan' => 'Ahli Sejarah',
-                'fototutor' => 'https://ui-avatars.com/api/?name=Andi+Pratama',
-                'ratingtutor' => 4.7,
-                'total_review' => 85
-            ],
-        ]);
+        // Real query tutor + rating dinamis dari tabel review
+        $tutor = DB::table('tutor')
+            ->leftJoin('sesi', 'tutor.idtutor', '=', 'sesi.idtutor')
+            ->leftJoin('pesanan', 'sesi.idsesi', '=', 'pesanan.idsesi')
+            ->leftJoin('review', 'pesanan.idpesanan', '=', 'review.idpesanan')
+            ->select(
+                'tutor.idtutor',
+                'tutor.nama',
+                'tutor.pekerjaan',
+                'tutor.fototutor',
+                DB::raw('COALESCE(AVG(review.rating), 0) as ratingtutor'),
+                DB::raw('COUNT(review.idreview) as total_review')
+    )
+            ->groupBy('tutor.idtutor', 'tutor.nama', 'tutor.pekerjaan', 'tutor.fototutor')
+            ->orderByDesc('ratingtutor')
+            ->limit(6)
+            ->get();
 
-        // Kirim data dummy ke view Homepage
         return view('homepage', compact('user', 'kategori', 'tutor'));
     }
-
 
     public function index()
     {
@@ -78,7 +55,6 @@ class UserController extends Controller
             return redirect('/login');
         }
 
-        // 'user' jadi 'users', 'userid' jadi 'id'
         $user = DB::table('users')->where('id', $userId)->first();
         return view('profile', compact('user'));
     }
@@ -100,10 +76,8 @@ class UserController extends Controller
             $file     = $request->file('fotoprofil');
             $filename = 'profile_' . $userId . '.' . $file->getClientOriginalExtension();
 
-            // Simpan ke storage/app/public/profile/
             $file->storeAs('profile', $filename, 'public');
 
-            // Path yang disimpan ke DB, diakses via asset('storage/profile/xxx.jpg')
             $dataUpdate['fotoprofil'] = 'storage/profile/' . $filename;
         }
 
@@ -119,13 +93,27 @@ class UserController extends Controller
     public function search(Request $request)
     {
         $keyword = $request->query('q');
-        
-        // --- BYPASS SEMENTARA JUGA ---
-        // Biar pas fitur search dicoba nggak muncul error tabel missing.
-        $categories = collect([]);
-        $matkul = collect([]);
-        $tutor = collect([]);
-        $sesi = collect([]);
+
+        $categories = DB::table('kategori')
+            ->where('namakategori', 'ILIKE', "%{$keyword}%")
+            ->select('idkategori as id', 'namakategori as nama', DB::raw("'kategori' as tipe"))
+            ->get();
+
+        $matkul = DB::table('matakuliah')
+            ->where('namamatkul', 'ILIKE', "%{$keyword}%")
+            ->select('idmatkul as id', 'namamatkul as nama', DB::raw("'matkul' as tipe"))
+            ->get();
+
+        $tutor = DB::table('tutor')
+            ->where('nama', 'ILIKE', "%{$keyword}%")
+            ->select('idtutor as id', 'nama', DB::raw("'tutor' as tipe"))
+            ->get();
+
+        // Kolom search di sesi pakai namasesi (bukan judul)
+        $sesi = DB::table('sesi')
+            ->where('namasesi', 'ILIKE', "%{$keyword}%")
+            ->select('idsesi as id', 'namasesi as nama', DB::raw("'sesi' as tipe"))
+            ->get();
 
         $results = collect()
             ->merge($categories)
@@ -133,7 +121,7 @@ class UserController extends Controller
             ->merge($tutor)
             ->merge($sesi);
 
-        return view('Pencarian', compact('results', 'keyword'));
+        return view('pencarian', compact('results', 'keyword'));
     }
 
     public function logout()
