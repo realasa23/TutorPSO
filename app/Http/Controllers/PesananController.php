@@ -5,29 +5,26 @@ use App\Models\Sesi;
 use App\Models\Pesanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth; // Tambahan untuk fitur Auth/Login
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 // Nailah Adlina - 5026231068
 // Mirna Irawan - 5026221192
 
-class pesananController extends Controller
+class PesananController extends Controller
 {
     public function storeRegular(Request $request)
     {
-        // 1. Ambil data dari Session yang disimpan saat milih jadwal
         $tanggal = session('tanggal_pesanan');
         $jam     = session('jam_pesanan');
         $idsesi  = $request->idsesi ?? session('idsesi') ?? 1; 
         
-        // PENGAMBILAN USER ID ASLI
         $userId = session('user_id') ?? Auth::id(); 
         if (!$userId) return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
 
-        // 2. Insert ke tabel pesanan di Supabase
         DB::table('pesanan')->insert([
             'idsesi'  => $idsesi,
-            'userid'  => $userId, // Sudah menggunakan ID dinamis
+            'userid'  => $userId,
             'tanggal' => $tanggal,
             'jam'     => $jam,
             'biaya'   => 50000, 
@@ -35,7 +32,6 @@ class pesananController extends Controller
             'updated_at' => now(),
         ]);
 
-        // 3. Bersihkan memori agar pesanan selanjutnya tidak tertumpuk
         session()->forget(['tanggal_pesanan', 'jam_pesanan', 'idsesi']);
 
         return view('Konfirmasi-Pesanan');
@@ -52,10 +48,10 @@ class pesananController extends Controller
 
         DB::table('pesanan')->insert([
             'idsesi'  => $idsesi,
-            'userid'  => $userId, // Sudah menggunakan ID dinamis
+            'userid'  => $userId,
             'tanggal' => $tanggal,
             'jam'     => $jam,
-            'biaya'   => 0, // Harga 0 karena Trial
+            'biaya'   => 0,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -89,13 +85,12 @@ class pesananController extends Controller
         $userId = session('user_id') ?? Auth::id(); 
         if (!$userId) return redirect('/login');
 
-        // Ambil data asli dari database dengan cara menggabungkan (JOIN) tabel
         $pesanan = DB::table('pesanan')
             ->join('sesi', 'pesanan.idsesi', '=', 'sesi.idsesi')
             ->join('tutor', 'sesi.idtutor', '=', 'tutor.idtutor')
             ->select('pesanan.*', 'sesi.namaSesi', 'tutor.nama as nama_tutor')
             ->where('pesanan.idpesanan', $idpesanan)
-            ->where('pesanan.userid', $userId) // Keamanan ekstra agar tidak bisa masuk ke sesi orang lain
+            ->where('pesanan.userid', $userId)
             ->first();
 
         if (!$pesanan) {
@@ -118,25 +113,23 @@ class pesananController extends Controller
         $userId = session('user_id') ?? Auth::id(); 
         if (!$userId) return redirect('/login');
 
-        // Ambil SEMUA riwayat pesanan milik user yang sedang login
         $semuaPesanan = DB::table('pesanan')
             ->join('sesi', 'pesanan.idsesi', '=', 'sesi.idsesi')
             ->join('tutor', 'sesi.idtutor', '=', 'tutor.idtutor')
             ->join('matakuliah', 'sesi.idmatkul', '=', 'matakuliah.idmatkul')
             ->select('pesanan.*', 'sesi.namaSesi', 'sesi.harga', 'tutor.nama as nama_tutor', 'tutor.fototutor', 'matakuliah.namamatkul')
-            ->where('pesanan.userid', $userId) // Filter otomatis sesuai akun yang login
+            ->where('pesanan.userid', $userId)
             ->orderBy('pesanan.tanggal', 'asc')
             ->get();
 
         $sesi = collect();
 
-        // Filter data agar hanya muncul di Tab yang sesuai (Akan Datang / Berlangsung / Lampau)
         foreach ($semuaPesanan as $p) {
             $status_realtime = $this->tentukanStatusTanggal($p->tanggal, $p->jam, 50, null);
             
             if ($status_realtime == $tab) {
                 $p->status_realtime = $status_realtime;
-                $p->statuspembayaran = 'Lunas'; // Default UI display
+                $p->statuspembayaran = 'Lunas';
                 $p->filemateri = null;
                 $p->rekamankelas = null;
                 
@@ -155,25 +148,22 @@ class pesananController extends Controller
         $userId = session('user_id') ?? Auth::id(); 
         if (!$userId) return redirect('/login');
 
-        // Ambil data pesanan spesifik beserta detail tutor dan mata kuliah
         $pesanan = DB::table('pesanan')
             ->join('sesi', 'pesanan.idsesi', '=', 'sesi.idsesi')
             ->join('tutor', 'sesi.idtutor', '=', 'tutor.idtutor')
             ->join('matakuliah', 'sesi.idmatkul', '=', 'matakuliah.idmatkul')
             ->select('pesanan.*', 'sesi.namaSesi', 'sesi.harga', 'tutor.nama as nama_tutor', 'tutor.fototutor', 'matakuliah.namamatkul')
             ->where('pesanan.idpesanan', $idpesanan)
-            ->where('pesanan.userid', $userId) // Keamanan agar tidak bisa melihat detail orang lain
+            ->where('pesanan.userid', $userId)
             ->first();
 
         if (!$pesanan) {
             abort(404, 'Detail pesanan tidak ditemukan atau bukan milik Anda');
         }
 
-        // Variabel tambahan untuk UI Blade
         $pesanan->filemateri = null;
         $pesanan->rekamankelas = null;
         $pesanan->deskripsi = 'Ini adalah deskripsi materi.';
-
         $pesanan->tanggal_pesanan = $pesanan->tanggal;
         $pesanan->jam_pesanan = $pesanan->jam;
 

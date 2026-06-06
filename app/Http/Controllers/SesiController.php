@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 // Nailah Adlina - 5026231068
 
-class sesiController extends Controller
+class SesiController extends Controller
 {
     public function listSesi($idmatkul)
     {

@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class loginController extends Controller
+class LoginController extends Controller
 {
     public function index()
     {
@@ -43,9 +43,8 @@ class loginController extends Controller
     {
         $validated = $request->validate([
             'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users',  // tabel: users ✅
+            'email'    => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
-            // DIHAPUS: 'phone' karena kolom ini tidak ada di tabel users Supabase kamu
         ]);
 
         $exists = DB::table('users')->where('email', $validated['email'])->exists();
@@ -55,7 +54,7 @@ class loginController extends Controller
         }
 
         DB::table('users')->insert([
-            'name'       => $validated['name'],   // kolom: name ✅
+            'name'       => $validated['name'],
             'email'      => $validated['email'],
             'password'   => Hash::make($validated['password']),
             'created_at' => now(),

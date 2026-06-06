@@ -5,21 +5,17 @@ use App\Models\laporanmasalah;
 use App\Models\Refund;
 use App\Models\user; 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth; // Tambahkan ini jika menggunakan Auth bawaan Laravel
+use Illuminate\Support\Facades\Auth;
 
 //Michelle Lea Amanda - 5026231214
 //Nailah Adlina - 5026231068
 
-class laporanmasalahController extends Controller
+class LaporanmasalahController extends Controller
 {
     public function create($idpesanan)
     {
-        // PENGAMBILAN USER ID ASLI:
-        // Jika pakai session manual, gunakan: session('user_id')
-        // Jika pakai Auth bawaan Laravel, gunakan: Auth::id()
         $userId = session('user_id') ?? Auth::id(); 
         
-        // Jika user belum login, tendang ke halaman login
         if (!$userId) {
             return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
@@ -66,7 +62,6 @@ class laporanmasalahController extends Controller
             abort(404);
         }
 
-        // PENGAMBILAN USER ID ASLI
         $userId = session('user_id') ?? Auth::id(); 
         
         if (!$userId) {
@@ -103,7 +98,6 @@ class laporanmasalahController extends Controller
             'deskripsi' => 'required|string',
         ]);
 
-        // PENGAMBILAN USER ID ASLI
         $userId = session('user_id') ?? Auth::id(); 
 
         $pesanan = DB::table('pesanan')
@@ -130,7 +124,7 @@ class laporanmasalahController extends Controller
                 : 'Laporan_Diterima',
             'created_at'        => now(),
             'updated_at'        => now(),
-        ], 'idlaporan'); // <--- TAMBAHKAN KATA 'idlaporan' DI SINI
+        ], 'idlaporan');
 
         if ($isRefund) {
             DB::table('refund')->insert([

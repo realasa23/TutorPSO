@@ -7,9 +7,8 @@ use Illuminate\Support\Facades\DB;
 // Harya Raditya Handoyo - 5026231176
 // Nailah Adlina - 5026231068
 
-class tutorController extends Controller
+class TutorController extends Controller
 {
-    // Helper private biar tidak perlu tulis query rating berulang kali
     private function attachRating($tutor)
     {
         foreach ($tutor as $t) {
@@ -43,7 +42,6 @@ class tutorController extends Controller
             abort(404, 'Tutor tidak ditemukan');
         }
 
-        // Attach rating untuk tutor ini (bungkus dalam collection dulu)
         $tutorCollection = collect([$tutor]);
         $tutorCollection = $this->attachRating($tutorCollection);
         $tutor = $tutorCollection->first();

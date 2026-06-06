@@ -9,11 +9,10 @@ use Illuminate\Support\Facades\Auth;
 //Michelle Lea Amanda - 5026231214
 //Nailah Adlina - 5026231068
 
-class refundController extends Controller
+class RefundController extends Controller
 {
     public function processRefund()
     {
-        // PENGAMBILAN USER ID ASLI (Dinamis)
         $userId = session('user_id') ?? Auth::id();
         if (!$userId) {
             return redirect('/login');
@@ -32,14 +31,11 @@ class refundController extends Controller
                 'laporanmasalah.idlaporan',
                 'laporanmasalah.kategorimasalah',
                 'laporanmasalah.statuslaporan',
-
                 'tutor.nama as nama_tutor',
                 'tutor.fototutor',
-
                 'sesi.namaSesi as namasesi', 
                 'pesanan.tanggal',
                 'pesanan.jam',
-
                 'refund.statusrefund',
                 'refund.jumlahpengembalian'
             )
@@ -47,12 +43,8 @@ class refundController extends Controller
             ->orderBy('laporanmasalah.idlaporan', 'desc')
             ->get();
 
-        // 👇 PERBAIKAN: MEMBERSIHKAN FORMAT JAM 👇
-        // Mencegah Carbon Error di Blade karena spasi atau format titik (.)
         foreach ($laporan as $item) {
             if ($item->jam) {
-                // Menghilangkan spasi dan mengubah titik dua (:) menjadi titik (.)
-                // Contoh: "10:00 - 11:00" akan menjadi sangat bersih -> "10.00-11.00"
                 $item->jam = str_replace([' ', ':'], ['', '.'], $item->jam);
             }
         }
@@ -62,14 +54,12 @@ class refundController extends Controller
 
     public function refundSelesai($idlaporan)
     {
-        // PENGAMBILAN USER ID ASLI (Dinamis)
         $userId = session('user_id') ?? Auth::id();
         if (!$userId) {
             return redirect('/login');
         }
 
         $data = DB::table('laporanmasalah')
-            // FIX 1: Join ke pesanan menggunakan idsesi dan userid
             ->join('pesanan', function ($join) {
                 $join->on('laporanmasalah.idsesi', '=', 'pesanan.idsesi')
                      ->on('laporanmasalah.userid', '=', 'pesanan.userid');
