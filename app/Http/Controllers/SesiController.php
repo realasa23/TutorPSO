@@ -1,27 +1,53 @@
 <?php
-
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 
 // Nailah Adlina - 5026231068
-
 class SesiController extends Controller
 {
     public function listSesi($idmatkul)
     {
         $matakuliah = DB::table('matakuliah')->where('idmatkul', $idmatkul)->first();
-
+        
         $sesi = DB::table('sesi')
             ->join('tutor', 'sesi.idtutor', '=', 'tutor.idtutor')
+            ->leftJoin('pesanan', 'sesi.idsesi', '=', 'pesanan.idsesi')
+            ->leftJoin('review', 'pesanan.idpesanan', '=', 'review.idpesanan')
             ->where('sesi.idmatkul', $idmatkul)
+            ->select(
+                'sesi.idsesi',
+                'sesi.idtutor',
+                'sesi.idmatkul',
+                'sesi.namaSesi',
+                'sesi.harga',
+                'sesi.tipe',
+                'sesi.created_at',
+                'sesi.updated_at',
+                'tutor.nama',
+                'tutor.fototutor',
+                'tutor.pekerjaan',
+                DB::raw('COALESCE(AVG(review.rating), 0) as ratingtutor'),
+                DB::raw('COUNT(review.idreview) as total_review')
+            )
+            ->groupBy(
+                'sesi.idsesi',
+                'sesi.idtutor',
+                'sesi.idmatkul',
+                'sesi.namaSesi',
+                'sesi.harga',
+                'sesi.tipe',
+                'sesi.created_at',
+                'sesi.updated_at',
+                'tutor.nama',
+                'tutor.fototutor',
+                'tutor.pekerjaan'
+            )
             ->get();
-
+            
         return view('List-SesiTutor', compact('matakuliah', 'sesi'));
     }
 
-    // ✅ SUDAH DIPERBAIKI: Tidak pakai dummy lagi, narik dari DB
     public function pesanSesi($idsesi)
     {
         $sesi = DB::table('sesi')
