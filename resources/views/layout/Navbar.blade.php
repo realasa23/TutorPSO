@@ -6,7 +6,8 @@
         right: 0;
         display: flex;
         justify-content: center;
-        padding-bottom: 20px;
+        padding-top: 20px; 
+        padding-bottom: 30px; 
         background-color: #fff;
         z-index: 1000;
     }

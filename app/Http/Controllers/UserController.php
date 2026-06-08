@@ -111,8 +111,8 @@ class UserController extends Controller
 
         // Kolom search di sesi pakai namasesi (bukan judul)
         $sesi = DB::table('sesi')
-            ->where('namasesi', 'ILIKE', "%{$keyword}%")
-            ->select('idsesi as id', 'namasesi as nama', DB::raw("'sesi' as tipe"))
+            ->where('namaSesi', 'ILIKE', "%{$keyword}%")
+            ->select('idsesi as id', 'namaSesi as nama', DB::raw("'sesi' as tipe"))
             ->get();
 
         $results = collect()

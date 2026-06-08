@@ -15,10 +15,17 @@
             margin: 0;
             font-size: 24px;
         }
-        
+
+        .aktivitas-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
         .content-container {
             flex: 1;
             padding: 20px;
+            padding-bottom: 120px;
             background: white;
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;
@@ -198,98 +205,103 @@
 
 
 @section('content')
-    <div class="header-bg">
-        <div class="container-fluid px-3">
-            <div class="d-flex align-items-center justify-content-center">
-                <h3 class="page-title">Aktivitas</h3>
-                <div style="width:24px;"></div>
+    <div class="aktivitas-wrapper">
+        
+        <div class="header-bg">
+            <div class="container-fluid px-3">
+                <div class="d-flex align-items-center justify-content-center">
+                    <h3 class="page-title">Aktivitas</h3>
+                    <div style="width:24px;"></div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="content-container">
-        <div class="tabs">
-            <a href="{{ route('aktivitas', ['tab' => 'akan-datang']) }}"
-                class="tab akan-datang {{ $tab === 'akan-datang' ? 'active' : '' }}">
-                Akan Datang
-            </a>
+        <div class="content-container">
+            <div class="tabs">
+                <a href="{{ route('aktivitas', ['tab' => 'akan-datang']) }}"
+                    class="tab akan-datang {{ $tab === 'akan-datang' ? 'active' : '' }}">
+                    Akan Datang
+                </a>
 
-            <a href="{{ route('aktivitas', ['tab' => 'berlangsung']) }}"
-                class="tab berlangsung {{ $tab === 'berlangsung' ? 'active' : '' }}">
-                Berlangsung
-            </a>
+                <a href="{{ route('aktivitas', ['tab' => 'berlangsung']) }}"
+                    class="tab berlangsung {{ $tab === 'berlangsung' ? 'active' : '' }}">
+                    Berlangsung
+                </a>
 
-            <a href="{{ route('aktivitas', ['tab' => 'lampau']) }}"
-                class="tab lampau {{ $tab === 'lampau' ? 'active' : '' }}">
-                Lampau
-            </a>
-        </div>
+                <a href="{{ route('aktivitas', ['tab' => 'lampau']) }}"
+                    class="tab lampau {{ $tab === 'lampau' ? 'active' : '' }}">
+                    Lampau
+                </a>
+            </div>
 
-        @forelse ($sesi as $s)
-            @php
+            @forelse ($sesi as $s)
+                 @php
                 $colorClass = match ($loop->index % 3) {
                     0 => 'card-orange',
                     1 => 'card-indigo',
                     default => 'card-pink',
                 };
+
             @endphp
 
-            <div class="card-detail-sesi {{ $colorClass }}">
-                <img src="{{ asset($s->fototutor) }}" class="profile-img">
+                <div class="card-detail-sesi {{ $colorClass }}">
+                    <img src="{{ asset($s->fototutor) }}" class="profile-img">
 
-                <div class="details">
-                    <h4 class="nama-tutor m-0">{{ $s->nama_tutor }}</h4>
-                    <p class="nama-matkul m-0">{{ $s->namaSesi }}</p>
+                    <div class="details">
+                        <h4 class="nama-tutor m-0">{{ $s->nama_tutor }}</h4>
+                        <p class="nama-matkul m-0">{{ $s->namaSesi }}</p>
 
-                    <p class="hari-tanggal m-0">
-                        {{ \Carbon\Carbon::parse($s->tanggal)->translatedFormat('d F Y') }}
-                    </p>
-                    <p class="hari-tanggal m-0">
-                        {{ $s->jam }} WIB
-                    </p>
+                        <p class="hari-tanggal m-0">
+                            {{ \Carbon\Carbon::parse($s->tanggal)->translatedFormat('d F Y') }}
+                        </p>
+                        <p class="hari-tanggal m-0">
+                            {{ $s->jam }} WIB
+                        </p>
+                    </div>
+
+                    <div class="row">
+                        @if ($s->status_realtime === 'akan-datang')
+                            <a href="{{ route('aktivitas.detail', $s->idpesanan) }}">
+                                <button class="btn-detail">Detail</button>
+                            </a>
+
+                        @elseif ($s->status_realtime === 'berlangsung')
+                            <a href="{{ route('aktivitas.detail', $s->idpesanan) }}">
+                                <button class="btn-detail">Detail</button>
+                            </a>
+                            <a href="{{ route('sesi.berlangsung', $s->idpesanan) }}">
+                                <button class="btn-gabung">Gabung Sesi</button>
+                            </a>
+
+                        @elseif ($s->status_realtime === 'lampau')
+                            <a href="{{ route('aktivitas.detail', $s->idpesanan) }}">
+                                <button class="btn-detail">Detail</button>
+                            </a>
+                            <a href="{{ route('review.create', $s->idpesanan) }}">
+                                <button class="btn-ulas">Ulas</button>
+                            </a>
+                            <a href="{{ route('laporan.create', $s->idpesanan) }}">
+                                <button class="btn-refund">Refund</button>
+                            </a>
+                        @endif
+
+                    </div>
                 </div>
-
-                <div class="row">
-                    @if ($s->status_realtime === 'akan-datang')
-                        <a href="{{ route('aktivitas.detail', $s->idpesanan) }}">
-                            <button class="btn-detail">Detail</button>
-                        </a>
-
-                    @elseif ($s->status_realtime === 'berlangsung')
-                        <a href="{{ route('aktivitas.detail', $s->idpesanan) }}">
-                            <button class="btn-detail">Detail</button>
-                        </a>
-                        <a href="{{ route('sesi.berlangsung', $s->idpesanan) }}">
-                            <button class="btn-gabung">Gabung Sesi</button>
-                        </a>
-
-                    @elseif ($s->status_realtime === 'lampau')
-                        <a href="{{ route('aktivitas.detail', $s->idpesanan) }}">
-                            <button class="btn-detail">Detail</button>
-                        </a>
-                        <a href="{{ route('review.create', $s->idpesanan) }}">
-                            <button class="btn-ulas">Ulas</button>
-                        </a>
-                        <a href="{{ route('laporan.create', $s->idpesanan) }}">
-                            <button class="btn-refund">Refund</button>
-                        </a>
+            @empty
+                <div class="text-center text-muted mt-5">
+                    @if ($tab === 'akan-datang')
+                        Belum ada sesi yang akan datang
+                    @elseif ($tab === 'berlangsung')
+                        Tidak ada sesi yang sedang berlangsung
+                    @else
+                        Belum ada riwayat sesi
                     @endif
-
                 </div>
-            </div>
-        @empty
-            <div class="text-center text-muted mt-5">
-                @if ($tab === 'akan-datang')
-                    Belum ada sesi yang akan datang
-                @elseif ($tab === 'berlangsung')
-                    Tidak ada sesi yang sedang berlangsung
-                @else
-                    Belum ada riwayat sesi
-                @endif
-            </div>
-        @endforelse
+            @endforelse
 
-    </div>
+        </div>
+
+    </div> 
 @endsection
 
 

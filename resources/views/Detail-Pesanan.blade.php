@@ -174,9 +174,9 @@
     <div class="content-container">
         <div class="card-detail-sesi">
             <div class="d-flex align-items-center card-content-wrapper">
-                <img src="{{ asset($sesi->tutor->fototutor) }}" class="profile-img full-height-img" alt="Foto Profil">
+                <img src="{{ asset($sesi->fototutor) }}" class="profile-img full-height-img" alt="Foto Profil">
                 <div>
-                    <h5 class="nama-tutor fw-semibold m-0">{{ $sesi->tutor->nama }}</h5>
+                    <h5 class="nama-tutor fw-semibold m-0">{{ $sesi->nama }}</h5>
                     <p class="nama-matkul m-0">{{ $sesi->namaSesi }}</p>
                 </div>
             </div>

@@ -57,9 +57,15 @@
             text-decoration: none
         }
 
+        .main-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Memastikan minimal setinggi layar */
+        }
         .content-container {
             flex: 1;
             padding: 10px;
+            /* padding-bottom: 100px; */
             background: white;
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;
@@ -69,6 +75,11 @@
             position: relative;
         }
 
+        .homepage-container {
+            display: flex;
+            flex-direction: column;
+            /* min-height: 100vh; Memastikan tinggi layar minimal 100% */
+        }
         .avatar-wrapper {
             position: relative;
             width: 40px;

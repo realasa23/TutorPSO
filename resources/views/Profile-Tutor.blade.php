@@ -10,6 +10,12 @@
             z-index: 1020;
         }
 
+        .profile-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
         .page-title {
             font-weight: bold;
             margin: 0;
@@ -81,7 +87,7 @@
             border-top-left-radius: 22px;
             border-top-right-radius: 22px;
             box-shadow: 0 -4px 18px rgba(20, 24, 55, .08);
-            padding: 24px 20px 120px;
+            padding: 24px 20px 140px;
             flex: 1;
         }
 
@@ -130,8 +136,8 @@
         }
 
         .btn-lihat-sesi {
-            position: fixed;
-            bottom: 50px;
+            position: absolute;
+            bottom: 30px;
             left: 50%;
             text-decoration: none;
             transform: translateX(-50%);
@@ -154,79 +160,87 @@
 @endsection
 
 @section('content')
-    <div class="header-bg">
-        <div class="container-fluid px-3">
-            <div class="d-flex align-items-center justify-content-between">
-                <button class="btn p-0" onclick="history.back()">
-                    <i class="bi bi-chevron-left fs-4 text-dark"></i>
-                </button>
-                <h3 class="page-title">Profile Tutor</h3>
-                <div style="width: 24px;"></div>
+    {{-- Bungkus semuanya dari sini --}}
+    <div class="profile-wrapper">
+        
+        <div class="header-bg">
+            <div class="container-fluid px-3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <button class="btn p-0" onclick="history.back()">
+                        <i class="bi bi-chevron-left fs-4 text-dark"></i>
+                    </button>
+                    <h3 class="page-title">Profile Tutor</h3>
+                    <div style="width: 24px;"></div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <section class="profile-header container">
-        <div class="profile-pic">
-            <img src="{{ asset($tutor->fototutor) }}" alt="{{ $tutor->nama }}">
-        </div>
+        <section class="profile-header container">
+            <div class="profile-pic">
+                <img src="{{ asset($tutor->fototutor) }}" alt="{{ $tutor->nama }}">
+            </div>
 
-        <h1 class="profile-name">
-            {{ $tutor->nama }}
-        </h1>
+            <h1 class="profile-name">
+                {{ $tutor->nama }}
+            </h1>
 
-        <p class="profile-title">
-            {{ $tutor->pekerjaan }}
-        </p>
-
-        <div class="profile-rating">
-            <i class="bi bi-star-fill"></i>
-            {{ number_format($tutor->ratingtutor, 1) }}
-            <span class="text-muted">
-                ({{ $tutor->total_review }} ulasan)
-            </span>
-        </div>
-    </section>
-
-    <div class="surface-profile">
-        <section>
-            <h2>Deskripsi</h2>
-            <p>
-                {{ $tutor->deskripsi ?? 'Tutor ini belum menambahkan deskripsi.' }}
+            <p class="profile-title">
+                {{ $tutor->pekerjaan }}
             </p>
+
+            <div class="profile-rating">
+                <i class="bi bi-star-fill"></i>
+                {{ number_format($tutor->ratingtutor, 1) }}
+                <span class="text-muted">
+                    ({{ $tutor->total_review }} ulasan)
+                </span>
+            </div>
         </section>
 
-        <section class="mt-4">
-            <h2>Ulasan</h2>
-
-            @forelse ($reviews as $r)
-                <div class="review-card">
-                    <div class="review-avatar">
-                        {{ strtoupper(substr($r->nama_user, 0, 1)) }}
-                    </div>
-                    <div>
-                        <p class="review-name">
-                            {{ $r->nama_user }}
-                        </p>
-                        <div class="profile-rating justify-content-start">
-                            <i class="bi bi-star-fill"></i>
-                            {{ number_format($r->rating, 1) }}
-                        </div>
-                        <p class="review-text">
-                            {{ $r->komentar }}
-                        </p>
-                    </div>
-                </div>
-            @empty
-                <p class="text-muted">
-                    Belum ada ulasan untuk tutor ini.
+        <div class="surface-profile">
+            <section>
+                <h2>Deskripsi</h2>
+                <p>
+                    {{ $tutor->deskripsi ?? 'Tutor ini belum menambahkan deskripsi.' }}
                 </p>
-            @endforelse
-        </section>
-    </div>
-    <div class="button sesi">
-        <a href="{{ route('tutor.sesi', $tutor->idtutor) }}" class="btn-lihat-sesi">
-            Lihat Sesi
-        </a>
-    </div>
+            </section>
+
+            <section class="mt-4">
+                <h2>Ulasan</h2>
+
+                @forelse ($reviews as $r)
+                    <div class="review-card">
+                        <div class="review-avatar">
+                            {{ strtoupper(substr($r->nama_user, 0, 1)) }}
+                        </div>
+                        <div>
+                            <p class="review-name">
+                                {{ $r->nama_user }}
+                            </p>
+                            <div class="profile-rating justify-content-start">
+                                <i class="bi bi-star-fill"></i>
+                                {{ number_format($r->rating, 1) }}
+                            </div>
+                            <p class="review-text">
+                                {{ $r->komentar }}
+                            </p>
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-muted">
+                        Belum ada ulasan untuk tutor ini.
+                    </p>
+                @endforelse
+            </section>
+        </div>
+        
+        {{-- Pindahkan tombol ke dalam wrapper --}}
+        <div class="button sesi">
+            <a href="{{ route('tutor.sesi', $tutor->idtutor) }}" class="btn-lihat-sesi">
+                Lihat Sesi
+            </a>
+        </div>
+
+    </div> 
+    {{-- Tutup bungkusnya di sini --}}
 @endsection

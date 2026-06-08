@@ -235,7 +235,7 @@
 
         <div class="top-bar"> </div>
         <div class="teacher-photo">
-            <img src="{{ asset($sesi->tutor->fototutor) }}">
+            <img src="{{ asset($sesi->fototutor) }}">
         </div>
 
         <div class="card">
@@ -247,7 +247,7 @@
 
             </div>
 
-            <div class="name">{{ $sesi->tutor->nama }}</div>
+            <div class="name">{{ $sesi->nama }}</div>
 
             <div class="month-title">
                 <button id="prevMonth">‹</button>
