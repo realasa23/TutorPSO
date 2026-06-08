@@ -2,25 +2,50 @@
 @extends('layout.Mobile-View')
 @section('page-style')
     <style>
+        /* 1. Paksa parent layout menjadi flexbox seukuran kotak HP */
+        .mobile-scroll {
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+            min-height: 100% !important;
+        }
+
+        /* 2. Gunakan flex: 1 agar presisi di tengah tanpa melorot */
         .success-wrapper {
-            height: 100vh;
+            flex: 1 !important; 
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 30px;
+            padding: 20px;
         }
 
+        /* 3. Animasi masuk (efek bounce) */
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* 4. Terapkan animasi dan rapikan lebar kartu */
         .success-card {
             background-color: white;
             border-radius: 35px;
             padding: 50px 30px;
             width: 100%;
+            max-width: 320px; /* Batasi lebar maksimal agar terlihat proporsional */
             text-align: center;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
+            /* Panggil animasi di sini */
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
         .success-title {
@@ -69,6 +94,7 @@
             transform: rotate(-5deg);
             position: relative;
             z-index: 1;
+            margin: 20px 0 30px 0; /* Tambahkan sedikit margin agar tidak terlalu menempel dengan teks */
         }
 
         .btn-done {

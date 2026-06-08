@@ -71,7 +71,7 @@ class RefundController extends Controller
                 'laporanmasalah.idlaporan',
                 'refund.idrefund',
                 'refund.statusrefund',
-                'pesanan.biaya as harga_sesi'
+                'refund.jumlahpengembalian'
             )
             ->first();
 
@@ -89,7 +89,7 @@ class RefundController extends Controller
         }
 
         return view('Refund-Berhasil', [
-            'harga' => $data->harga_sesi
+            'harga' => $data->jumlahpengembalian ?? 0
         ]);
     }
 }

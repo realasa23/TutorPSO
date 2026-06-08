@@ -251,14 +251,20 @@
             padding: .35rem .7rem
         }
 
+        .surface {
+            padding: 16px; 
+        }
+        
         .snap-x {
             display: flex;
             gap: 12px;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
-            padding-bottom: 2px;
+            padding-bottom: 10px; /* Sedikit ruang agar tidak terpotong */
+            padding-left: 16px;   /* Tambahkan ini agar tidak menempel di kiri */
+            padding-right: 16px;  /* Tambahkan ini agar tidak menempel di kanan */
             scrollbar-width: none;
-            -ms-overflow-style: none
+            -ms-overflow-style: none;
         }
 
         .snap-x::-webkit-scrollbar {

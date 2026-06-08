@@ -20,9 +20,24 @@
             color: #212529 !important;
         }
 
+        .sesi-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .mobile-scroll {
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important; /* Gunakan % bukan vh */
+            min-height: 100% !important;
+        }
+
         .content-container {
             flex: 1;
+            min-height: calc(100% - 80px);
             padding: 14px;
+            padding-bottom: 120px;
             background: white;
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;

@@ -2,16 +2,37 @@
 @extends('layout.Mobile-View')
 @section('page-style')
     <style>
-        .mobile-container {
+        /* 1. Paksa parent layout menjadi flexbox seukuran kotak HP */
+        .mobile-scroll {
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+            min-height: 100% !important;
+        }
 
-            background-size: cover;
-            background-repeat: no-repeat;
+        /* 2. Wrapper baru agar elemen berada persis di tengah */
+        .review-wrapper {
+            flex: 1 !important;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 30px;
+            flex-direction: column;
+            padding: 20px;
         }
 
+        /* 3. Animasi pop-in (bounce) */
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* 4. Update kartu agar mendukung animasi dan ukuran yang pas */
         .success-card {
             background-image: url('{{ asset('bg-callout review done.png') }}');
             background-size: 100% 100%;
@@ -21,12 +42,15 @@
             border-radius: 30px;
             padding: 60px 30px 40px 30px;
             width: 100%;
+            max-width: 300px; /* Batasi lebar maksimal agar terlihat proporsional */
             text-align: center;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
             align-items: center;
             border: none;
+            /* Panggil animasi di sini */
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
         .check-circle {
@@ -76,15 +100,18 @@
 @endsection
 
 @section('content')
-    <div class="success-card">
-        <div class="check-circle">
-            <img src="{{ asset('icon centang.png') }}" class="check-img" alt="Sukses">
+    {{-- Bungkus kartu dengan review-wrapper --}}
+    <div class="review-wrapper">
+        <div class="success-card">
+            <div class="check-circle">
+                <img src="{{ asset('icon centang.png') }}" class="check-img" alt="Sukses">
+            </div>
+            <p class="success-text">
+                Terimakasih Atas<br>Tanggapan mu
+            </p>
+            <a href="{{ route('aktivitas', ['tab' => 'lampau']) }}" class="w-100 text-decoration-none">
+                <button class="btn-selesai">Selesai</button>
+            </a>
         </div>
-        <p class="success-text">
-            Terimakasih Atas<br>Tanggapan mu
-        </p>
-        <a href="{{ route('aktivitas', ['tab' => 'lampau']) }}" class="w-100 text-decoration-none">
-            <button class="btn-selesai">Selesai</button>
-        </a>
     </div>
 @endsection

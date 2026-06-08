@@ -33,9 +33,16 @@
             color: #212529 !important;
         }
 
+        .tutor-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
         .content-container {
             flex: 1;
             padding: 20px;
+            padding-bottom: 120px;
             background: white;
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;
@@ -142,54 +149,58 @@
 @endsection
 
 @section('content')
-    <div class="header-bg">
-        <div class="container-fluid px-3">
-            <div class="d-flex align-items-center justify-content-between">
-                <button class="btn p-0" onclick="history.back()">
-                    <i class="bi bi-chevron-left fs-4 text-dark"></i>
-                </button>
-                <h3 class="page-title">Tutor</h3>
-                <div style="width: 24px;"></div>
+    <div class="tutor-wrapper">
+
+        <div class="header-bg">
+            <div class="container-fluid px-3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <button class="btn p-0" onclick="history.back()">
+                        <i class="bi bi-chevron-left fs-4 text-dark"></i>
+                    </button>
+                    <h3 class="page-title">Tutor</h3>
+                    <div style="width: 24px;"></div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <main class="content-container">
-        <div class="container">
-            @php
-                $bgStyles = ['tc-orange', 'tc-pink', 'tc-indigo'];
-            @endphp
-
-            @forelse ($tutor as $index => $t)
+        <main class="content-container">
+            <div class="container">
                 @php
-                    $bg = $bgStyles[$index % count($bgStyles)];
+                    $bgStyles = ['tc-orange', 'tc-pink', 'tc-indigo'];
                 @endphp
 
-                <div class="tutor-card {{ $bg }} mb-3">
-                    <a href="{{ url('/tutor/' . $t->idtutor) }}" class="tc-avatar">
-                        <img src="{{ asset($t->fototutor) }}" alt="{{ $t->nama }}">
-                    </a>
-                    <div class="tc-content">
-                        <div>
-                            <div class="tc-name">{{ $t->nama }}</div>
-                            <div class="tc-role">{{ $t->pekerjaan }}</div>
-                        </div>
-                        <div class="tc-bottom">
-                            <div class="tc-rating">
-                                <i class="bi bi-star-fill"></i> {{ number_format($t->ratingtutor, 1) }}
-                                ({{ $t->total_review }} ulasan)
+                @forelse ($tutor as $index => $t)
+                    @php
+                        $bg = $bgStyles[$index % count($bgStyles)];
+                    @endphp
+
+                    <div class="tutor-card {{ $bg }} mb-3">
+                        <a href="{{ url('/tutor/' . $t->idtutor) }}" class="tc-avatar">
+                            <img src="{{ asset($t->fototutor) }}" alt="{{ $t->nama }}">
+                        </a>
+                        <div class="tc-content">
+                            <div>
+                                <div class="tc-name">{{ $t->nama }}</div>
+                                <div class="tc-role">{{ $t->pekerjaan }}</div>
                             </div>
-                            <a href="{{ url('/tutor/' . $t->idtutor) }}" class="btn btn-detail">
-                                Detail
-                            </a>
+                            <div class="tc-bottom">
+                                <div class="tc-rating">
+                                    <i class="bi bi-star-fill"></i> {{ number_format($t->ratingtutor, 1) }}
+                                    ({{ $t->total_review }} ulasan)
+                                </div>
+                                <a href="{{ url('/tutor/' . $t->idtutor) }}" class="btn btn-detail">
+                                    Detail
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            @empty
-                <div class="text-center text-muted py-5">
-                    Belum ada tutor tersedia
-                </div>
-            @endforelse
-        </div>
-    </main>
+                @empty
+                    <div class="text-center text-muted py-5">
+                        Belum ada tutor tersedia
+                    </div>
+                @endforelse
+            </div>
+        </main>
+
+    </div> 
 @endsection

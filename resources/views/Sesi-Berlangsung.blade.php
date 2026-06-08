@@ -1,24 +1,32 @@
 {{-- Nailah Adlina - 5026231068 --}}
 @extends ('layout.Mobile-View')
+
 @section('page-style')
     <style>
-        body,
-        html {
-            margin: 0;
-            height: 100%;
+        /* 1. Paksa parent layout HP menjadi flexbox seukuran persis kotak HP */
+        .mobile-scroll {
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+            min-height: 100% !important;
+            overflow: hidden !important; /* Mencegah scroll sama sekali */
         }
 
+        /* 2. Ganti 100vh menjadi flex: 1 agar mengisi sisa ruang tanpa bablas */
         .fullscreen-container {
+            flex: 1 !important; 
             position: relative;
             width: 100%;
-            height: 100vh;
             overflow: hidden;
+            border-radius: 20px; /* Membuat ujung foto melengkung mengikuti ujung HP */
         }
 
+        /* 3. Pastikan gambar tidak menyisakan ruang putih di bawahnya */
         .fullscreen-photo {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: block; /* Menghapus celah default di bawah tag img */
         }
 
         .button-row {
@@ -28,6 +36,7 @@
             transform: translateX(-50%);
             display: flex;
             gap: 15px;
+            z-index: 10;
         }
 
         .img-btn {
@@ -36,17 +45,19 @@
             padding: 0;
             border: none;
             background: transparent;
+            cursor: pointer;
         }
 
         .img-btn img {
             width: 48px;
             height: 48px;
             object-fit: cover;
-            border-radius: 8px;
+            border-radius: 50%; /* Memastikan ikon tombolnya membulat sempurna */
         }
     </style>
-@section('content')
+@endsection {{-- <-- Tadi kamu lupa menambahkan penutup ini --}}
 
+@section('content')
     <div class="fullscreen-container">
         <img src="/vidcall.png" class="fullscreen-photo" alt="Foto">
 

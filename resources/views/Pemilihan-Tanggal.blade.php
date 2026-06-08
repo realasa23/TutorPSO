@@ -8,16 +8,28 @@
             top: 0;
         }
 
+        .mobile-scroll {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 100%;
+        }
+
         .container {
             width: 100%;
             max-width: 430px;
             background-image: url('{{ asset('bg-image.png') }}');
+            background-size: cover;
             position: relative;
             padding: 0;
-            overflow-y: auto;
+            overflow-y: hidden;
             overflow-x: hidden;
             overscroll-behavior: none !important;
             -webkit-overflow-scrolling: touch;
+            display: flex !important;
+            flex-direction: column !important;
+            flex: 1 !important;
+            min-height: 100% !important;
         }
         .page-title {
             font-weight: bold;
@@ -60,12 +72,15 @@
             background: white;
             border-top-left-radius: 25px;
             border-top-right-radius: 25px;
-            margin-top: 200px;
-            padding: 15px 15px 68px;
+            margin-top: 180px;
+            padding: 15px 15px 0px;
             box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
             position: relative;
             z-index: 10;
-            border-color: white;
+            border: none;
+            flex: 1 !important; 
+            display: flex;
+            flex-direction: column;
         }
 
         .title {
@@ -178,6 +193,15 @@
             font-weight: bold;
         }
 
+        #form-tanggal {
+            margin-top: auto;
+            position: sticky; /* Membuat elemen ini melayang menempel */
+            bottom: 0; /* Menempel tepat di garis bawah layar */
+            background: white; /* Latar putih agar teks kalender di belakangnya tertutup */
+            padding: 15px 0 25px 0; /* Memberi ruang aman untuk tombol */
+            z-index: 100; /* Memastikan tombol selalu ada di tumpukan paling depan */
+        }
+        
         .btn-konfirmasi {
             width: 100%;
             height: 46px;

@@ -14,9 +14,17 @@
             font-size: 24px;
         }
 
+        .mobile-scroll {
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+            min-height: 100% !important;
+        }
+
         .content-container {
-            flex: 1;
+            flex: 1 !important; 
             padding: 20px;
+            padding-bottom: 40px; 
             background-color: white;
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;
@@ -105,7 +113,7 @@
     <div class="header-bg">
         <div class="container-fluid px-3">
             <div class="d-flex align-items-center justify-content-between">
-                <button class="btn p-0" onclick="history.back()">
+                <button class="btn p-0" onclick="window.location='{{ route('home') }}'">
                     <i class="bi bi-chevron-left fs-4"></i>
                 </button>
                 <h3 class="page-title">Riwayat Laporan</h3>

@@ -20,9 +20,22 @@
             color: #212529 !important;
         }
 
+        .mobile-scroll {
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+            min-height: 100% !important;
+        }
+
         .content-container {
-            flex: 1;
+            flex: 1 !important;
+            /* Paksa mengisi sisa ruang */
+            display: flex;
+            /* Jadikan flexbox untuk mengatur isi di dalamnya */
+            flex-direction: column;
             padding: 20px;
+            padding-bottom: 40px;
+            /* Beri sedikit ruang kosong ekstra di bawah */
             background-color: white;
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;
@@ -30,6 +43,14 @@
             margin-top: 0px;
             z-index: 5;
             position: relative;
+        }
+
+        .action-buttons {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            /* Jarak antar tombol */
         }
 
         .detail-label {
@@ -134,7 +155,7 @@
         }
 
         .full-width-btn {
-            margin-top: 5px;
+            margin-top: 0px;
             display: block;
             width: 100%;
             background-color: #343446 !important;
@@ -216,7 +237,8 @@
             </div>
         </div>
 
-        <div class="p-2 bg-white">
+        {{-- 4. Bungkus kedua tombol dengan action-buttons --}}
+        <div class="action-buttons">
             <form action="{{ route('pesanan.store.regular') }}" method="POST">
                 @csrf
                 <input type="hidden" name="idsesi" value="{{ $sesi->idsesi }}">
@@ -226,9 +248,7 @@
                     <p class="order-button my-0">Pesan Sesi</p>
                 </button>
             </form>
-        </div>
 
-        <div class="p-2 bg-white">
             <form action="{{ route('pesanan.store.trial') }}" method="POST">
                 @csrf
                 <input type="hidden" name="idsesi" value="{{ $sesi->idsesi }}">
@@ -239,5 +259,6 @@
                 </button>
             </form>
         </div>
-    </div>
+
+    </div> {{-- Penutup .content-container --}}
 @endsection

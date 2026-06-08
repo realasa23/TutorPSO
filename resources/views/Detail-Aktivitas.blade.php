@@ -15,9 +15,19 @@
             font-size: 24px;
         }
 
+        .mobile-scroll {
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+            min-height: 100% !important;
+        }
+
         .content-container {
-            flex: 1;
+            flex: 1 !important; 
+            display: flex;
+            flex-direction: column;
             padding: 20px;
+            padding-bottom: 30px; /* Tambahan ruang di bawah */
             background-color: white;
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;
@@ -140,6 +150,11 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, .15);
         }
 
+        .action-button-wrapper {
+            margin-top: auto;
+            padding-top: 15px;
+        }
+
         .btn-gradient {
             width: 250px;
             height: 39px;
@@ -223,25 +238,27 @@
                 </a>
             </div>
         @endif
-    </div>
 
-    <div class="p-3 bg-white">
-        @if ($statusRealtime === 'akan-datang')
-            <button id="joinSessionBtn" class="btn w-100 full-width-btn fw-bold">
-                Gabung Sesi
-            </button>
-        @elseif ($statusRealtime === 'berlangsung')
-            <a href="{{ route('sesi.berlangsung', $pesanan->idpesanan) }}"
-                class="btn w-100 full-width-btn fw-bold text-white text-center">
-                Gabung Sesi
-            </a>
-        @elseif ($statusRealtime === 'lampau')
-            <a href="{{ route('review.create', $pesanan->idpesanan) }}"
-                class="btn w-100 full-width-btn fw-bold text-white text-center">
-                Ulas Sesi
-            </a>
-        @endif
-    </div>
+        {{-- --- TOMBOL SEKARANG MASUK DI SINI (DENGAN MARGIN-TOP: AUTO) --- --}}
+        <div class="action-button-wrapper">
+            @if ($statusRealtime === 'akan-datang')
+                <button id="joinSessionBtn" class="btn w-100 full-width-btn fw-bold">
+                    Gabung Sesi
+                </button>
+            @elseif ($statusRealtime === 'berlangsung')
+                <a href="{{ route('sesi.berlangsung', $pesanan->idpesanan) }}"
+                    class="btn w-100 full-width-btn fw-bold text-white text-center">
+                    Gabung Sesi
+                </a>
+            @elseif ($statusRealtime === 'lampau')
+                <a href="{{ route('review.create', $pesanan->idpesanan) }}"
+                    class="btn w-100 full-width-btn fw-bold text-white text-center">
+                    Ulas Sesi
+                </a>
+            @endif
+        </div>
+
+    </div> {{-- Penutup .content-container yang bersih tanpa huruf 'v' --}}
 
     <div id="sessionOverlay" class="overlay-dark d-none align-items-center justify-content-center">
         <div class="card-overlay text-center">

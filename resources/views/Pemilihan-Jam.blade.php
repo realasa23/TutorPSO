@@ -8,13 +8,28 @@
             top: 0;
         }
 
+        .mobile-scroll {
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+            min-height: 100% !important;
+        }
+
         .container {
             width: 100%;
             height: 100vh;
             background-image: url('{{ asset('bg-image.png') }}');
+            background-size: cover; 
+            background-position: top center; 
             position: relative;
             padding: 0;
-            overflow: hidden;
+            overflow-y: auto;
+            overscroll-behavior: none !important;
+            -webkit-overflow-scrolling: touch;
+            display: flex !important;
+            flex-direction: column !important;
+            flex: 1 !important;
+            min-height: 100% !important;
 
         }
 
@@ -67,19 +82,18 @@
         }
 
         .card {
-            position: relative;
-            background: white;
-            border-radius: 30px 30px 0 0;
             background: white;
             border-top-left-radius: 25px;
             border-top-right-radius: 25px;
-            margin-top: 200px;
-            padding: 15px 15px 68px;
+            margin-top: 180px; /* Jarak atas disesuaikan agar lega */
+            padding: 15px 15px 0px; /* Padding bawah dinolkan agar nempel sama tombol */
             box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
             position: relative;
             z-index: 10;
-            border-color: white;
-            min-height: calc(100vh - 230px);
+            border: none;
+            flex: 1 !important; 
+            display: flex;
+            flex-direction: column;
         }
 
         .title {
@@ -185,8 +199,6 @@
             opacity: 0.8;
         }
 
-
-
         .time-slot.selected {
             background-color: #C6C8F8;
             color: #fff;
@@ -220,7 +232,15 @@
             width: 15px;
             height: 15px;
         }
-
+        
+        #form-jam { 
+            margin-top: auto; /* Mendorong form ke paling bawah kartu */
+            position: sticky; /* Membuatnya melayang menempel */
+            bottom: 0; /* Menempel di garis bawah layar */
+            background: white; /* Menutupi elemen di belakangnya saat di-scroll */
+            padding: 15px 0 25px 0; /* Ruang bernapas untuk tombol */
+            z-index: 100;
+        }
         .container::-webkit-scrollbar {
             width: 0;
             height: 0;

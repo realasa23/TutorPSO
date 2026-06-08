@@ -91,9 +91,16 @@
             color: #A0400B;
         }
 
+        .mobile-scroll {
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+            min-height: 100% !important;
+        }
+
         .content-container {
-            flex: 1;
-            padding: 20px;
+            flex: 1 !important; 
+            padding: 20px 24px 40px; 
             background: white;
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;

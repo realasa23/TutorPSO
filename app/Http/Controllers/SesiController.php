@@ -83,7 +83,21 @@ class SesiController extends Controller
     public function pilihJam($idsesi)
     {
         $tanggal = session('tanggal_pesanan') ?? '2026-05-31';
-        $sesi    = DB::table('sesi')->where('idsesi', $idsesi)->first();
+        $sesi = DB::table('sesi')
+            ->join('tutor', 'sesi.idtutor', '=', 'tutor.idtutor')
+            ->join('matakuliah', 'sesi.idmatkul', '=', 'matakuliah.idmatkul')
+            ->where('sesi.idsesi', $idsesi)
+            ->select(
+                'sesi.*',
+                'tutor.nama',
+                'tutor.fototutor',
+                'matakuliah.namamatkul'
+            )
+            ->first();
+            
+        if (!$sesi) {
+            abort(404, 'Sesi tidak ditemukan');
+        }
         $jamTerbooking = [];
         return view('Pemilihan-Jam', compact('sesi', 'tanggal', 'jamTerbooking'));
     }

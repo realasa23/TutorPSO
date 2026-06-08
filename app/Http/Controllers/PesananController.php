@@ -15,8 +15,8 @@ class PesananController extends Controller
 {
     public function storeRegular(Request $request)
     {
-        $tanggal = session('tanggal_pesanan');
-        $jam     = session('jam_pesanan');
+        $tanggal = $request->tanggal ?? session('tanggal_pesanan');
+        $jam     = $request->jam ?? session('jam_pesanan');
         $idsesi  = $request->idsesi ?? session('idsesi') ?? 1; 
         
         $userId = session('user_id') ?? Auth::id(); 
@@ -39,8 +39,8 @@ class PesananController extends Controller
 
     public function storeTrial(Request $request)
     {
-        $tanggal = session('tanggal_pesanan');
-        $jam     = session('jam_pesanan');
+        $tanggal = $request->tanggal ?? session('tanggal_pesanan');
+        $jam     = $request->jam ?? session('jam_pesanan');
         $idsesi  = $request->idsesi ?? session('idsesi') ?? 1;
 
         $userId = session('user_id') ?? Auth::id(); 

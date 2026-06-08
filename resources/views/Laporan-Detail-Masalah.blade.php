@@ -92,9 +92,19 @@
             color: #A0400B;
         }
 
+        .mobile-scroll {
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+            min-height: 100% !important;
+        }
+
         .content-area {
-            flex: 1;
+            flex: 1 !important;
+            display: flex; /* Tambahkan ini */
+            flex-direction: column; /* Tambahkan ini */
             padding: 20px;
+            padding-bottom: 25px; /* Beri ruang aman di bawah tombol */
             background: white;
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;
@@ -104,6 +114,16 @@
             position: relative;
         }
 
+        .custom-textarea {
+            width: 100%;
+            min-height: 160px;
+            border-radius: 15px;
+            padding: 15px;
+            border: 1px solid #EAEAEA;
+            margin-top: 5px; /* Sedikit dikurangi */
+            resize: none; /* Mencegah user merusak layout dengan menarik sudut textarea */
+        }
+        
         .label-row {
             display: flex;
             justify-content: space-between;
@@ -155,6 +175,12 @@
             color: #9D9D9D;
         }
 
+        form {
+            display: flex;
+            flex-direction: column;
+            flex: 1; /* Biarkan form memenuhi sisa tinggi .content-area */
+        }
+
         .custom-textarea {
             width: 100%;
             min-height: 160px;
@@ -165,7 +191,7 @@
         }
 
         .btn-submit {
-            margin-top: 30px;
+            margin-top: auto; /* Ini kunci rahasianya! */
             width: 100%;
             padding: 16px;
             border-radius: 15px;
@@ -173,6 +199,13 @@
             color: #fff;
             font-weight: 700;
             border: none;
+            /* Tambahan: efek hover dan transition agar tombol terasa hidup */
+            transition: opacity 0.2s; 
+            cursor: pointer;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
         }
 
         .btn-back {
