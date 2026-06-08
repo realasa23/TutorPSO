@@ -52,7 +52,7 @@ Route::get('/profile/laporan', [RefundController::class, 'processRefund'])->name
 Route::get('/profile/laporan/{idlaporan}', [RefundController::class, 'refundSelesai'])->name('refund.selesai');
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
-Route::get('/icons/{filename}', function ($filename) {s
+Route::get('/icons/{filename}', function ($filename) {
     $path = public_path('icons/' . $filename);
     if (file_exists($path)) {
         return response()->file($path);
