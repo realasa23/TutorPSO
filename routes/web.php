@@ -51,3 +51,16 @@ Route::post('/profile/update', [UserController::class, 'updateProfile'])->name('
 Route::get('/profile/laporan', [RefundController::class, 'processRefund'])->name('history.laporan');
 Route::get('/profile/laporan/{idlaporan}', [RefundController::class, 'refundSelesai'])->name('refund.selesai');
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
+
+Route::get('/icons/{filename}', function ($filename) {
+    // Cari lokasi asli file gambarnya di dalam folder public/icons
+    $path = public_path('icons/' . $filename);
+
+    // Kalau filenya beneran ada, paksa Laravel buat nampilin sebagai gambar
+    if (file_exists($path)) {
+        return response()->file($path);
+    }
+
+    // Kalau ga ada, baru tampilin 404
+    abort(404);
+});
