@@ -53,13 +53,13 @@
 <div class="bottom-nav">
     <div class="bottom-nav-inner">
         <a href="/home"      class="nav-item {{ $isHome      ? 'active' : '' }}">
-            <img src="{{ asset('icons/home.png') }}"     alt="Beranda">
+            <img src="{{ url('/icons/home.png') }}"      alt="Beranda">
         </a>
         <a href="/aktivitas" class="nav-item {{ $isAktivitas ? 'active' : '' }}">
-            <img src="{{ asset('icons/activity.png') }}" alt="Aktivitas">
+            <img src="{{ url('/icons/activity.png') }}"  alt="Aktivitas">
         </a>
         <a href="/profile"   class="nav-item {{ $isProfile   ? 'active' : '' }}">
-            <img src="{{ asset('icons/profile.png') }}"  alt="Profil">
+            <img src="{{ url('/icons/profile.png') }}"   alt="Profil">
         </a>
     </div>
 </div>
