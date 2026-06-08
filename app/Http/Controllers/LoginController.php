@@ -19,7 +19,7 @@ class LoginController extends Controller
 
     public function register()
     {
-        return view('Register');
+        return view('register');
     }
 
     public function handleLogin(Request $request)
