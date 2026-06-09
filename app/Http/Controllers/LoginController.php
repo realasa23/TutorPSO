@@ -29,10 +29,10 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
-        $user = DB::table('users')->where('email', $validated['email'])->first();
+        $user = DB::table('user')->where('email', $validated['email'])->first();
 
         if ($user && Hash::check($validated['password'], $user->password)) {
-            session(['user_id' => $user->id, 'user_email' => $user->email]);
+            session(['user_id' => $user->userid, 'user_email' => $user->email]);
             return redirect('/home')->with('success', 'Login successful');
         }
 
@@ -42,21 +42,24 @@ class LoginController extends Controller
     public function handleRegister(Request $request)
     {
         $validated = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users',
+            'username' => 'required|string|max:255',
+            'email'    => 'required|email|unique:user',
             'password' => 'required|min:6|confirmed',
+            'nomorhp'  => 'required|string|max:15',
         ]);
 
-        $exists = DB::table('users')->where('email', $validated['email'])->exists();
+        $exists = DB::table('user')->where('email', $validated['email'])->exists();
 
         if ($exists) {
             return back()->withErrors(['email' => 'Email already registered'])->withInput();
         }
 
-        DB::table('users')->insert([
-            'name'       => $validated['name'],
+        DB::table('user')->insert([
+            'username'   => $validated['username'],
             'email'      => $validated['email'],
             'password'   => Hash::make($validated['password']),
+            'nomorhp'    => $validated['nomorhp'],
+            'kuotatrial' => 0,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
