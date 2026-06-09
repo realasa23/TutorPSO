@@ -41,7 +41,8 @@ class LaporanmasalahController extends Controller
         }
 
         $sudahLapor = DB::table('laporanmasalah')
-            ->where('idsesi', $pesanan->idsesi) 
+            ->where('idsesi', $pesanan->idsesi)
+            ->where('userid', $userId) 
             ->exists();
 
         if ($sudahLapor) {
