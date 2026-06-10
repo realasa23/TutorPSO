@@ -1,6 +1,6 @@
 <?php
 namespace App\Http\Controllers;
-use App\Models\user;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -12,11 +12,10 @@ class UserController extends Controller
 {
     public function home()
     {
-        $user = DB::table('users')
-            ->where('id', session('user_id'))
+        $user = DB::table('user')                      // ← fix: 'users' → 'user'
+            ->where('userid', session('user_id'))      // ← fix: 'id' → 'userid'
             ->first();
 
-        // Real query kategori + hitung total matakuliah per kategori
         $kategori = DB::table('kategori')
             ->leftJoin('matakuliah', 'kategori.idkategori', '=', 'matakuliah.idkategori')
             ->select(
@@ -27,11 +26,10 @@ class UserController extends Controller
             ->groupBy('kategori.idkategori', 'kategori.namakategori')
             ->get();
 
-        // Real query tutor + rating dinamis dari tabel review
         $tutor = DB::table('tutor')
-            ->leftJoin('sesi', 'tutor.idtutor', '=', 'sesi.idtutor')
-            ->leftJoin('pesanan', 'sesi.idsesi', '=', 'pesanan.idsesi')
-            ->leftJoin('review', 'pesanan.idpesanan', '=', 'review.idpesanan')
+            ->leftJoin('sesi',    'tutor.idtutor',    '=', 'sesi.idtutor')
+            ->leftJoin('pesanan', 'sesi.idsesi',      '=', 'pesanan.idsesi')
+            ->leftJoin('review',  'pesanan.idpesanan','=', 'review.idpesanan')
             ->select(
                 'tutor.idtutor',
                 'tutor.nama',
@@ -39,7 +37,7 @@ class UserController extends Controller
                 'tutor.fototutor',
                 DB::raw('COALESCE(AVG(review.rating), 0) as ratingtutor'),
                 DB::raw('COUNT(review.idreview) as total_review')
-    )
+            )
             ->groupBy('tutor.idtutor', 'tutor.nama', 'tutor.pekerjaan', 'tutor.fototutor')
             ->orderByDesc('ratingtutor')
             ->limit(6)
@@ -51,20 +49,19 @@ class UserController extends Controller
     public function index()
     {
         $userId = session('user_id');
-        if (!$userId) {
-            return redirect('/login');
-        }
+        if (!$userId) return redirect('/login');
 
-        $user = DB::table('users')->where('id', $userId)->first();
+        $user = DB::table('user')                      // ← fix
+            ->where('userid', $userId)                 // ← fix
+            ->first();
+
         return view('profile', compact('user'));
     }
 
     public function updateProfile(Request $request)
     {
         $userId = session('user_id');
-        if (!$userId) {
-            return redirect('/login');
-        }
+        if (!$userId) return redirect('/login');
 
         $request->validate([
             'fotoprofil' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
@@ -75,15 +72,13 @@ class UserController extends Controller
         if ($request->hasFile('fotoprofil')) {
             $file     = $request->file('fotoprofil');
             $filename = 'profile_' . $userId . '.' . $file->getClientOriginalExtension();
-
             $file->storeAs('profile', $filename, 'public');
-
             $dataUpdate['fotoprofil'] = 'storage/profile/' . $filename;
         }
 
         if (!empty($dataUpdate)) {
-            DB::table('users')
-                ->where('id', $userId)
+            DB::table('user')                          // ← fix
+                ->where('userid', $userId)             // ← fix
                 ->update($dataUpdate);
         }
 
@@ -109,7 +104,6 @@ class UserController extends Controller
             ->select('idtutor as id', 'nama', DB::raw("'tutor' as tipe"))
             ->get();
 
-        // Kolom search di sesi pakai namasesi (bukan judul)
         $sesi = DB::table('sesi')
             ->where('namaSesi', 'ILIKE', "%{$keyword}%")
             ->select('idsesi as id', 'namaSesi as nama', DB::raw("'sesi' as tipe"))

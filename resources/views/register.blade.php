@@ -81,7 +81,7 @@
         @csrf
 
         <h2>Username <span style="color:#F94931">*</span></h2>
-        <input class="input" type="text" name="username"           {{-- ← ganti dari name --}}
+        <input class="input" type="text" name="username"          
                placeholder="Masukkan Username Anda"
                value="{{ old('username') }}" required>
 
@@ -97,7 +97,7 @@
                placeholder="Konfirmasi Password Anda" required>
 
         <h2>Nomor Telepon <span style="color:#F94931">*</span></h2>
-        <input class="input" type="text" name="nomorhp"            {{-- ← ganti dari phone --}}
+        <input class="input" type="text" name="nomorhp"            
                placeholder="87xxxxxxxxx"
                value="{{ old('nomorhp') }}">
 
