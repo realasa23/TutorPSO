@@ -6,9 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
-//Michelle Lea Amanda - 5026231214
-//Nailah Adlina - 5026231068
-
 class RefundController extends Controller
 {
     public function processRefund()
@@ -19,12 +16,9 @@ class RefundController extends Controller
         }
 
         $laporan = DB::table('laporanmasalah')
-            ->join('pesanan', function ($join) {
-                $join->on('laporanmasalah.idsesi', '=', 'pesanan.idsesi')
-                     ->on('laporanmasalah.userid', '=', 'pesanan.userid');
-            })
-            ->join('sesi', 'laporanmasalah.idsesi', '=', 'sesi.idsesi')
-            ->join('tutor', 'sesi.idtutor', '=', 'tutor.idtutor')
+            ->join('pesanan', 'laporanmasalah.idpesanan', '=', 'pesanan.idpesanan')
+            ->join('sesi',    'pesanan.idsesi',           '=', 'sesi.idsesi')
+            ->join('tutor',   'sesi.idtutor',             '=', 'tutor.idtutor')
             ->leftJoin('refund', 'laporanmasalah.idlaporan', '=', 'refund.idlaporan')
             ->where('laporanmasalah.userid', $userId)
             ->select(
@@ -33,13 +27,13 @@ class RefundController extends Controller
                 'laporanmasalah.statuslaporan',
                 'tutor.nama as nama_tutor',
                 'tutor.fototutor',
-                'sesi.namaSesi as namasesi', 
+                'sesi.namaSesi as namasesi',
                 'pesanan.tanggal',
                 'pesanan.jam',
                 'refund.statusrefund',
                 'refund.jumlahpengembalian'
             )
-            ->distinct() 
+            ->distinct()
             ->orderBy('laporanmasalah.idlaporan', 'desc')
             ->get();
 
@@ -60,10 +54,7 @@ class RefundController extends Controller
         }
 
         $data = DB::table('laporanmasalah')
-            ->join('pesanan', function ($join) {
-                $join->on('laporanmasalah.idsesi', '=', 'pesanan.idsesi')
-                     ->on('laporanmasalah.userid', '=', 'pesanan.userid');
-            })
+            ->join('pesanan', 'laporanmasalah.idpesanan', '=', 'pesanan.idpesanan')
             ->leftJoin('refund', 'refund.idlaporan', '=', 'laporanmasalah.idlaporan')
             ->where('laporanmasalah.idlaporan', $idlaporan)
             ->where('laporanmasalah.userid', $userId)

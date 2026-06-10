@@ -77,28 +77,27 @@ class RefundTest extends TestCase
         ]);
     }
 
-    private function buatLaporan(int $userId, int $sesiId): int
+    private function buatLaporan(int $userId, int $idpesanan): int
     {
         return DB::table('laporanmasalah')->insertGetId([
-            'userid'          => $userId,
-            'idsesi'          => $sesiId,
-            'kategorimasalah' => 'Tutor tidak hadir',
-            'statuslaporan'   => 'Diproses',
-            'created_at'      => now(),
-            'updated_at'      => now(),
+            'userid'           => $userId,
+            'idpesanan'        => $idpesanan,
+            'kategorimasalah'  => 'Tutor tidak hadir',
+            'deskripsimasalah' => 'Deskripsi test',   // ← tambah ini
+            'statuslaporan'    => 'Diproses',
+            'created_at'       => now(),
+            'updated_at'       => now(),
         ]);
     }
 
-    private function buatRefund(int $idlaporan, string $status = 'Pending'): string
+   private function buatRefund(int $idlaporan, string $status = 'Pending'): int
     {
-        $idrefund = 'REF-' . $idlaporan;
-        DB::table('refund')->insert([
-            'idrefund'           => $idrefund,
+        return DB::table('refund')->insertGetId([
+            // ← hapus 'idrefund', biarkan auto-increment
             'idlaporan'          => $idlaporan,
             'statusrefund'       => $status,
             'jumlahpengembalian' => 50000,
         ]);
-        return $idrefund;
     }
 
     // ─── processRefund ─────────────────────────────────────────────────────────
@@ -108,7 +107,8 @@ class RefundTest extends TestCase
         $userId  = $this->buatUser();
         $sesiId  = $this->buatSesi();
         $this->buatPesanan($userId, $sesiId);
-        $lapId   = $this->buatLaporan($userId, $sesiId);
+        $pesananId = $this->buatPesanan($userId, $sesiId);
+        $lapId= $this->buatLaporan($userId, $pesananId);
         $this->buatRefund($lapId);
 
         $response = $this->withSession(['user_id' => $userId])
