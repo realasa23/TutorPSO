@@ -81,8 +81,9 @@
         @csrf
 
         <h2>Username <span style="color:#F94931">*</span></h2>
-        <input class="input" type="text" name="name" placeholder="Masukkan Username Anda"
-               value="{{ old('name') }}" required>
+        <input class="input" type="text" name="username"           {{-- ← ganti dari name --}}
+               placeholder="Masukkan Username Anda"
+               value="{{ old('username') }}" required>
 
         <h2>Email <span style="color:#F94931">*</span></h2>
         <input class="input" type="email" name="email" placeholder="Masukkan Email Anda"
@@ -96,8 +97,9 @@
                placeholder="Konfirmasi Password Anda" required>
 
         <h2>Nomor Telepon <span style="color:#F94931">*</span></h2>
-        <input class="input" type="text" name="phone" placeholder="87xxxxxxxxx"
-               value="{{ old('phone') }}">
+        <input class="input" type="text" name="nomorhp"            {{-- ← ganti dari phone --}}
+               placeholder="87xxxxxxxxx"
+               value="{{ old('nomorhp') }}">
 
         <button type="submit">Create Account</button>
 
