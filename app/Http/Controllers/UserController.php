@@ -90,22 +90,22 @@ class UserController extends Controller
         $keyword = $request->query('q');
 
         $categories = DB::table('kategori')
-            ->where('namakategori', 'ILIKE', "%{$keyword}%")
+            ->where('namakategori', 'LIKE', "%{$keyword}%")
             ->select('idkategori as id', 'namakategori as nama', DB::raw("'kategori' as tipe"))
             ->get();
 
         $matkul = DB::table('matakuliah')
-            ->where('namamatkul', 'ILIKE', "%{$keyword}%")
+            ->where('namamatkul', 'LIKE', "%{$keyword}%")
             ->select('idmatkul as id', 'namamatkul as nama', DB::raw("'matkul' as tipe"))
             ->get();
 
         $tutor = DB::table('tutor')
-            ->where('nama', 'ILIKE', "%{$keyword}%")
+            ->where('nama', 'LIKE', "%{$keyword}%")
             ->select('idtutor as id', 'nama', DB::raw("'tutor' as tipe"))
             ->get();
 
         $sesi = DB::table('sesi')
-            ->where('namaSesi', 'ILIKE', "%{$keyword}%")
+            ->where('namaSesi', 'LIKE', "%{$keyword}%")
             ->select('idsesi as id', 'namaSesi as nama', DB::raw("'sesi' as tipe"))
             ->get();
 
