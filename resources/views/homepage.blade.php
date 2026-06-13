@@ -4,11 +4,10 @@
     $namaUser = 'User';
 
     if ($userId) {
-        // Kita gunakan 'users' (pakai s) sesuai tabel asli di Supabase kamu
-        $userData = \Illuminate\Support\Facades\DB::table('users')->where('id', $userId)->first();
-        
+        $userData = \Illuminate\Support\Facades\DB::table('user')->where('userid', $userId)->first();
+
         if ($userData) {
-            $namaUser = $userData->name;
+            $namaUser = $userData->username;
         }
     }
 @endphp
@@ -60,12 +59,11 @@
         .main-wrapper {
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Memastikan minimal setinggi layar */
+            min-height: 100vh;
         }
         .content-container {
             flex: 1;
             padding: 10px;
-            /* padding-bottom: 100px; */
             background: white;
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;
@@ -78,7 +76,6 @@
         .homepage-container {
             display: flex;
             flex-direction: column;
-            /* min-height: 100vh; Memastikan tinggi layar minimal 100% */
         }
         .avatar-wrapper {
             position: relative;
@@ -260,9 +257,9 @@
             gap: 12px;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
-            padding-bottom: 10px; /* Sedikit ruang agar tidak terpotong */
-            padding-left: 16px;   /* Tambahkan ini agar tidak menempel di kiri */
-            padding-right: 16px;  /* Tambahkan ini agar tidak menempel di kanan */
+            padding-bottom: 10px;
+            padding-left: 16px;
+            padding-right: 16px;
             scrollbar-width: none;
             -ms-overflow-style: none;
         }

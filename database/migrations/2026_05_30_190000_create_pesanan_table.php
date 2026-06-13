@@ -23,7 +23,7 @@ return new class extends Migration
 
         // Foreign Keys
         $table->foreign('idsesi')->references('idsesi')->on('sesi')->onDelete('cascade');
-        $table->foreign('userid')->references('id')->on('users')->onDelete('cascade');
+        $table->foreign('userid')->references('userid')->on('user')->onDelete('cascade');
     });
     }
 }
