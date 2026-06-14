@@ -53,7 +53,7 @@ jobs:
         run: find app/ -name "*.php" | xargs php -l
 
       - name: Run tests
-        run: php artisan test --parallel
+        run: php artisan test 
 
   # ─── JOB 2: BUILD & PUSH ──────────────────────────────
   build:
