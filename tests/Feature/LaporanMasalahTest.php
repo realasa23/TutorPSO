@@ -4,8 +4,9 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\User;
-use App\Models\Pesanan;
+use App\Models\user;
+use App\Models\pesanan;
+use App\Models\laporanmasalah;
 
 class LaporanMasalahTest extends TestCase
 {

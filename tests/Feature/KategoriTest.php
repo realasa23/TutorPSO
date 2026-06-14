@@ -4,7 +4,8 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\Kategori;
+use App\Models\tutor;
+use App\Models\kategori;
 
 class KategoriTest extends TestCase
 {
