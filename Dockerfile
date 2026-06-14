@@ -60,10 +60,8 @@ RUN composer install \
     --optimize-autoloader \
     --prefer-dist
 
-COPY . .
-
-COPY --from=frontend /app/public/build ./public/build
-
+COPY . .                                           
+COPY --from=frontend /app/public/build ./public/build 
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
