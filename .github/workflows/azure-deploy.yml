@@ -41,7 +41,7 @@ jobs:
       - name: Build frontend assets
         run: npm run build
 
-      - - name: Copy .env for testing
+      - name: Copy .env for testing
         run: |
           cp .env.testing .env
           php artisan key:generate
