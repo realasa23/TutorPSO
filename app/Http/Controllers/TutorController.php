@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -38,7 +37,6 @@ class TutorController extends Controller
     public function profile($id)
     {
         $tutor = DB::table('tutor')->where('idtutor', $id)->first();
-
         if (!$tutor) {
             abort(404, 'Tutor tidak ditemukan');
         }
@@ -50,10 +48,9 @@ class TutorController extends Controller
         $reviews = DB::table('review')
             ->join('pesanan', 'review.idpesanan', '=', 'pesanan.idpesanan')
             ->join('sesi', 'pesanan.idsesi', '=', 'sesi.idsesi')
-            // TODO: replace 'users' / 'users.id' with your real accounts table + PK
-            ->join('users', 'pesanan.userid', '=', 'users.id')
+            ->join('user', 'pesanan.userid', '=', 'user.userid')
             ->where('sesi.idtutor', $id)
-            ->select('review.*', 'users.name as nama_user')
+            ->select('review.*', 'user.username as nama_user')
             ->get();
 
         return view('Profile-Tutor', compact('tutor', 'reviews'));
@@ -62,7 +59,6 @@ class TutorController extends Controller
     public function listSesi($idtutor)
     {
         $tutor = DB::table('tutor')->where('idtutor', $idtutor)->first();
-
         if (!$tutor) {
             abort(404, 'Tutor tidak ditemukan');
         }
