@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -12,7 +13,7 @@ class TutorController extends Controller
     private function attachRating($tutor)
     {
         foreach ($tutor as $t) {
-            $t->ratingtutor  = DB::table('review')
+            $t->ratingtutor = DB::table('review')
                 ->join('pesanan', 'review.idpesanan', '=', 'pesanan.idpesanan')
                 ->join('sesi', 'pesanan.idsesi', '=', 'sesi.idsesi')
                 ->where('sesi.idtutor', $t->idtutor)
@@ -49,6 +50,7 @@ class TutorController extends Controller
         $reviews = DB::table('review')
             ->join('pesanan', 'review.idpesanan', '=', 'pesanan.idpesanan')
             ->join('sesi', 'pesanan.idsesi', '=', 'sesi.idsesi')
+            // TODO: replace 'users' / 'users.id' with your real accounts table + PK
             ->join('users', 'pesanan.userid', '=', 'users.id')
             ->where('sesi.idtutor', $id)
             ->select('review.*', 'users.name as nama_user')
