@@ -32,7 +32,6 @@ class ReviewController extends Controller
 
         if (!$pesanan) abort(404, 'Data pesanan tidak ditemukan atau bukan milik Anda.');
 
-        // Cegah review dobel
         if (DB::table('review')->where('idpesanan', $idpesanan)->exists()) {
             return redirect()
                 ->route('profiletutor', ['id' => $pesanan->idtutor])
@@ -54,7 +53,6 @@ class ReviewController extends Controller
         $userId = session('user_id') ?? Auth::id();
         if (!$userId) return redirect('/login');
 
-        // Pastikan pesanan milik user ini
         $pesanan = DB::table('pesanan')
             ->where('idpesanan', $request->idpesanan)
             ->where('userid',    $userId)
@@ -62,7 +60,6 @@ class ReviewController extends Controller
 
         if (!$pesanan) abort(403, 'Aksi tidak diizinkan.');
 
-        // Double-check: cegah review dobel lewat form manipulation
         if (DB::table('review')->where('idpesanan', $request->idpesanan)->exists()) {
             return back()->with('error', 'Kamu sudah mengulas sesi ini.');
         }
