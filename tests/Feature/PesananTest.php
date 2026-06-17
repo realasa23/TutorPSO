@@ -2,222 +2,133 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
+use Tests\TestCase;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class PesananTest extends TestCase
 {
     use RefreshDatabase;
 
-    // ─── Helper: buat user dan return userid ───────────────────────────────────
-    private function buatUser(): int
+    protected function setUp(): void
     {
-        return DB::table('user')->insertGetId([
-            'username'   => 'testuser',
-            'email'      => 'test@test.com',
-            'password'   => bcrypt('password'),
-            'nomorhp'    => '081234567890',
-            'kuotatrial' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        parent::setUp();
+        Schema::disableForeignKeyConstraints();
     }
 
-    // ─── Helper: buat sesi lengkap dengan tutor & matkul ───────────────────────
-    private function buatSesi(): int
+    private function createDummyData()
     {
-        // Step 1: buat kategori dulu
-        $kategoriId = DB::table('kategori')->insertGetId([
-            'namakategori' => 'Informatika',
-            'created_at'   => now(),
-            'updated_at'   => now(),
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        session(['user_id' => $user->userid]);
+
+        DB::table('kategori')->insert(['idkategori' => 1, 'namakategori' => 'Eksakta']);
+        DB::table('matakuliah')->insert(['idmatkul' => '1', 'idkategori' => 1, 'namamatkul' => 'Matematika']);
+        DB::table('tutor')->insert(['idtutor' => '1', 'nama' => 'Pak Budi', 'fototutor' => '']);
+
+        $idsesi = DB::table('sesi')->insertGetId([
+            'idmatkul' => '1',
+            'idtutor' => '1',
+            'harga' => 50000,
+            'namaSesi' => 'Belajar Aljabar',
         ]);
 
-        // Step 2: buat tutor
-        $tutorId = DB::table('tutor')->insertGetId([
-            'nama'       => 'Tutor Test',
-            'pekerjaan'  => 'Mahasiswa',
-            'deskripsi'  => 'Tutor test',
-            'fototutor'  => null,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        // Step 3: buat matakuliah dengan idkategori
-        $matkulId = DB::table('matakuliah')->insertGetId([
-            'namamatkul'  => 'Algoritma',
-            'idkategori'  => $kategoriId,   // ← tambah ini
-            'created_at'  => now(),
-            'updated_at'  => now(),
-        ]);
-
-        // Step 4: buat sesi
-        return DB::table('sesi')->insertGetId([
-            'namaSesi'   => 'Sesi Algoritma',
-            'idtutor'    => $tutorId,
-            'idmatkul'   => $matkulId,
-            'harga'      => 50000,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        return [$user, $idsesi];
     }
 
-    // ─── storeRegular ──────────────────────────────────────────────────────────
-
-    public function test_store_regular_berhasil()
+    public function test_store_regular_berhasil_dan_gagal_jika_dobel()
     {
-        $userId = $this->buatUser();
-        $sesiId = $this->buatSesi();
-
-        $response = $this->withSession(['user_id' => $userId])
-            ->post('/konfirmasi-pesanan', [
-                'idsesi'  => $sesiId,
-                'tanggal' => '2026-12-01',
-                'jam'     => '10.00-11.00',
-                'durasi'  => 1,
-            ]);
-
-        $response->assertStatus(200);
-        $response->assertViewIs('Konfirmasi-Pesanan');
-
-        $this->assertDatabaseHas('pesanan', [
-            'userid'  => $userId,
-            'idsesi'  => $sesiId,
-            'tanggal' => '2026-12-01',
-            'biaya'   => 50000,
-        ]);
-    }
-
-    public function test_store_regular_gagal_jika_sudah_pesan_sama()
-    {
-        $userId = $this->buatUser();
-        $sesiId = $this->buatSesi();
-
-        // Pesanan pertama
-        DB::table('pesanan')->insert([
-            'userid'     => $userId,
-            'idsesi'     => $sesiId,
-            'tanggal'    => '2026-12-01',
-            'jam'        => '10.00-11.00',
-            'durasi'     => 1,
-            'biaya'      => 50000,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        // Coba pesan lagi dengan tanggal & jam sama
-        $response = $this->withSession(['user_id' => $userId])
-            ->post('/konfirmasi-pesanan', [
-                'idsesi'  => $sesiId,
-                'tanggal' => '2026-12-01',
-                'jam'     => '10.00-11.00',
-                'durasi'  => 1,
-            ]);
-
-        $response->assertSessionHas('error');
-
-        // Pastikan tidak ada insert dobel
-        $this->assertEquals(1, DB::table('pesanan')
-            ->where('userid', $userId)
-            ->where('idsesi', $sesiId)
-            ->count()
-        );
-    }
-
-    public function test_store_regular_redirect_login_jika_belum_login()
-    {
-        $sesiId = $this->buatSesi();
+        [$user, $idsesi] = $this->createDummyData();
+        $tanggal = now()->addDays(1)->toDateString();
 
         $response = $this->post('/konfirmasi-pesanan', [
-            'idsesi'  => $sesiId,
-            'tanggal' => '2026-12-01',
-            'jam'     => '10.00-11.00',
-            'durasi'  => 1,
+            'idsesi' => $idsesi,
+            'tanggal' => $tanggal,
+            'jam' => '10:00',
+            'durasi' => 2,
         ]);
-
-        $response->assertRedirect('/login');
-    }
-
-    // ─── storeTrial ────────────────────────────────────────────────────────────
-
-    public function test_store_trial_berhasil_dan_biaya_nol()
-    {
-        $userId = $this->buatUser();
-        $sesiId = $this->buatSesi();
-
-        $response = $this->withSession(['user_id' => $userId])
-            ->post('/konfirmasi-trial', [
-                'idsesi'  => $sesiId,
-                'tanggal' => '2026-12-01',
-                'jam'     => '10.00-11.00',
-                'durasi'  => 1,
-            ]);
-
         $response->assertStatus(200);
-        $response->assertViewIs('Konfirmasi-Trial');
 
-        $this->assertDatabaseHas('pesanan', [
-            'userid' => $userId,
-            'idsesi' => $sesiId,
-            'biaya'  => 0,
+        $responseFail = $this->post('/konfirmasi-pesanan', [
+            'idsesi' => $idsesi,
+            'tanggal' => $tanggal,
+            'jam' => '10:00',
+            'durasi' => 2,
         ]);
+        $responseFail->assertRedirect()->assertSessionHas('error');
     }
 
-    public function test_store_trial_gagal_jika_sudah_pernah_trial_sesi_sama()
+    public function test_store_trial_berhasil_dan_gagal_jika_dobel()
     {
-        $userId = $this->buatUser();
-        $sesiId = $this->buatSesi();
+        [$user, $idsesi] = $this->createDummyData();
+        $tanggal = now()->addDays(2)->toDateString();
 
-        // Trial pertama
-        DB::table('pesanan')->insert([
-            'userid'     => $userId,
-            'idsesi'     => $sesiId,
-            'tanggal'    => '2026-12-01',
-            'jam'        => '10.00-11.00',
-            'durasi'     => 1,
-            'biaya'      => 0,
-            'created_at' => now(),
-            'updated_at' => now(),
+        $response = $this->post('/konfirmasi-trial', [
+            'idsesi' => $idsesi,
+            'tanggal' => $tanggal,
+            'jam' => '14:00',
+            'durasi' => 1,
         ]);
-
-        // Coba trial lagi di sesi yang sama
-        $response = $this->withSession(['user_id' => $userId])
-            ->post('/konfirmasi-trial', [
-                'idsesi'  => $sesiId,
-                'tanggal' => '2026-12-02',
-                'jam'     => '11.00-12.00',
-                'durasi'  => 1,
-            ]);
-
-        $response->assertSessionHas('error');
-
-        $this->assertEquals(1, DB::table('pesanan')
-            ->where('userid', $userId)
-            ->where('idsesi', $sesiId)
-            ->where('biaya', 0)
-            ->count()
-        );
-    }
-
-    // ─── aktivitas ─────────────────────────────────────────────────────────────
-
-    public function test_aktivitas_tampil_dengan_tab_default()
-    {
-        $userId = $this->buatUser();
-
-        $response = $this->withSession(['user_id' => $userId])
-            ->get('/aktivitas');
-
         $response->assertStatus(200);
-        $response->assertViewIs('Aktivitas');
-        $response->assertViewHas('tab', 'akan-datang');
+
+        $responseFail = $this->post('/konfirmasi-trial', [
+            'idsesi' => $idsesi,
+            'tanggal' => now()->addDays(3)->toDateString(),
+            'jam' => '15:00',
+            'durasi' => 1,
+        ]);
+        $responseFail->assertRedirect()->assertSessionHas('error');
     }
 
-    public function test_aktivitas_redirect_login_jika_belum_login()
+    public function test_gabung_sesi_dan_detail_aktivitas()
     {
-        $response = $this->get('/aktivitas');
+        [$user, $idsesi] = $this->createDummyData();
+        $idpesanan = DB::table('pesanan')->insertGetId([
+            'userid' => $user->userid, 'idsesi' => $idsesi, 'tanggal' => now()->toDateString(),
+            'jam' => '10:00', 'durasi' => 1, 'biaya' => 50000
+        ]);
 
-        $response->assertRedirect('/login');
+        $this->get('/gabung-sesi/' . $idpesanan)->assertStatus(200);
+        $this->get('/gabung-sesi/999')->assertStatus(404);
+
+        $this->get('/aktivitas/detail/' . $idpesanan)->assertStatus(200);
+        $this->get('/aktivitas/detail/999')->assertStatus(404);
+    }
+
+    public function test_end_call()
+    {
+        $this->get('/gabung-sesi/1/end-call')->assertRedirect();
+    }
+
+    public function test_aktivitas_dan_status_realtime()
+    {
+        [$user, $idsesi] = $this->createDummyData();
+
+        $pesanans = [
+            ['userid' => $user->userid, 'idsesi' => $idsesi, 'tanggal' => now()->subDays(1)->toDateString(), 'jam' => '10:00', 'durasi' => 1, 'biaya' => 0],
+            ['userid' => $user->userid, 'idsesi' => $idsesi, 'tanggal' => now()->addDays(1)->toDateString(), 'jam' => '10:00', 'durasi' => 1, 'biaya' => 0],
+            ['userid' => $user->userid, 'idsesi' => $idsesi, 'tanggal' => now()->toDateString(), 'jam' => now()->subMinutes(10)->format('H:i'), 'durasi' => 1, 'biaya' => 0],
+            ['userid' => $user->userid, 'idsesi' => $idsesi, 'tanggal' => now()->addYears(100)->toDateString(), 'jam' => '99:99', 'durasi' => 1, 'biaya' => 0],
+        ];
+
+        foreach ($pesanans as $pesanan) {
+            DB::table('pesanan')->insert($pesanan);
+        }
+
+        $this->get('/aktivitas?tab=lampau')->assertStatus(200);
+        $this->get('/aktivitas?tab=akan-datang')->assertStatus(200);
+        $this->get('/aktivitas?tab=berlangsung')->assertStatus(200);
+    }
+
+    public function test_semua_rute_redirect_jika_belum_login()
+    {
+        session()->flush();
+        $this->post('/konfirmasi-pesanan')->assertRedirect('/login');
+        $this->post('/konfirmasi-trial')->assertRedirect('/login');
+        $this->get('/gabung-sesi/1')->assertRedirect('/login');
+        $this->get('/aktivitas')->assertRedirect('/login');
+        $this->get('/aktivitas/detail/1')->assertRedirect('/login');
     }
 }

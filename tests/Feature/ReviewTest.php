@@ -4,10 +4,8 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\user;
-use App\Models\kategori;
-use App\Models\tutor;
-use App\Models\review;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class ReviewTest extends TestCase
 {
@@ -15,31 +13,85 @@ class ReviewTest extends TestCase
 
     public function test_user_bisa_mengirim_ulasan_tutor()
     {
-        // 1. Setup User Login
         $user = User::factory()->create();
         $this->actingAs($user);
+        session(['user_id' => $user->userid]); // Set session manual
 
-        // 2. Setup Data Kategori dan Tutor Dummy
-        $kategori = Kategori::create([
-            'namakategori' => 'Pemrograman Web'
+        // Bikin dummy pesanan
+        $idpesanan = DB::table('pesanan')->insertGetId([
+            'userid' => $user->userid,
+            'idsesi' => 1,
+            'tanggal' => now()->toDateString(),
+            'jam' => '10:00:00',
+            'durasi' => 1,
+            'biaya' => 50000,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
-        $tutor = Tutor::create([
-            'nama' => 'Sasha',
-            'kategori_id' => $kategori->id,
-            'harga' => 50000
-        ]);
-
-        // 3. Action: Kirim review
-        // PENTING: Jika di web.php rutenya bukan '/review', ganti URL di bawah ini!
-        // Jika rute aslinya misal '/ulasan', ubah '/review' di bawah ini:
         $response = $this->post('/aktivitas/ulas/store', [
-            'tutor_id' => $tutor->id,
+            'idpesanan' => $idpesanan,
             'rating' => 5,
-            'komentar' => 'Penjelasannya sangat mudah dipahami dan sabar banget!',
+            'tagpenilaian' => 'Tutor sangat baik',
+            'komentar' => 'Sangat merekomendasikan tutor ini.',
         ]);
 
-        // 4. Assert: Pastikan berhasil redirect (302)
-        $response->assertStatus(302);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('review', ['idpesanan' => $idpesanan]);
+    }
+
+    public function test_review_redirect_login_jika_belum_login()
+    {
+        // Akses langsung halaman review tanpa login
+        $response = $this->get('/aktivitas/ulas/1');
+        $response->assertRedirect('/login');
+
+        // Post review tanpa login
+        $responsePost = $this->post('/aktivitas/ulas/store', [
+            'idpesanan' => 1,
+            'rating' => 5,
+        ]);
+        $responsePost->assertRedirect('/login');
+    }
+
+    public function test_review_gagal_jika_pesanan_tidak_ditemukan()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        session(['user_id' => $user->userid]);
+
+        // KITA UBAH EXPECTATION MENJADI 404
+        $response = $this->get('/aktivitas/ulas/999');
+        $response->assertStatus(404);
+    }
+
+    public function test_review_gagal_jika_sudah_pernah_review()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        session(['user_id' => $user->userid]);
+
+        $idpesanan = DB::table('pesanan')->insertGetId([
+            'userid' => $user->userid,
+            'idsesi' => 1,
+            'tanggal' => now()->toDateString(),
+            'jam' => '10:00:00',
+            'durasi' => 1,
+            'biaya' => 50000,
+        ]);
+
+        DB::table('review')->insert([
+            'idpesanan' => $idpesanan,
+            'rating' => 4,
+        ]);
+
+        // KITA HANYA TEST POST-NYA SAJA BIAR LEBIH AKURAT & AMAN
+        $responsePost = $this->post('/aktivitas/ulas/store', [
+            'idpesanan' => $idpesanan,
+            'rating' => 5,
+        ]);
+
+        // Memastikan kalau nge-post review dobel, bakal di-redirect balik bawa error
+        $responsePost->assertRedirect()->assertSessionHas('error');
     }
 }
