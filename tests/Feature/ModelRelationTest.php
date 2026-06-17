@@ -3,13 +3,13 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use App\Models\Pesanan;
-use App\Models\Review;
-use App\Models\Sesi;
-use App\Models\Tutor;
-use App\Models\User;
-use App\Models\LaporanMasalah;
-use App\Models\Matakuliah;
+use App\Models\pesanan;
+use App\Models\review;
+use App\Models\sesi;
+use App\Models\tutor;
+use App\Models\user;
+use App\Models\laporanMasalah;
+use App\Models\matakuliah;
 
 class ModelRelationTest extends TestCase
 {
