@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
-use App\Models\User;
+use App\Models\user;
 use Illuminate\Support\Facades\DB;
 
 class LaporanMasalahTest extends TestCase
