@@ -153,7 +153,7 @@ class PesananController extends Controller
         $userId = session('user_id') ?? Auth::id();
         if (!$userId) return redirect('/login');
  
-        // Pakai groupBy di query untuk cegah duplikasi dari join
+        
         $semuaPesanan = DB::table('pesanan')
             ->join('sesi',       'pesanan.idsesi',       '=', 'sesi.idsesi')
             ->join('tutor',      'sesi.idtutor',         '=', 'tutor.idtutor')

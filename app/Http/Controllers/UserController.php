@@ -12,8 +12,12 @@ class UserController extends Controller
 {
     public function home()
     {
-        $user = DB::table('user')                      // ← fix: 'users' → 'user'
-            ->where('userid', session('user_id'))      // ← fix: 'id' → 'userid'
+        $userId = session('user_id');
+        if (!$userId) {
+            return redirect('/login');         
+    }
+        $user = DB::table('user')                      
+            ->where('userid', session('user_id'))      
             ->first();
 
         $kategori = DB::table('kategori')
@@ -49,10 +53,11 @@ class UserController extends Controller
     public function index()
     {
         $userId = session('user_id');
-        if (!$userId) return redirect('/login');
+        if (!$userId) 
+            return redirect('/login');
 
-        $user = DB::table('user')                      // ← fix
-            ->where('userid', $userId)                 // ← fix
+        $user = DB::table('user')                      
+            ->where('userid', $userId)                 
             ->first();
 
         return view('profile', compact('user'));
@@ -77,8 +82,8 @@ class UserController extends Controller
         }
 
         if (!empty($dataUpdate)) {
-            DB::table('user')                          // ← fix
-                ->where('userid', $userId)             // ← fix
+            DB::table('user')                          
+                ->where('userid', $userId)             
                 ->update($dataUpdate);
         }
 

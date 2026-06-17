@@ -48,12 +48,6 @@ class LoginController extends Controller
             'nomorhp'  => 'required|string|max:15',
         ]);
 
-        $exists = DB::table('user')->where('email', $validated['email'])->exists();
-
-        if ($exists) {
-            return back()->withErrors(['email' => 'Email already registered'])->withInput();
-        }
-
         DB::table('user')->insert([
             'username'   => $validated['username'],
             'email'      => $validated['email'],
