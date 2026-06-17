@@ -24,7 +24,7 @@ jobs:
         with:
           php-version: '8.2'
           extensions: pdo, mbstring, bcmath, gd, zip
-          coverage: none
+          coverage: pcov
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
