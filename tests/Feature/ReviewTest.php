@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\user;
+use App\Models\u\User;
 use Illuminate\Support\Facades\DB;
 
 class ReviewTest extends TestCase

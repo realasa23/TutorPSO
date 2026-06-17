@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
-use App\Models\user;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class PesananTest extends TestCase
