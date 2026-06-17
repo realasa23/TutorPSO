@@ -38,7 +38,14 @@ class SesiController extends Controller
             )
             ->get();
 
-        return view('Daftar-Sesi-Tutor', compact('sesi', 'matakuliah'));
+        // Header blade ini butuh $tutor->nama dan $tutor->fototutor secara global.
+        // Karena view ini juga dipakai TutorController::listSesi (1 tutor banyak sesi),
+        // di sini kita ambil data tutor dari baris pertama sebagai representasi.
+        $tutor = $sesi->isNotEmpty()
+            ? (object) ['nama' => $sesi->first()->nama, 'fototutor' => $sesi->first()->fototutor]
+            : (object) ['nama' => $matakuliah->namamatkul, 'fototutor' => null];
+
+        return view('Daftar-Sesi-Tutor', compact('sesi', 'matakuliah', 'tutor'));
     }
 
     public function pesanSesi($idsesi)
