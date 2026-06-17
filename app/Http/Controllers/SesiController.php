@@ -23,7 +23,7 @@ class SesiController extends Controller
             ->select('sesi.*', 'matakuliah.namamatkul', 'tutor.nama as namatutor', 'tutor.fototutor')
             ->get();
 
-        return view('Daftar-Sesi', compact('sesi', 'matkul'));
+        return view('Daftar-Sesi-Tutor', compact('sesi', 'matkul'));
     }
 
     public function index()
@@ -34,7 +34,7 @@ class SesiController extends Controller
             ->select('sesi.*', 'matakuliah.namamatkul', 'tutor.nama as namatutor')
             ->get();
 
-        return view('Daftar-Sesi', compact('sesi'));
+        return view('Daftar-Sesi-Tutor', compact('sesi'));
     }
 
     public function show($id)
@@ -50,7 +50,7 @@ class SesiController extends Controller
             abort(404, 'Sesi tidak ditemukan');
         }
 
-        return view('Detail-Sesi', compact('sesi'));
+        return view('Detail-Aktivitas', compact('sesi'));
     }
 
     public function pesanSesi($idsesi)
@@ -66,7 +66,7 @@ class SesiController extends Controller
             abort(404, 'Sesi tidak ditemukan');
         }
 
-        return view('Pesan-Sesi', compact('sesi'));
+        return view('Pemilihan-Tanggal', compact('sesi'));
     }
 
     public function pilihTanggalStore(Request $request, $idsesi)
@@ -88,7 +88,7 @@ class SesiController extends Controller
 
         $tanggal = session('tanggal');
 
-        return view('Pilih-Jam', compact('sesi', 'tanggal'));
+        return view('Pemilihan-Jam', compact('sesi', 'tanggal'));
     }
 
     public function pilihJamStore(Request $request, $idsesi)

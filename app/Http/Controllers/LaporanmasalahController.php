@@ -41,7 +41,7 @@ class LaporanmasalahController extends Controller
         }
 
         $sudahLapor = DB::table('laporanmasalah')
-            ->where('idsesi', $pesanan->idsesi)
+            ->where('idpesanan', $idpesanan)
             ->where('userid', $userId) 
             ->exists();
 
@@ -117,7 +117,7 @@ class LaporanmasalahController extends Controller
 
         $idlaporan = DB::table('laporanmasalah')->insertGetId([
             'userid'            => $userId,
-            'idsesi'            => $pesanan->idsesi, 
+            'idpesanan'         => $request->idpesanan,
             'kategorimasalah'   => $request->jenis_masalah,
             'deskripsimasalah'  => $request->deskripsi,
             'statuslaporan'     => $isRefund
