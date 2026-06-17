@@ -13,7 +13,6 @@ use App\Models\Matakuliah;
 
 class ModelRelationTest extends TestCase
 {
-    // --- JOBDESK KAMU ---
     public function test_pesanan_relations()
     {
         $pesanan = new Pesanan();
@@ -43,7 +42,6 @@ class ModelRelationTest extends TestCase
         $this->assertNotNull($tutor->sesi());
     }
 
-    // --- JOBDESK TEMANMU ---
     public function test_user_relations()
     {
         $user = new User();

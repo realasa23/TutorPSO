@@ -3,41 +3,104 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
-use App\Models\user;
-use App\Models\pesanan;
-use App\Models\laporanmasalah;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class LaporanMasalahTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_user_bisa_mengirim_laporan_masalah()
+    protected function setUp(): void
     {
-        // 1. Setup User Login
+        parent::setUp();
+        Schema::disableForeignKeyConstraints();
+    }
+
+    private function createDummyData()
+    {
         $user = User::factory()->create();
         $this->actingAs($user);
+        session(['user_id' => $user->userid]);
 
-        // 2. Setup Data Pesanan Dummy (Kita isi semua yang berpotensi NOT NULL)
-        $pesanan = new Pesanan();
+        DB::table('kategori')->insert(['idkategori' => 1, 'namakategori' => 'Eksakta']);
+        DB::table('matakuliah')->insert(['idmatkul' => '1', 'idkategori' => 1, 'namamatkul' => 'Matematika']);
+        DB::table('tutor')->insert(['idtutor' => '1', 'nama' => 'Pak Budi', 'fototutor' => '']);
 
-        $pesanan->userid = $user->iduser ?? $user->id ?? 1;
-        $pesanan->idsesi = 1;
-        $pesanan->tanggal = '2026-05-20';
-
-        // TAMBAHKAN BARIS INI KEMBALI
-        $pesanan->jam = '08:00:00';
-
-        $pesanan->save();
-
-        // 3. Action: Kirim laporan masalah ke rute yang benar
-        $response = $this->post('/aktivitas/laporan/store', [
-            'pesanan_id' => $pesanan->idpesanan ?? $pesanan->id,
-            'jenis_masalah' => 'Materi Tidak Sesuai',
-            'detail_alasan' => 'Tutor mengajarkan materi yang tidak sesuai dengan silabus.'
+        DB::table('sesi')->insert([
+            'idsesi' => 1, 'idtutor' => '1', 'idmatkul' => '1', 'namaSesi' => 'Belajar Aljabar', 'harga' => 50000
         ]);
 
-        // 4. Assert: Pastikan berhasil redirect (302)
-        $response->assertStatus(302);
+        $idpesanan = DB::table('pesanan')->insertGetId([
+            'userid' => $user->userid, 'idsesi' => 1, 'tanggal' => now()->toDateString(),
+            'jam' => '10:00', 'durasi' => 1, 'biaya' => 50000
+        ]);
+
+        return [$user, $idpesanan];
+    }
+
+    public function test_create_laporan_dan_redirect_jika_sudah_lapor()
+    {
+        [$user, $idpesanan] = $this->createDummyData();
+
+        $this->get('/aktivitas/laporan/' . $idpesanan)->assertStatus(200);
+        $this->get('/aktivitas/laporan/999')->assertStatus(404);
+
+        // FIX: Tambahkan 'deskripsimasalah' di sini biar SQLite nggak ngambek
+        DB::table('laporanmasalah')->insert([
+            'idlaporan' => 1,
+            'userid' => $user->userid,
+            'idpesanan' => $idpesanan,
+            'kategorimasalah' => 'Lainnya',
+            'deskripsimasalah' => 'Ini contoh deskripsi masalah',
+            'statuslaporan' => 'Laporan_Diterima'
+        ]);
+
+        $this->get('/aktivitas/laporan/' . $idpesanan)->assertRedirect()->assertSessionHas('error');
+    }
+
+    public function test_detail_masalah()
+    {
+        [$user, $idpesanan] = $this->createDummyData();
+
+        $this->get('/aktivitas/laporan/' . $idpesanan . '/masalah?jenis=Tutor+Tidak+Hadir')->assertStatus(200);
+        $this->get('/aktivitas/laporan/999/masalah?jenis=Tutor+Tidak+Hadir')->assertStatus(404);
+        $this->get('/aktivitas/laporan/' . $idpesanan . '/masalah')->assertStatus(404);
+    }
+
+    public function test_store_laporan_masalah_biasa_dan_refund()
+    {
+        [$user, $idpesanan] = $this->createDummyData();
+
+        $responseRefund = $this->post('/aktivitas/laporan/store', [
+            'idpesanan' => $idpesanan,
+            'jenis_masalah' => 'Tutor Tidak Hadir',
+            'deskripsi' => 'Tutornya ngilang'
+        ]);
+        $responseRefund->assertRedirect();
+        $this->assertDatabaseHas('refund', ['statusrefund' => 'Diproses']);
+
+        $idpesananBiasa = DB::table('pesanan')->insertGetId([
+            'userid' => $user->userid, 'idsesi' => 1, 'tanggal' => now()->toDateString(), 'jam' => '12:00'
+        ]);
+
+        $responseBiasa = $this->post('/aktivitas/laporan/store', [
+            'idpesanan' => $idpesananBiasa,
+            'jenis_masalah' => 'Lainnya',
+            'deskripsi' => 'Materi kurang jelas'
+        ]);
+        $responseBiasa->assertRedirect();
+        $this->assertDatabaseHas('laporanmasalah', ['idpesanan' => $idpesananBiasa, 'statuslaporan' => 'Laporan_Diterima']);
+
+        $this->post('/aktivitas/laporan/store', [
+            'idpesanan' => 999, 'jenis_masalah' => 'Lainnya', 'deskripsi' => 'Test'
+        ])->assertStatus(403);
+    }
+
+    public function test_halaman_laporan_sukses()
+    {
+        session(['type' => 'refund']);
+        $this->get('/aktivitas/laporan/berhasil')->assertStatus(200);
     }
 }

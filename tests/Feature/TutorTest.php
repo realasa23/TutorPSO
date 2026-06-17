@@ -1,33 +1,41 @@
 <?php
 
 namespace Tests\Feature;
-use App\Models\Tutor;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
+use Illuminate\Support\Facades\DB;
 
 class TutorTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_user_bisa_melihat_daftar_rekomendasi_tutor()
+    protected function setUp(): void
     {
-        $response = $this->get('/tutor');
-
-        $response->assertStatus(200);
+        parent::setUp();
+        Schema::disableForeignKeyConstraints();
     }
 
-public function test_user_bisa_melihat_detail_profil_tutor()
-{
-    // 1. SETUP: Insert manual data dummy
-    $tutor = \App\Models\Tutor::create([
-        'nama' => 'Juno',
-        'kategori_id' => 1, // Sesuaikan dengan struktur tabelmu
-        'harga' => 50000,
-        // ... isi kolom wajib (NOT NULL) lainnya yang ada di tabel tutors
-    ]);
+    public function test_semua_fitur_tutor_controller()
+    {
+        // FIX: Lengkapi data dummy
+        DB::table('kategori')->insert(['idkategori' => 1, 'namakategori' => 'Eksakta']);
+        DB::table('matakuliah')->insert(['idmatkul' => '1', 'idkategori' => 1, 'namamatkul' => 'Matkul A']);
+        DB::table('tutor')->insert(['idtutor' => '1', 'nama' => 'Tutor A', 'pekerjaan' => 'Dosen', 'fototutor' => '']);
 
-    // 2. ACTION & ASSERT
-    $response = $this->get('/tutor/' . $tutor->id);
-    $response->assertStatus(200);
-}
+        DB::table('sesi')->insert([
+            'idsesi' => 1, 'idtutor' => '1', 'idmatkul' => '1', 'namaSesi' => 'Sesi A', 'harga' => 50000
+        ]);
+
+        DB::table('user')->insert(['userid' => 1, 'username' => 'User1', 'email' => 'a@b.com', 'password' => '123', 'nomorhp' => '123']);
+        DB::table('pesanan')->insert(['idpesanan' => 1, 'idsesi' => 1, 'userid' => 1, 'tanggal' => now(), 'jam' => '10:00']);
+        DB::table('review')->insert(['idreview' => 1, 'idpesanan' => 1, 'rating' => 5, 'komentar' => 'Sangat bagus!']);
+
+        $this->get('/tutor')->assertStatus(200);
+        $this->get('/tutor/1')->assertStatus(200);
+        $this->get('/tutor/999')->assertStatus(404);
+        $this->get('/tutor/1/sesi')->assertStatus(200);
+        $this->get('/tutor/999/sesi')->assertStatus(404);
+    }
 }
